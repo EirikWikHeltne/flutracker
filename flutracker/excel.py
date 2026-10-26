@@ -13,6 +13,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+from . import sales
 from .analysis import parse_yw, week_monday
 from .config import COUNTRIES, INDICATORS, INTENSITY_LEVELS, SOURCE
 
@@ -376,7 +377,15 @@ def _sources(wb, result):
     ws.column_dimensions["C"].width = 110
 
 
-def build(result, path):
+SHEET_ORDER = [
+    "Overview", "Influenza curves", "COVID-19 curves",
+    "Sales input (weekly)", "Sales vs flu (weekly)", "Correlation (weekly)",
+    "Sales input (monthly)", "Sales vs flu (monthly)", "Correlation (monthly)",
+    "Weekly data", "Virus types", "Flu by week", "Flu by month", "Sources & method",
+]
+
+
+def build(result, path, sales_rows=None):
     wb = Workbook()
     _overview(wb, result)
     _curves(wb, result, "flu_cases", "Influenza curves")
@@ -384,6 +393,11 @@ def build(result, path):
     _weekly_data(wb, result)
     _subtypes(wb, result)
     _sources(wb, result)
+    for freq in ("week", "month"):
+        sales.build(wb, result, freq)
+    if sales_rows:
+        sales.prefill(wb, sales_rows)
+    wb._sheets.sort(key=lambda ws: SHEET_ORDER.index(ws.title))
     for ws in wb.worksheets:
         ws.sheet_properties.tabColor = NAVY if ws.title == "Overview" else PEACH
         ws.page_setup.orientation = "landscape"

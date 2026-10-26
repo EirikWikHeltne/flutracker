@@ -62,6 +62,13 @@
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 14px; padding: 10px 16px; min-height: 40px; cursor: pointer; text-decoration: none; border: 1px solid var(--peach); }
   .btn.primary { background: var(--peach); color: var(--navy); font-weight: bold; }
+  .btn.dark { background: var(--pressed-bg); color: var(--pressed-text); border-color: var(--pressed-bg); font-weight: bold; }
+  .btn.outline { background: transparent; color: var(--text); border-color: var(--divider); }
+  .downloads { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .dl { border-top: 3px solid var(--peach); padding-top: 4px; }
+  .dl h3 { margin-top: 10px; }
+  .dl p { margin: 0 0 14px; }
+  .dl .btn { margin: 0 6px 6px 0; }
   .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); font-size: 12px; }
   main { padding: 28px 0 40px; }
   section { background: var(--surface); padding: 28px clamp(16px, 3vw, 36px); margin-bottom: 20px; }
@@ -131,6 +138,7 @@
     </div>
     <div class="actions">
       <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download>Download Excel</a>
+      <a class="btn primary" id="emailBtn" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail (HTML)</a>
       <button class="btn ghost" id="themeToggle" type="button" aria-label="Switch light or dark mode">Light / dark</button>
     </div>
   </div>
@@ -205,6 +213,24 @@
       <div id="subtypes"></div>
     </section>
   </div>
+
+  <section>
+    <p class="label">Downloads</p>
+    <h2>Take this week&rsquo;s numbers with you</h2>
+    <div class="downloads">
+      <div class="dl">
+        <h3>Excel workbook</h3>
+        <p>Overview, season curves, all weekly values and virus types &ndash; plus a <b>sales tool</b>: paste your weekly or monthly sales per country and the workbook calculates the correlation with every flu and COVID-19 indicator at lags of 0&ndash;8 weeks (0&ndash;3 months), and forecasts the next 12 weeks (3 months) from the driver you choose. Your sales stay in your copy of the file.</p>
+        <a class="btn dark" href="data/flutracker_latest.xlsx" download>Download Excel</a>
+      </div>
+      <div class="dl">
+        <h3>E-mail (HTML)</h3>
+        <p>This week&rsquo;s Outlook-ready e-mail in Karo design. Open it in a browser, or attach / insert it in Outlook to forward the update.</p>
+        <a class="btn dark" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail</a>
+        <a class="btn outline" href="data/email_latest.html" target="_blank" rel="noopener">Preview</a>
+      </div>
+    </div>
+  </section>
 
   <section class="sources">
     <p class="label">Sources &amp; method</p>
@@ -477,7 +503,7 @@
       const k = data.countries[c];
       html += "<dt>" + esc(k.name) + "</dt><dd>" + link(k.url, k.authority + " – weekly respiratory report") + " · " + link(k.data_url, "statistics") + "</dd>";
     });
-    html += '<dt>Excel</dt><dd><a href="data/flutracker_latest.xlsx" download>Download this week&rsquo;s workbook</a> – overview, season curves, all weekly values, virus types and method.</dd>';
+    html += '<dt>Downloads</dt><dd><a href="data/flutracker_latest.xlsx" download>Excel workbook with sales tool</a> · <a href="data/email_latest.html" download="flutracker_email_latest.html">E-mail (HTML)</a></dd>';
     document.getElementById("sourceList").innerHTML = html;
   }
 })();

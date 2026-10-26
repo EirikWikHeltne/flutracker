@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+# Sales data is confidential – keep it out of this public repository
+*sales*.csv
+*sales*.xlsx

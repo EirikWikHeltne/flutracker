@@ -79,7 +79,7 @@ def test_excel_workbook(tmp_path):
 
     path = excel.build(analysis.analyse(make_raw()), tmp_path / "out.xlsx")
     wb = load_workbook(path)
-    assert wb.sheetnames == ["Overview", "Influenza curves", "COVID-19 curves", "Weekly data", "Virus types", "Sources & method"]
+    assert wb.sheetnames == excel.SHEET_ORDER
     ws = wb["Overview"]
     formulas = [c.value for row in ws.iter_rows() for c in row if isinstance(c.value, str) and c.value.startswith("=")]
     assert any("ROUND(G" in f for f in formulas)  # index is a live formula
@@ -92,3 +92,32 @@ def test_email_is_ascii_and_outlook_safe():
     assert "Respiratory virus update" in html
     assert "<div" not in html and "<style" not in html
     assert "v:roundrect" in html
+
+
+def test_sales_sheets_and_import(tmp_path):
+    from openpyxl import load_workbook
+    from flutracker import excel, sales
+
+    csv = tmp_path / "my_sales.csv"
+    csv.write_text("country,week,sales\nNorway,2025-W40,1200\nSE,2025-W41,800\nDanmark,2025-W41,\n")
+    rows = sales.read_sales(csv)
+    assert rows == {("week", "2025-W40", "NO"): 1200.0, ("week", "2025-W41", "SE"): 800.0}
+
+    path = excel.build(analysis.analyse(make_raw()), tmp_path / "out.xlsx", rows)
+    wb = load_workbook(path)
+    inp = wb["Sales input (weekly)"]
+    found = {inp.cell(r, 2).value: (inp.cell(r, 4).value, inp.cell(r, 5).value) for r in range(sales.HR + 1, inp.max_row + 1)}
+    assert found["2025-W40"] == (1200.0, None) and found["2025-W41"] == (None, 800.0)
+    fit = wb["Sales vs flu (weekly)"]
+    assert fit["D12"].value.startswith('=IF(D11<3,"",CORREL(')
+    assert fit["D18"].value.startswith("=IF(COUNT(")  # forecast sum
+    corr = wb["Correlation (monthly)"]
+    assert any(isinstance(c.value, str) and "CORREL(" in c.value for row in corr.iter_rows() for c in row)
+
+
+def test_month_assignment_uses_thursday():
+    from flutracker import sales
+
+    assert sales.month_of_week(2026, 1) == (2026, 1)   # Thu 1 Jan 2026
+    assert sales.month_of_week(2025, 40) == (2025, 10)  # Thu 2 Oct 2025
+    assert (2026, 1) in sales._weeks_in_month(2026, 1) and (2025, 53) not in sales._weeks_in_month(2026, 1)

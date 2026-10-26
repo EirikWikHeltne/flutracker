@@ -4,8 +4,10 @@ A weekly status of influenza and COVID-19 in the Nordics, in Karo Healthcare des
 compared with previous seasons:
 
 * a **dashboard** (GitHub Pages, `docs/index.html`)
-* an **Outlook-compatible HTML e-mail** with the week's findings (`reports/`)
-* an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`)
+* an **Outlook-compatible HTML e-mail** with the week's findings, downloadable from the dashboard
+  (`docs/data/email_latest.html`, archived in `reports/YYYY-Www.html`)
+* an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`),
+  including a **sales tool** for correlation and forecasting
 
 ## Data source
 
@@ -52,12 +54,36 @@ reports in the meantime. History starts with the 2022/23 season.
 
 In the Excel workbook, change, index, level, intensity and the historical average/min/max are live formulas.
 
+## Sales tool in the Excel workbook
+
+The workbook has a weekly and a monthly version of the same four sheets:
+
+| Sheet | What it does |
+|---|---|
+| **Sales input** | Yellow cells: paste sales per country (units or NOK), one row per week (`2025-W45`) or month (`2025-11`). |
+| **Correlation** | Pearson correlation of sales with every driver (flu cases, flu positivity, sentinel positivity, ILI, COVID-19 cases and positivity), at lags of 0–8 weeks or 0–3 months. Shows the best combination per country. |
+| **Sales vs flu** | Pick a driver and lag per country. The sheet shows n, r, R², slope, intercept and standard error, and fits `sales = intercept + slope × driver`. It then forecasts the next 12 weeks or 3 months with a 95% band, plus a chart of sales against the fit. |
+| **Flu by week / month** | The drivers per country. Forecast periods use the historical average for that week × the **flu scenario** (100% = a normal season; e.g. 130% for a heavy season). |
+
+Everything after the input is an Excel formula, so the workbook recalculates as soon as sales are pasted in.
+Monthly flu values assign each ISO week to the month of its Thursday; counts are summed and rates averaged.
+At least 12 periods of sales are needed before the strength of the relationship is reported. Correlation shows
+co-movement, not cause and effect.
+
+**Sales data is confidential and must not be committed to this public repository.** Paste it into a downloaded
+copy, or build a pre-filled workbook locally (files with `sales` in the name are git-ignored):
+
+```bash
+# my_sales.csv: columns country (Norway/NO…), week (2025-W45) or month (2025-11), sales
+python -m flutracker excel --sales my_sales.csv --out flutracker_with_sales.xlsx
+```
+
 ## Layout
 
 ```
-flutracker/        Python package: fetch → analysis → emailer / excel
+flutracker/        Python package: fetch → analysis → emailer / excel (+ sales sheets)
 docs/index.html    Dashboard (GitHub Pages), reads docs/data/flu.json
-docs/data/         flu.json and flutracker_latest.xlsx
+docs/data/         flu.json, flutracker_latest.xlsx and email_latest.html (the downloads)
 data/              Nordic rows from ERVISS + state.json (last week e-mailed)
 reports/           Each week's e-mail (HTML) and workbook (XLSX)
 ```
