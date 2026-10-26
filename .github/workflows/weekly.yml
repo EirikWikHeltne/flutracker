@@ -1,0 +1,56 @@
+name: Weekly flu update
+
+on:
+  schedule:
+    # ECDC publishes ERVISS on Fridays around 10–13 UTC. Saturday is a retry;
+    # the e-mail is only sent once per data week.
+    - cron: "23 15 * * 5"
+    - cron: "23 7 * * 6"
+  workflow_dispatch:
+    inputs:
+      force_email:
+        description: "Send the e-mail even if this week was already sent"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-flu-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Fetch data, analyse and build e-mail
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python -m flutracker all --send ${{ inputs.force_email && '--force' || '' }}
+
+      - name: Commit updated data
+        run: |
+          git config user.name "flutracker-bot"
+          git config user.email "flutracker-bot@users.noreply.github.com"
+          git add docs/data reports data
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Influensadata $(python -c 'import json;print(json.load(open("docs/data/flu.json"))["latest_week"])')"
+            git push
+          fi
