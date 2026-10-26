@@ -1,4 +1,4 @@
-"""Command line: python -m flutracker [update|email|all] ..."""
+"""Command line: python -m flutracker [update|email|all|excel] ..."""
 
 import argparse
 import json
@@ -6,12 +6,13 @@ import pathlib
 import shutil
 import sys
 
-from . import analysis, emailer, excel, fetch
+from . import analysis, emailer, excel, fetch, sales
 from .config import ERVISS_BASE, EXCEL_NAME
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_JSON = ROOT / "docs" / "data" / "flu.json"
 EXCEL = ROOT / "docs" / "data" / EXCEL_NAME
+EMAIL_HTML = ROOT / "docs" / "data" / "email_latest.html"
 RAW_CSV = ROOT / "data" / "erviss_nordic.csv"
 STATE = ROOT / "data" / "state.json"
 REPORTS = ROOT / "reports"
@@ -49,6 +50,7 @@ def cmd_email(args, result=None):
     out = REPORTS / f"{result['latest_week']}.html"
     out.write_text(html, encoding="utf-8")
     (REPORTS / "latest.html").write_text(html, encoding="utf-8")
+    EMAIL_HTML.write_text(html, encoding="utf-8")  # downloadable from the dashboard
     print(f"E-mail written to {out.relative_to(ROOT)}")
 
     if not args.send:
@@ -63,15 +65,30 @@ def cmd_email(args, result=None):
         save_state(state)
 
 
+def cmd_excel(args):
+    """Build a workbook locally with your own sales filled in (never committed)."""
+    result = json.loads(DATA_JSON.read_text())
+    rows = sales.read_sales(args.sales)
+    out = pathlib.Path(args.out)
+    excel.build(result, out, rows)
+    print(f"Workbook with {len(rows)} sales values written to {out}")
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="flutracker", description=__doc__)
-    p.add_argument("command", choices=["update", "email", "all"])
+    p.add_argument("command", choices=["update", "email", "all", "excel"])
     p.add_argument("--source", default=ERVISS_BASE, help="Base URL for ERVISS CSV files")
     p.add_argument("--send", action="store_true", help="Send the e-mail over SMTP (env: SMTP_*, MAIL_*)")
     p.add_argument("--force", action="store_true", help="Send even if this week was already sent")
     p.add_argument("--dashboard-url", default=None)
+    p.add_argument("--sales", help="excel: CSV/XLSX with columns country, week or month, sales")
+    p.add_argument("--out", default="flutracker_with_sales.xlsx", help="excel: output workbook")
     args = p.parse_args(argv)
 
+    if args.command == "excel":
+        if not args.sales:
+            p.error("excel needs --sales FILE")
+        return cmd_excel(args)
     result = None
     if args.command in ("update", "all"):
         result = cmd_update(args)
