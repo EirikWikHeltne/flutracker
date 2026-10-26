@@ -1,67 +1,87 @@
-# Influensatracker – Norge, Sverige og Danmark
+# Flu & COVID-19 tracker – Norway, Sweden and Denmark
 
-Ukentlig influensastatus for Norden i Karo Healthcare-design: et dashboard (GitHub Pages) og en
-Outlook-kompatibel HTML-e-post med ukens funn, begge sammenlignet med tidligere sesonger.
+A weekly status of influenza and COVID-19 in the Nordics, in Karo Healthcare design. It is published three ways, each
+compared with previous seasons:
 
-## Datakilde
+* a **dashboard** (GitHub Pages, `docs/index.html`)
+* an **Outlook-compatible HTML e-mail** with the week's findings (`reports/`)
+* an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`)
 
-Data hentes fra **ECDC ERVISS** ([erviss.org](https://erviss.org/),
-[rådata på GitHub](https://github.com/EU-ECDC/Respiratory_viruses_weekly_data)). Dette er de ukentlige
-overvåkingsdataene som **Folkehelseinstituttet (FHI)**, **Folkhälsomyndigheten** og **Statens Serum Institut (SSI)**
-rapporterer til ECDC, i ett felles format. ERVISS oppdateres hver fredag. Tall kan bli revidert bakover, så hele
-historikken hentes på nytt hver uke.
+## Data source
 
-| Indikator | Norge | Sverige | Danmark |
-|---|:-:|:-:|:-:|
-| Laboratoriebekreftede tilfeller | ✓ | ✓ | ✓ |
-| Andel positive prøver (lab.bekreftede / testede) | ✓ | ✓ | ✓ |
-| Sentinel-positivitet (primærhelsetjenesten) | ✓ | ✓ | ✓ |
-| ILI-konsultasjoner per 100 000 | ✓ | – | ✓ |
-| Intensivinnleggelser / dødsfall | – | ✓ (når rapportert) | – |
-| Virustyper (A(H1N1), A(H3N2), B) | ✓ | ✓ | ✓ |
+The data comes from **ECDC's European Respiratory Virus Surveillance Summary (ERVISS)**
+([erviss.org](https://erviss.org/), [open data](https://github.com/EU-ECDC/Respiratory_viruses_weekly_data)).
+ECDC (the European Centre for Disease Prevention and Control) is the EU agency for disease surveillance. ERVISS holds the
+weekly figures that each national public health institute reports to ECDC:
 
-Historikk finnes fra sesongen 2022/23.
+| Country | Reporting institute | National weekly report |
+|---|---|---|
+| Norway | Norwegian Institute of Public Health (FHI) | [fhi.no](https://www.fhi.no/tema/influensa/overvaakingssystemet) · [statistikk.fhi.no](https://statistikk.fhi.no/) |
+| Sweden | Public Health Agency of Sweden (Folkhälsomyndigheten) | [Lägesrapport luftvägsvirus](https://www.folkhalsomyndigheten.se/statistik-och-data/lagesrapporter/luftvagsvirus-lagesrapporter/aktuell-lagesrapport-om-luftvagsvirus/) |
+| Denmark | Statens Serum Institut (SSI) | [Overvågning af luftvejssygdomme](https://www.ssi.dk/sygdomme-beredskab-og-forskning/overvaagning-af-luftvejssygdomme) |
 
-## Beregning mot historikk
+Using ERVISS gives one consistent, documented format for all three countries. ECDC publishes it every Friday, and
+the full history is re-downloaded each week because recent weeks can be revised.
 
-* **Sesong:** uke 40 til uke 39.
-* **Historisk snitt / min / maks:** samme ISO-uke i alle tidligere sesonger med minst 20 uker data
-  (uke 53 sammenlignes med uke 52).
-* **Indeks** = ukens verdi / historisk snitt × 100 (100 = normalt for uka).
-* **Nivå:** over historisk maks, innenfor spennet, eller under historisk min.
-* **Intensitet:** ukens verdi mot snittet av tidligere sesongtopper — under 10 % basisnivå, 10–40 % lav,
-  40–70 % moderat, 70–100 % høy, over 100 % svært høy.
-* **Sesongen hittil:** akkumulerte tilfeller fra uke 40, mot samme periode i tidligere sesonger.
-* **Epidemisk terskel:** sentinel-positivitet ≥ 10 % (ECDC). Uker med færre enn 20 sentinel-prøver markeres.
+### Indicators (season 2026/27)
 
-## Struktur
+| Group | Indicator | NO | SE | DK |
+|---|---|:-:|:-:|:-:|
+| Influenza | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
+| Influenza | Influenza-like illness (ILI) GP consultations per 100,000 | ✓ | – | ✓ |
+| Influenza | Virus types (A(H1N1), A(H3N2), B) | ✓ | ✓ | ✓ |
+| COVID-19 | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
+| Hospital & severity | Deaths with influenza / COVID-19 | – | ✓ | – |
+| Hospital & severity | Hospital admissions, ICU admissions, SARI hospitalisations | supported, shown when reported to ECDC |
+
+Norway and Denmark do not currently report hospital admissions to ECDC, and Sweden's ICU reporting has been paused since
+April 2026. The tracker shows any of these automatically as soon as they appear in ERVISS, and links to the national
+reports in the meantime. History starts with the 2022/23 season.
+
+## How the comparison with history works
+
+* **Season:** week 40 to week 39.
+* **Historical average / min / max:** the same ISO week in every previous season with at least 20 weeks of data
+  (week 53 is compared with week 52).
+* **Index** = this week / historical average × 100 (100 = normal for the time of year).
+* **Level:** above the historical maximum, within the range, or below the historical minimum.
+* **Intensity:** this week against the average of previous season peaks: below 10% baseline, 10–40% low,
+  40–70% medium, 70–100% high, above 100% very high.
+* **Season to date:** cumulative cases since week 40, against previous seasons summed to the same week.
+* **Epidemic threshold:** sentinel positivity ≥ 10% (ECDC). Weeks with fewer than 20 sentinel samples are flagged.
+
+In the Excel workbook, change, index, level, intensity and the historical average/min/max are live formulas.
+
+## Layout
 
 ```
-flutracker/        Python-pakken (fetch → analysis → emailer)
-docs/index.html    Dashboard (GitHub Pages), leser docs/data/flu.json
-docs/data/flu.json Siste beregning
-data/              Nordiske influensarader fra ERVISS + state.json (siste sendte e-postuke)
-reports/           Ukens e-post som HTML (YYYY-Www.html og latest.html)
+flutracker/        Python package: fetch → analysis → emailer / excel
+docs/index.html    Dashboard (GitHub Pages), reads docs/data/flu.json
+docs/data/         flu.json and flutracker_latest.xlsx
+data/              Nordic rows from ERVISS + state.json (last week e-mailed)
+reports/           Each week's e-mail (HTML) and workbook (XLSX)
 ```
 
-## Kjøre lokalt
+## Running locally
 
 ```bash
 pip install -r requirements.txt
-python -m flutracker all            # hent data, beregn, skriv dashboard-data og e-post
-python -m flutracker all --send     # ... og send e-posten over SMTP
+python -m flutracker all            # fetch data, analyse, write dashboard data, Excel and e-mail
+python -m flutracker all --send     # ... and send the e-mail over SMTP with the Excel attached
 python -m pytest
 ```
 
-## Ukentlig automatisering
+## Weekly automation
 
-`.github/workflows/weekly.yml` kjører fredag 15:23 UTC (med ny sjekk lørdag morgen), oppdaterer data,
-committer endringene og sender e-posten én gang per ny datauke. Den kan også kjøres manuelt under *Actions*.
+`.github/workflows/weekly.yml` runs on Fridays at 15:23 UTC (with a retry on Saturday morning). It refreshes the
+data, commits the results and sends the e-mail once per new data week. It can also be started by hand under *Actions*.
+It only runs from the default branch, so this work has to be merged into `main` first.
 
-Oppsett:
+Setup:
 
-1. **E-post:** legg inn repository secrets `SMTP_HOST`, `SMTP_PORT` (587 eller 465), `SMTP_USER`,
-   `SMTP_PASSWORD`, `MAIL_FROM` og `MAIL_TO` (kommaseparert). For Office 365: `smtp.office365.com`, port 587.
-   Uten disse bygges e-posten fortsatt i `reports/`, men sendes ikke.
-2. **Dashboard:** *Settings → Pages → Deploy from a branch*, velg `main` og mappen `/docs`.
-   Oppdater `DASHBOARD_URL` i `flutracker/config.py` hvis adressen blir en annen.
+1. **Dashboard:** *Settings → Pages → Build and deployment → Deploy from a branch*, branch `main`, folder **`/docs`**.
+   The dashboard is then at `https://eirikwikheltne.github.io/flutracker/`. If the address is different, update
+   `DASHBOARD_URL` in `flutracker/config.py`.
+2. **E-mail:** add the repository secrets `SMTP_HOST`, `SMTP_PORT` (587 or 465), `SMTP_USER`, `SMTP_PASSWORD`,
+   `MAIL_FROM` and `MAIL_TO` (comma-separated). For Office 365: `smtp.office365.com`, port 587. Without them the e-mail
+   is still built in `reports/` but not sent.
