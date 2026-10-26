@@ -51,6 +51,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Influensadata $(python -c 'import json;print(json.load(open("docs/data/flu.json"))["latest_week"])')"
+            git commit -m "Respiratory data $(python -c 'import json;print(json.load(open("docs/data/flu.json"))["latest_week"])')"
             git push
           fi

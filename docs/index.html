@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="no">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Influensatracker Norden</title>
-<meta name="description" content="Ukentlig influensastatus for Norge, Sverige og Danmark sammenlignet med tidligere sesonger.">
+<title>Nordic Flu Tracker</title>
+<meta name="description" content="Weekly influenza and COVID-19 status for Norway, Sweden and Denmark compared with previous seasons.">
 <style>
   :root {
     --navy: #110B36;
@@ -28,67 +28,46 @@
     --tile-text: #ffffff;
     --tile-foot: #FAD7C2;
     --tile-foot-text: #110B36;
+    --alt: #fdeee5;
+    --pressed-bg: #110B36;
+    --pressed-text: #ffffff;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0e0b20;
-      --surface: #17132f;
-      --text: #ece9f5;
-      --muted: #a3a0b5;
-      --divider: #2c2748;
-      --up: #f87171;
-      --down: #4ade80;
-      --current: #FAD7C2;
-      --prior: #4a4566;
-      --band: rgba(250, 215, 194, 0.16);
-      --mean: #a3a0b5;
-      --c-NO: #7E73E0;
-      --c-SE: #D96A42;
-      --c-DK: #1F9E8F;
-      --grid: #2a2545;
-      --tile-bg: #221c4a;
-      --tile-foot: #3a2f5c;
-      --tile-foot-text: #FAD7C2;
+      --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
+      --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
+      --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
+      --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
+      --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
+      --pressed-bg: #FAD7C2; --pressed-text: #110B36;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0e0b20;
-    --surface: #17132f;
-    --text: #ece9f5;
-    --muted: #a3a0b5;
-    --divider: #2c2748;
-    --up: #f87171;
-    --down: #4ade80;
-    --current: #FAD7C2;
-    --prior: #4a4566;
-    --band: rgba(250, 215, 194, 0.16);
-    --mean: #a3a0b5;
-    --c-NO: #7E73E0;
-    --c-SE: #D96A42;
-    --c-DK: #1F9E8F;
-    --grid: #2a2545;
-    --tile-bg: #221c4a;
-    --tile-foot: #3a2f5c;
-    --tile-foot-text: #FAD7C2;
+    --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
+    --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
+    --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
+    --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
+    --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
+    --pressed-bg: #FAD7C2; --pressed-text: #110B36;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Georgia, "Times New Roman", serif;
-    line-height: 1.6;
-  }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: Georgia, "Times New Roman", serif; line-height: 1.6; }
+  a { color: inherit; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
   header.banner { background: var(--navy); color: #fff; padding: 36px 0 30px; }
+  .banner-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--peach); margin: 0 0 10px; }
   h1 { font-weight: normal; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0; }
   .sub { margin: 10px 0 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--peach); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 14px; padding: 10px 16px; min-height: 40px; cursor: pointer; text-decoration: none; border: 1px solid var(--peach); }
+  .btn.primary { background: var(--peach); color: var(--navy); font-weight: bold; }
+  .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); font-size: 12px; }
   main { padding: 28px 0 40px; }
   section { background: var(--surface); padding: 28px clamp(16px, 3vw, 36px); margin-bottom: 20px; }
   .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
-  h2 { font-weight: normal; font-size: 22px; color: var(--text); margin: 0 0 14px; line-height: 1.3; }
-  p.lead { margin: 0 0 4px; max-width: 70ch; }
+  h2 { font-weight: normal; font-size: 22px; margin: 0 0 14px; line-height: 1.3; }
+  h3 { font-weight: normal; font-size: 17px; margin: 22px 0 8px; }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
   .tile { background: var(--tile-bg); color: var(--tile-text); display: flex; flex-direction: column; }
   .tile .top { padding: 16px 18px 12px; }
@@ -96,22 +75,17 @@
   .tile .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
   .tile .big { font-size: 40px; line-height: 1.1; margin-top: 6px; font-variant-numeric: tabular-nums; }
   .tile .small { font-size: 13px; opacity: .85; }
-  .tile .foot { background: var(--tile-foot); color: var(--tile-foot-text); padding: 10px 18px; font-size: 13px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+  .tile .foot { background: var(--tile-foot); color: var(--tile-foot-text); padding: 10px 18px; font-size: 13px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; margin-top: auto; }
   .tile .foot b { font-size: 15px; }
   ul.findings { list-style: none; padding: 0; margin: 0; }
   ul.findings li { padding: 6px 0 6px 20px; position: relative; }
   ul.findings li::before { content: "•"; position: absolute; left: 0; color: var(--current); }
   .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
-  .seg { display: inline-flex; border: 1px solid var(--divider); }
-  .seg button, select {
-    font: inherit; font-size: 14px; color: var(--text); background: var(--surface);
-    border: 0; padding: 8px 14px; cursor: pointer; min-height: 40px;
-  }
+  .seg { display: inline-flex; border: 1px solid var(--divider); flex-wrap: wrap; }
+  .seg button, select { font: inherit; font-size: 14px; color: var(--text); background: var(--surface); border: 0; padding: 8px 14px; cursor: pointer; min-height: 40px; }
   .seg button + button { border-left: 1px solid var(--divider); }
-  .seg button[aria-pressed="true"] { background: var(--navy); color: #fff; }
-  :root[data-theme="dark"] .seg button[aria-pressed="true"] { background: var(--peach); color: var(--navy); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { background: var(--peach); color: var(--navy); } }
-  select { border: 1px solid var(--divider); }
+  .seg button[aria-pressed="true"] { background: var(--pressed-bg); color: var(--pressed-text); }
+  select { border: 1px solid var(--divider); max-width: 100%; }
   .chart-box { position: relative; height: 380px; }
   .chart-box.short { height: 300px; }
   .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); margin-top: 10px; }
@@ -122,178 +96,194 @@
   .note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
   .scroll { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
-  th { text-align: left; font-weight: bold; color: var(--text); border-bottom: 2px solid var(--current); padding: 9px 10px; font-size: 13px; white-space: nowrap; }
+  th { text-align: left; font-weight: bold; border-bottom: 2px solid var(--current); padding: 9px 10px; font-size: 13px; white-space: nowrap; }
   td { padding: 9px 10px; border-bottom: 1px solid var(--divider); }
   td.num, th.num { text-align: right; }
   tr.group td { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border-bottom: 0; padding-top: 18px; }
-  tbody tr.alt td { background: color-mix(in srgb, var(--peach) 45%, var(--surface)); }
+  tbody tr.alt td { background: var(--alt); }
   .up { color: var(--up); }
   .down { color: var(--down); }
   .pill { display: inline-block; font-size: 12px; padding: 2px 8px; border: 1px solid var(--divider); white-space: nowrap; }
   .pill.over { border-color: var(--up); color: var(--up); }
   .pill.under { border-color: var(--down); color: var(--down); }
   .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .grid2 section { margin-bottom: 0; }
+  .grid2 + section { margin-top: 20px; }
   .stack { display: flex; height: 22px; gap: 2px; margin: 6px 0 14px; }
   .stack div { height: 100%; }
   .stack div:first-child { border-radius: 4px 0 0 4px; }
   .stack div:last-child { border-radius: 0 4px 4px 0; }
-  .sources a { color: var(--text); }
-  footer { color: var(--muted); font-size: 12px; padding: 10px 0 30px; }
-  .theme-toggle { float: right; background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff; font: inherit; font-size: 12px; padding: 6px 10px; cursor: pointer; }
+  .sources dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; margin: 0 0 12px; }
+  .sources dt { font-weight: bold; }
+  .sources dd { margin: 0; }
+  @media (max-width: 600px) { .sources dl { grid-template-columns: 1fr; } .sources dd { margin-bottom: 8px; } }
+  footer { color: var(--muted); font-size: 12px; padding: 10px 16px 30px; }
   .error { color: var(--up); }
 </style>
 </head>
 <body>
 <header class="banner">
-  <div class="wrap">
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Bytt lys/mørk visning">Lys / mørk</button>
-    <p class="eyebrow">Karo Healthcare Norway · Influensatracker</p>
-    <h1 id="title">Influensa i Norden</h1>
-    <p class="sub" id="subtitle">Laster data …</p>
+  <div class="wrap banner-row">
+    <div>
+      <p class="eyebrow">Karo Healthcare Norway · Flu tracker</p>
+      <h1 id="title">Flu &amp; COVID-19 in the Nordics</h1>
+      <p class="sub" id="subtitle">Loading data …</p>
+    </div>
+    <div class="actions">
+      <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download>Download Excel</a>
+      <button class="btn ghost" id="themeToggle" type="button" aria-label="Switch light or dark mode">Light / dark</button>
+    </div>
   </div>
 </header>
 
 <main class="wrap">
   <section>
-    <p class="label">Denne uka</p>
-    <h2>Laboratoriebekreftede tilfeller</h2>
+    <p class="label">This week</p>
+    <h2>Lab-confirmed cases</h2>
     <div class="tiles" id="tiles"></div>
-    <p class="note">Indeks 100 = snittet for samme uke i tidligere sesonger. Intensitet = ukens nivå mot snittet av tidligere sesongtopper.</p>
+    <p class="note">Index 100 = the average for the same week in previous seasons. Intensity = this week against the average of previous season peaks.</p>
   </section>
 
   <section>
-    <p class="label">Hovedfunn</p>
+    <p class="label">Key findings</p>
     <ul class="findings" id="findings"></ul>
   </section>
 
   <section>
-    <p class="label">Sesongkurve</p>
-    <h2 id="chartTitle">Denne sesongen mot tidligere sesonger</h2>
+    <p class="label">Season curve</p>
+    <h2 id="chartTitle">This season against previous seasons</h2>
     <div class="controls">
-      <div class="seg" id="countrySeg" role="group" aria-label="Velg land"></div>
-      <label><span class="label" style="display:none">Indikator</span>
-        <select id="indicatorSel" aria-label="Velg indikator"></select>
-      </label>
+      <div class="seg" id="countrySeg" role="group" aria-label="Choose country"></div>
+      <select id="indicatorSel" aria-label="Choose indicator"></select>
     </div>
-    <div class="chart-box"><canvas id="seasonChart" aria-label="Sesongkurve"></canvas></div>
+    <div class="chart-box"><canvas id="seasonChart" aria-label="Season curve"></canvas></div>
     <div class="legend">
-      <span><i class="key" style="background:var(--current);height:3px"></i><span id="legCurrent">Denne sesongen</span></span>
-      <span><i class="key dash"></i>Historisk snitt</span>
-      <span><i class="key band"></i>Historisk min–maks</span>
-      <span><i class="key" style="background:var(--prior)"></i>Tidligere sesonger</span>
+      <span><i class="key" style="background:var(--current);height:3px"></i><span id="legCurrent">This season</span></span>
+      <span><i class="key dash"></i>Historical average</span>
+      <span><i class="key band"></i>Historical min–max</span>
+      <span><i class="key" style="background:var(--prior)"></i>Previous seasons</span>
     </div>
     <p class="note" id="indicatorNote"></p>
   </section>
 
   <section>
-    <p class="label">Mot historikk</p>
-    <h2>Indeks per uke – laboratoriebekreftede tilfeller</h2>
-    <div class="chart-box short"><canvas id="indexChart" aria-label="Indeks mot historikk per land"></canvas></div>
+    <p class="label">Against history</p>
+    <h2 id="indexTitle">Weekly index – lab-confirmed cases</h2>
+    <div class="controls"><div class="seg" id="indexSeg" role="group" aria-label="Choose virus"></div></div>
+    <div class="chart-box short"><canvas id="indexChart" aria-label="Index against history per country"></canvas></div>
     <div class="legend" id="indexLegend"></div>
-    <p class="note">100 = snitt for samme ISO-uke i tidligere sesonger. Tidlig i sesongen gir små tall store utslag i indeksen.</p>
+    <p class="note">100 = average for the same ISO week in previous seasons. Early in the season small numbers give large swings in the index.</p>
   </section>
 
   <section>
-    <p class="label">Alle indikatorer</p>
-    <h2>Nivå mot samme uke tidligere sesonger</h2>
+    <p class="label">All indicators</p>
+    <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
-    <p class="note">* Siste rapporterte uke er eldre enn siste uke i datasettet. † Færre enn 20 sentinel-prøver – tolk med forsiktighet.</p>
+    <p class="note">* Latest reported week is older than the latest week in the dataset. † Fewer than 20 sentinel samples – interpret with care.</p>
+  </section>
+
+  <section>
+    <p class="label">Hospital &amp; severity</p>
+    <h2>Hospital admissions, intensive care and deaths</h2>
+    <div class="scroll"><table id="hospTable"></table></div>
+    <p class="note" id="hospNote"></p>
   </section>
 
   <div class="grid2">
     <section>
-      <p class="label">Sesongen hittil</p>
-      <h2>Akkumulerte lab.bekreftede tilfeller</h2>
-      <div class="scroll"><table id="stdTable"></table></div>
-      <p class="note">Fra uke 40 til og med samme uke i hver sesong.</p>
+      <p class="label">Season to date</p>
+      <h2>Cumulative lab-confirmed cases</h2>
+      <h3>Influenza</h3>
+      <div class="scroll"><table id="stdFlu"></table></div>
+      <h3>COVID-19</h3>
+      <div class="scroll"><table id="stdCovid"></table></div>
+      <p class="note">From week 40 to the same week in each season.</p>
     </section>
     <section>
-      <p class="label">Virustyper</p>
-      <h2>Fordeling hittil i sesongen</h2>
+      <p class="label">Influenza virus types</p>
+      <h2>Share so far this season</h2>
       <div id="subtypes"></div>
     </section>
   </div>
 
   <section class="sources">
-    <p class="label">Kilder og metode</p>
-    <p class="lead" id="sourceText"></p>
-    <ul id="authorities"></ul>
-    <p class="note">Sesongen regnes fra uke 40 til uke 39. Hver uke sammenlignes med samme ISO-uke i alle tidligere sesonger med data (uke 53 sammenlignes med uke 52). Indeks = ukens verdi / historisk snitt × 100. Intensitet: under 10 % av snittlig sesongtopp = basisnivå, 10–40 % lav, 40–70 % moderat, 70–100 % høy, over 100 % svært høy. Data oppdateres automatisk hver fredag.</p>
+    <p class="label">Sources &amp; method</p>
+    <h2>Where the numbers come from</h2>
+    <dl id="sourceList"></dl>
+    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Index = this week / historical average × 100. Intensity: below 10% of the average season peak = baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high. Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
   </section>
 </main>
 
 <footer class="wrap" id="footer"></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 (function () {
   const ORDER = ["NO", "SE", "DK"];
-  const state = { country: "NO", indicator: "lab_cases" };
+  const CASES = { "Influenza": "flu_cases", "COVID-19": "covid_cases" };
+  const state = { country: "NO", indicator: "flu_cases", indexVirus: "Influenza" };
   let data, seasonChart, indexChart;
 
-  try {
-    const saved = localStorage.getItem("flu-theme");
-    if (saved) document.documentElement.dataset.theme = saved;
-  } catch (e) {}
+  try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
   document.getElementById("themeToggle").addEventListener("click", () => {
-    const dark = getComputedStyle(document.documentElement).getPropertyValue("--surface").trim() !== "#ffffff";
+    const dark = css("--surface") !== "#ffffff";
     document.documentElement.dataset.theme = dark ? "light" : "dark";
     try { localStorage.setItem("flu-theme", document.documentElement.dataset.theme); } catch (e) {}
     renderCharts();
   });
 
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const fmt = (v, d = 0) => v == null ? "–" : v.toLocaleString("nb-NO", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const pct = (v) => v == null ? "–" : (v > 0 ? "+" : "") + fmt(v) + " %";
+  const fmt = (v, d = 0) => v == null ? "–" : v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const pct = (v) => v == null ? "–" : (v > 0 ? "+" : "") + fmt(v) + "%";
   const cls = (v) => v == null || v === 0 ? "" : (v > 0 ? "up" : "down");
   const weekNo = (yw) => +yw.split("-W")[1];
   const fmtVal = (v, key) => {
     const m = data.indicators[key];
-    return fmt(v, m.decimals) + (m.unit === "%" ? " %" : "");
+    return v == null ? "–" : fmt(v, m.decimals) + (m.unit === "%" ? "%" : "");
   };
   const el = (tag, attrs = {}, html = "") => { const e = document.createElement(tag); Object.assign(e, attrs); e.innerHTML = html; return e; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const link = (url, text) => '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(text) + "</a>";
+  const keysIn = (group) => Object.keys(data.indicators).filter((k) => data.indicators[k].group === group);
 
   fetch("data/flu.json", { cache: "no-store" })
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then((d) => { data = d; render(); })
-    .catch((e) => { document.getElementById("subtitle").innerHTML = '<span class="error">Kunne ikke laste data (' + esc(e.message) + ")</span>"; });
+    .catch((e) => { document.getElementById("subtitle").innerHTML = '<span class="error">Could not load data (' + esc(e.message) + ")</span>"; });
 
   function render() {
-    const wk = weekNo(data.latest_week);
     const start = new Date(data.latest_week_start + "T00:00:00");
     const end = new Date(start); end.setDate(end.getDate() + 6);
-    const df = (d, o) => d.toLocaleDateString("nb-NO", o);
-    document.getElementById("title").textContent = "Influensa i Norden – uke " + wk;
+    const df = (d, o) => d.toLocaleDateString("en-GB", o);
+    document.getElementById("title").textContent = "Flu & COVID-19 in the Nordics – week " + weekNo(data.latest_week);
     document.getElementById("subtitle").textContent =
       df(start, { day: "numeric", month: "short" }) + " – " + df(end, { day: "numeric", month: "short", year: "numeric" }) +
-      " · Sesong " + data.season + " · Oppdatert " + data.generated_at.slice(0, 10);
+      " · Season " + data.season + " · Updated " + data.generated_at.slice(0, 10);
 
     renderTiles();
     document.getElementById("findings").replaceChildren(...data.findings.map((f) => el("li", {}, esc(f))));
     renderControls();
     renderCharts();
-    renderTable();
-    renderSeasonToDate();
+    renderTable("indTable", ["Influenza", "COVID-19"]);
+    renderTable("hospTable", ["Hospital & severity"]);
+    renderHospNote();
+    renderSeasonToDate("stdFlu", "flu_cases");
+    renderSeasonToDate("stdCovid", "covid_cases");
     renderSubtypes();
-
-    document.getElementById("sourceText").innerHTML =
-      esc(data.source.note) + ' Data hentes fra <a href="' + data.source.url + '">' + esc(data.source.name) + '</a> (<a href="' + data.source.data + '">rådata</a>).';
-    document.getElementById("authorities").replaceChildren(...ORDER.map((c) =>
-      el("li", {}, esc(data.countries[c].name) + ": <a href=\"" + data.countries[c].url + "\">" + esc(data.countries[c].authority) + "</a>")));
-    document.getElementById("footer").textContent = "Karo Healthcare Norway · Influensatracker · Data til og med " + data.latest_week;
+    renderSources();
+    document.getElementById("footer").textContent = "Karo Healthcare Norway · Flu tracker · Data up to " + data.latest_week;
   }
 
   function renderTiles() {
-    const tiles = ORDER.filter((c) => data.summary[c] && data.summary[c].lab_cases).map((c) => {
-      const s = data.summary[c].lab_cases;
+    const tiles = ORDER.filter((c) => data.summary[c] && data.summary[c].flu_cases).map((c) => {
+      const s = data.summary[c].flu_cases, cv = data.summary[c].covid_cases;
       return el("div", { className: "tile" },
-        '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + "</div>" +
+        '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " · influenza</div>" +
         '<div class="big">' + fmt(s.value) + "</div>" +
-        '<div class="small">uke ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " fra uka før · positivitet " +
-        fmtVal(data.summary[c].lab_positivity ? data.summary[c].lab_positivity.value : null, "lab_positivity") + "</div></div>" +
-        '<div class="foot"><span>Indeks <b>' + (s.index ?? "–") + "</b></span><span>Intensitet <b>" + esc(s.intensity || "–") + "</b></span>" +
-        "<span>Sesong hittil <b>" + (s.season_to_date_index ?? "–") + "</b></span></div>");
+        '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " week on week · positivity " +
+        fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
+        '<div class="foot"><span>Index <b>' + (s.index ?? "–") + "</b></span><span>Intensity <b>" + esc(s.intensity || "–") + "</b></span>" +
+        "<span>COVID-19 <b>" + (cv ? fmt(cv.value) : "–") + "</b></span><span>COVID index <b>" + (cv && cv.index != null ? cv.index : "–") + "</b></span></div>");
     });
     document.getElementById("tiles").replaceChildren(...tiles);
   }
@@ -307,14 +297,27 @@
       return b;
     }));
     const sel = document.getElementById("indicatorSel");
-    const available = Object.keys(data.indicators).filter((k) => data.series[state.country] && data.series[state.country][k]);
+    const have = (k) => data.series[state.country] && data.series[state.country][k];
+    const available = Object.keys(data.indicators).filter(have);
     if (!available.includes(state.indicator)) state.indicator = available[0];
-    sel.replaceChildren(...available.map((k) => {
-      const o = el("option", { value: k }, esc(data.indicators[k].label));
-      o.selected = k === state.indicator;
-      return o;
-    }));
+    sel.replaceChildren(...data.groups.map((g) => {
+      const og = el("optgroup", { label: g });
+      keysIn(g).filter(have).forEach((k) => {
+        const o = el("option", { value: k }, esc(data.indicators[k].label));
+        o.selected = k === state.indicator;
+        og.append(o);
+      });
+      return og;
+    }).filter((og) => og.children.length));
     sel.onchange = () => { state.indicator = sel.value; renderSeasonChart(); };
+
+    const iseg = document.getElementById("indexSeg");
+    iseg.replaceChildren(...Object.keys(CASES).map((v) => {
+      const b = el("button", { type: "button" }, esc(v));
+      b.setAttribute("aria-pressed", v === state.indexVirus);
+      b.addEventListener("click", () => { state.indexVirus = v; renderControls(); renderIndexChart(); });
+      return b;
+    }));
   }
 
   function baseOptions(yTitle) {
@@ -341,111 +344,141 @@
     };
   }
 
-  function renderCharts() { if (data) { renderSeasonChart(); renderIndexChart(); } }
+  function renderCharts() { if (data && window.Chart) { renderSeasonChart(); renderIndexChart(); } }
 
   function renderSeasonChart() {
     const s = data.series[state.country][state.indicator];
     const meta = data.indicators[state.indicator];
-    const labels = data.season_weeks;
     const seasons = Object.keys(s.seasons);
     const current = seasons[seasons.length - 1];
     const prior = seasons.slice(0, -1);
     const datasets = [
-      { label: "Historisk maks", data: s.band.max, borderWidth: 0, pointRadius: 0, fill: "+1", backgroundColor: css("--band"), noTooltip: true },
-      { label: "Historisk min", data: s.band.min, borderWidth: 0, pointRadius: 0, fill: false, noTooltip: true },
+      { label: "Historical max", data: s.band.max, borderWidth: 0, pointRadius: 0, fill: "+1", backgroundColor: css("--band"), noTooltip: true },
+      { label: "Historical min", data: s.band.min, borderWidth: 0, pointRadius: 0, fill: false, noTooltip: true },
       ...prior.map((p) => ({ label: p, data: s.seasons[p], borderColor: css("--prior"), borderWidth: 1.5, fill: false })),
-      { label: "Historisk snitt", data: s.band.mean, borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 2, fill: false },
-      { label: current, data: s.seasons[current], borderColor: css("--current"), borderWidth: 3, fill: false, pointRadius: 0, pointHoverRadius: 6 },
+      { label: "Historical average", data: s.band.mean, borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 2, fill: false },
+      { label: current, data: s.seasons[current], borderColor: css("--current"), borderWidth: 3, fill: false, pointHoverRadius: 6 },
     ];
     const opts = baseOptions(meta.unit);
     opts.plugins.tooltip.callbacks = { label: (c) => " " + c.dataset.label + ": " + fmtVal(c.raw, state.indicator) };
     if (seasonChart) seasonChart.destroy();
-    seasonChart = new Chart(document.getElementById("seasonChart"), { type: "line", data: { labels, datasets }, options: opts });
-    document.getElementById("chartTitle").textContent = data.indicators[state.indicator].label + " – " + data.countries[state.country].name;
-    document.getElementById("legCurrent").textContent = "Sesong " + current;
-    document.getElementById("indicatorNote").textContent = meta.description + " Sammenlignet med " + prior.join(", ") + ".";
+    seasonChart = new Chart(document.getElementById("seasonChart"), { type: "line", data: { labels: data.season_weeks, datasets }, options: opts });
+    document.getElementById("chartTitle").textContent = meta.label + " – " + data.countries[state.country].name;
+    document.getElementById("legCurrent").textContent = "Season " + current;
+    document.getElementById("indicatorNote").textContent = meta.description + (prior.length ? " Compared with " + prior.join(", ") + "." : "");
   }
 
   function renderIndexChart() {
-    const datasets = ORDER.filter((c) => data.series[c] && data.series[c].lab_cases).map((c) => {
-      const s = data.series[c].lab_cases;
+    const key = CASES[state.indexVirus];
+    const datasets = ORDER.filter((c) => data.series[c] && data.series[c][key]).map((c) => {
+      const s = data.series[c][key];
       const cur = s.seasons[Object.keys(s.seasons).pop()];
       return {
         label: data.countries[c].name,
         data: cur.map((v, i) => v == null || !s.band.mean[i] ? null : Math.round(v / s.band.mean[i] * 100)),
-        borderColor: css("--c-" + c), backgroundColor: css("--c-" + c), borderWidth: 2, fill: false, pointRadius: 3,
+        borderColor: css("--c-" + c), backgroundColor: css("--c-" + c), borderWidth: 2, fill: false, pointRadius: 4,
         pointBorderColor: css("--surface"), pointBorderWidth: 2,
       };
     });
     const last = Math.max(...datasets.map((d) => d.data.findLastIndex((v) => v != null)));
     const n = Math.max(last + 4, 12);
-    datasets.push({ label: "Historisk snitt (100)", data: Array(n).fill(100), borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 1.5, pointRadius: 0, noTooltip: true });
     datasets.forEach((d) => { d.data = d.data.slice(0, n); });
-    const opts = baseOptions("Indeks");
+    datasets.push({ label: "Historical average (100)", data: Array(n).fill(100), borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 1.5, pointRadius: 0, noTooltip: true });
     if (indexChart) indexChart.destroy();
-    indexChart = new Chart(document.getElementById("indexChart"), { type: "line", data: { labels: data.season_weeks.slice(0, n), datasets }, options: opts });
+    indexChart = new Chart(document.getElementById("indexChart"), { type: "line", data: { labels: data.season_weeks.slice(0, n), datasets }, options: baseOptions("Index") });
+    document.getElementById("indexTitle").textContent = "Weekly index – lab-confirmed " + (state.indexVirus === "Influenza" ? "influenza" : "COVID-19") + " cases";
     document.getElementById("indexLegend").innerHTML = ORDER.map((c) =>
       '<span><i class="key" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + "</span>").join("") +
-      '<span><i class="key dash"></i>Historisk snitt = 100</span>';
+      '<span><i class="key dash"></i>Historical average = 100</span>';
   }
 
-  function renderTable() {
-    const pos = { over: ["Over hist. maks", "over"], under: ["Under hist. min", "under"], innenfor: ["Innenfor spenn", ""] };
-    let html = '<thead><tr><th>Indikator</th><th class="num">Uke</th><th class="num">Verdi</th><th class="num">Endring</th>' +
-      '<th class="num">Hist. snitt</th><th class="num">Hist. spenn</th><th class="num">Indeks</th><th>Nivå</th><th>Intensitet</th></tr></thead><tbody>';
-    ORDER.forEach((c) => {
-      const ind = data.summary[c]; if (!ind) return;
-      html += '<tr class="group"><td colspan="9">' + esc(data.countries[c].name) + " · " + esc(data.countries[c].authority) + "</td></tr>";
-      Object.keys(data.indicators).filter((k) => ind[k]).forEach((k, i) => {
-        const s = ind[k];
-        const p = pos[s.position] || ["–", ""];
-        const flag = (s.stale ? " *" : "") + (s.low_tests ? " †" : "");
-        html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(data.indicators[k].label) + flag + "</td>" +
-          '<td class="num">' + weekNo(s.week) + '</td><td class="num"><b>' + fmtVal(s.value, k) + "</b></td>" +
-          '<td class="num ' + cls(s.wow_pct) + '">' + pct(s.wow_pct) + "</td>" +
-          '<td class="num">' + fmtVal(s.hist_mean, k) + '</td><td class="num">' + fmtVal(s.hist_min, k) + "–" + fmtVal(s.hist_max, k) + "</td>" +
-          '<td class="num ' + cls(s.diff_pct) + '"><b>' + (s.index ?? "–") + "</b></td>" +
-          '<td><span class="pill ' + p[1] + '">' + p[0] + "</span></td><td>" + esc(s.intensity || "–") + "</td></tr>";
+  function renderTable(id, groups) {
+    const pos = { over: ["Above hist. max", "over"], under: ["Below hist. min", "under"], within: ["Within range", ""] };
+    let html = '<thead><tr><th>Indicator</th><th class="num">Week</th><th class="num">Value</th><th class="num">Change</th>' +
+      '<th class="num">Hist. average</th><th class="num">Hist. range</th><th class="num">Index</th><th>Level</th><th>Intensity</th></tr></thead><tbody>';
+    let rows = 0;
+    groups.forEach((g) => {
+      ORDER.forEach((c) => {
+        const ind = data.summary[c] || {};
+        const keys = keysIn(g).filter((k) => ind[k]);
+        if (!keys.length) return;
+        html += '<tr class="group"><td colspan="9">' + (groups.length > 1 ? esc(g) + " · " : "") + esc(data.countries[c].name) + " · " + esc(data.countries[c].authority) + "</td></tr>";
+        keys.forEach((k, i) => {
+          const s = ind[k]; rows++;
+          const p = pos[s.position] || ["–", ""];
+          const flag = (s.stale ? " *" : "") + (s.low_tests ? " †" : "");
+          html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(data.indicators[k].label) + flag + "</td>" +
+            '<td class="num">' + weekNo(s.week) + '</td><td class="num"><b>' + fmtVal(s.value, k) + "</b></td>" +
+            '<td class="num ' + cls(s.wow_pct) + '">' + pct(s.wow_pct) + "</td>" +
+            '<td class="num">' + fmtVal(s.hist_mean, k) + '</td><td class="num">' + fmtVal(s.hist_min, k) + "–" + fmtVal(s.hist_max, k) + "</td>" +
+            '<td class="num ' + cls(s.diff_pct) + '"><b>' + (s.index ?? "–") + "</b></td>" +
+            '<td><span class="pill ' + p[1] + '">' + p[0] + "</span></td><td>" + esc(s.intensity || "–") + "</td></tr>";
+        });
       });
     });
-    document.getElementById("indTable").innerHTML = html + "</tbody>";
+    if (!rows) html += '<tr><td colspan="9">No country currently reports these figures to ECDC.</td></tr>';
+    document.getElementById(id).innerHTML = html + "</tbody>";
   }
 
-  function renderSeasonToDate() {
-    const rows = ORDER.map((c) => data.summary[c] && data.summary[c].lab_cases).filter(Boolean);
+  function renderHospNote() {
+    const keys = keysIn("Hospital & severity");
+    const missing = ORDER.filter((c) => !keys.some((k) => data.summary[c] && data.summary[c][k]));
+    const parts = ["Shown where the national institute reports hospital, intensive care or death figures to ECDC each week."];
+    if (missing.length) {
+      parts.push("Not reported to ECDC this season: " + missing.map((c) => data.countries[c].name).join(", ") +
+        ". Their weekly hospital figures are published in the national reports: " +
+        missing.map((c) => link(data.countries[c].url, data.countries[c].authority)).join(", ") + ".");
+    }
+    document.getElementById("hospNote").innerHTML = parts.join(" ");
+  }
+
+  function renderSeasonToDate(id, key) {
+    const rows = ORDER.map((c) => data.summary[c] && data.summary[c][key]).filter(Boolean);
     if (!rows.length) return;
     const hist = Object.keys(rows[0].season_to_date_hist);
-    let html = '<thead><tr><th>Land</th><th class="num">' + esc(data.season) + "</th>" + hist.map((h) => '<th class="num">' + esc(h) + "</th>").join("") + '<th class="num">Indeks</th></tr></thead><tbody>';
+    let html = '<thead><tr><th>Country</th><th class="num">' + esc(data.season) + "</th>" + hist.map((h) => '<th class="num">' + esc(h) + "</th>").join("") + '<th class="num">Index</th></tr></thead><tbody>';
     ORDER.forEach((c, i) => {
-      const s = data.summary[c] && data.summary[c].lab_cases; if (!s) return;
+      const s = data.summary[c] && data.summary[c][key]; if (!s) return;
       html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(data.countries[c].name) + '</td><td class="num"><b>' + fmt(s.season_to_date) + "</b></td>" +
         hist.map((h) => '<td class="num">' + fmt(s.season_to_date_hist[h]) + "</td>").join("") +
         '<td class="num ' + cls((s.season_to_date_index ?? 100) - 100) + '"><b>' + (s.season_to_date_index ?? "–") + "</b></td></tr>";
     });
-    document.getElementById("stdTable").innerHTML = html + "</tbody>";
+    document.getElementById(id).innerHTML = html + "</tbody>";
   }
 
   function renderSubtypes() {
-    // Sequential single-hue steps: A subtypes in navy/purple shades, B in peach shades, untyped lightest.
-    const shades = { "A(H1N1)pdm09": "#110B36", "A(H3N2)": "#4B3FA8", "A (ikke subtypet)": "#a9a3d6", "B/Victoria": "#C8603A", "B (ikke typet)": "#F2B898" };
+    // Influenza A in navy/purple steps, B in coral steps, untyped lightest.
+    const shades = { "A(H1N1)pdm09": "#110B36", "A(H3N2)": "#4B3FA8", "A (not subtyped)": "#a9a3d6", "B/Victoria": "#C8603A", "B (not typed)": "#F2B898" };
     const box = document.getElementById("subtypes");
     box.replaceChildren();
     ORDER.forEach((c) => {
       const s = data.subtypes[c] && data.subtypes[c].season; if (!s) return;
       const total = Object.values(s).reduce((a, b) => a + b, 0);
-      box.append(el("div", { className: "label" }, esc(data.countries[c].name) + " · " + fmt(total) + " typede prøver"));
+      box.append(el("div", { className: "label" }, esc(data.countries[c].name) + " · " + fmt(total) + " positive samples"));
       const bar = el("div", { className: "stack" });
       Object.entries(s).filter(([, v]) => v > 0).forEach(([k, v]) => {
         const d = el("div");
         d.style.width = (v / total * 100) + "%";
-        d.style.background = shades[k];
-        d.title = k + ": " + fmt(v) + " (" + fmt(v / total * 100) + " %)";
+        d.style.background = shades[k] || "#999";
+        d.title = k + ": " + fmt(v) + " (" + fmt(v / total * 100) + "%)";
         bar.append(d);
       });
       box.append(bar);
     });
     box.append(el("div", { className: "legend" }, Object.entries(shades).map(([k, col]) =>
       '<span><i class="key band" style="background:' + col + '"></i>' + esc(k) + "</span>").join("")));
+  }
+
+  function renderSources() {
+    const src = data.source;
+    let html = "<dt>Dataset</dt><dd>" + link(src.url, src.name) + " – " + esc(src.publisher) + ". " + link(src.data, "Open weekly data (CSV)") + ".</dd>" +
+      "<dt>Reporting</dt><dd>" + esc(src.note) + "</dd>";
+    ORDER.forEach((c) => {
+      const k = data.countries[c];
+      html += "<dt>" + esc(k.name) + "</dt><dd>" + link(k.url, k.authority + " – weekly respiratory report") + " · " + link(k.data_url, "statistics") + "</dd>";
+    });
+    html += '<dt>Excel</dt><dd><a href="data/flutracker_latest.xlsx" download>Download this week&rsquo;s workbook</a> – overview, season curves, all weekly values, virus types and method.</dd>';
+    document.getElementById("sourceList").innerHTML = html;
   }
 })();
 </script>

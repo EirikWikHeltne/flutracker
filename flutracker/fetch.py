@@ -1,4 +1,4 @@
-"""Download ERVISS weekly data and keep the Nordic influenza rows."""
+"""Download ERVISS weekly data and keep the Nordic influenza and COVID-19 rows."""
 
 import io
 import time
@@ -6,7 +6,7 @@ import urllib.request
 
 import pandas as pd
 
-from .config import COUNTRIES, ERVISS_BASE, ERVISS_FILES
+from .config import COUNTRIES, ERVISS_BASE, ERVISS_FILES, PATHOGENS
 
 NORDIC = [c["erviss"] for c in COUNTRIES.values()]
 
@@ -30,7 +30,7 @@ def fetch_erviss(base=ERVISS_BASE):
         df = pd.read_csv(io.BytesIO(raw))
         df = df[df["countryname"].isin(NORDIC)]
         if "pathogen" in df.columns:
-            df = df[df["pathogen"] == "Influenza"]
+            df = df[df["pathogen"].isin(PATHOGENS)]
         df.insert(0, "file", name)
         frames.append(df)
     return pd.concat(frames, ignore_index=True)

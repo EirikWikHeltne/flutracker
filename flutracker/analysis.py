@@ -12,11 +12,14 @@ import pandas as pd
 
 from .config import (
     COUNTRIES,
+    GROUPS,
     INDICATORS,
     INTENSITY_LEVELS,
+    MAX_STALE_WEEKS,
     MIN_SENTINEL_TESTS,
     SEASON_START_WEEK,
     SENTINEL_EPIDEMIC_THRESHOLD,
+    SOURCE,
     SUBTYPE_LABELS,
     SUBTYPES,
 )
@@ -75,41 +78,48 @@ def _by_country(df):
     return out
 
 
+def _positivity(det, tests):
+    joined = pd.concat([det, tests], axis=1, keys=["d", "t"]).dropna()
+    joined = joined[joined["t"] > 0]
+    return None if joined.empty else (joined["d"] / joined["t"] * 100).round(1)
+
+
+def _total_rows(raw, file, pathogen):
+    """Rows for the pathogen total (influenza total, or SARS-CoV-2)."""
+    sub = "total" if pathogen == "Influenza" else pathogen
+    return _pick(raw, file, pathogentype=pathogen, pathogensubtype=sub)
+
+
 def extract_series(raw):
-    """Return {indicator: {country_code: Series indexed by 'YYYY-Www'}} plus sentinel test counts."""
-    flu_total = dict(pathogentype="Influenza", pathogensubtype="total")
-    lab = _pick(raw, "nonSentinelTestsDetections", age="total", **flu_total)
-    lab_det = _by_country(lab[lab["indicator"] == "detections"])
-    lab_tests = _by_country(lab[lab["indicator"] == "tests"])
-
-    positivity = {}
-    for code, det in lab_det.items():
-        tests = lab_tests.get(code)
-        if tests is None:
-            continue
-        joined = pd.concat([det, tests], axis=1, keys=["d", "t"]).dropna()
-        joined = joined[joined["t"] > 0]
-        if not joined.empty:
-            positivity[code] = (joined["d"] / joined["t"] * 100).round(1)
-
-    sent = _pick(raw, "sentinelTestsDetectionsPositivity", **flu_total)
-    ili = _pick(raw, "ILIARIRates", indicator="ILIconsultationrate", age="total")
-    sev = _pick(raw, "nonSentinelSeverity", pathogentype="Influenza", age="total")
-
-    series = {
-        "lab_cases": lab_det,
-        "lab_positivity": positivity,
-        "sentinel_positivity": _by_country(sent[sent["indicator"] == "positivity"]),
-        "ili_rate": _by_country(ili),
-        "icu": _by_country(sev[sev["indicator"] == "ICUadmissions"]),
-        "deaths": _by_country(sev[sev["indicator"] == "deaths"]),
-    }
-    sentinel_tests = _by_country(sent[sent["indicator"] == "tests"])
+    """Return ({indicator: {country: Series indexed by 'YYYY-Www'}}, {indicator: {country: sentinel tests}})."""
+    series, sentinel_tests = {}, {}
+    for key, meta in INDICATORS.items():
+        kind, *args = meta["spec"]
+        if kind in ("lab", "lab_pos"):
+            lab = _total_rows(raw, "nonSentinelTestsDetections", args[0])
+            lab = lab[lab["age"] == "total"]
+            det = _by_country(lab[lab["indicator"] == "detections"])
+            if kind == "lab":
+                series[key] = det
+            else:
+                tests = _by_country(lab[lab["indicator"] == "tests"])
+                pos = {c: _positivity(det[c], tests[c]) for c in det if c in tests}
+                series[key] = {c: s for c, s in pos.items() if s is not None}
+        elif kind == "sentinel_pos":
+            sent = _total_rows(raw, "sentinelTestsDetectionsPositivity", args[0])
+            series[key] = _by_country(sent[sent["indicator"] == "positivity"])
+            sentinel_tests[key] = _by_country(sent[sent["indicator"] == "tests"])
+        elif kind == "ili":
+            series[key] = _by_country(_pick(raw, "ILIARIRates", indicator="ILIconsultationrate", age="total"))
+        elif kind == "sari":
+            series[key] = _by_country(_pick(raw, "SARIRates", indicator="SARIrate", age="total"))
+        elif kind == "severity":
+            series[key] = _by_country(_pick(raw, "nonSentinelSeverity", pathogentype=args[0], indicator=args[1], age="total"))
     return series, sentinel_tests
 
 
 def latest_week(series):
-    return max(s.index.max() for by_c in series.values() for s in by_c.values())
+    return max(s.index.max() for key in ("flu_cases", "covid_cases") for s in series[key].values())
 
 
 # ---------------------------------------------------------- comparisons ----
@@ -192,7 +202,7 @@ def analyse_series(s, kind, cur_start, current_weeks, global_latest, tests=None)
     elif value < lo:
         position = "under"
     else:
-        position = "innenfor"
+        position = "within"
 
     summary = {
         "week": yw_str(year, week),
@@ -256,72 +266,90 @@ def subtype_breakdown(raw, cur_start, week):
 def fmt_num(v, decimals=0):
     if v is None:
         return "–"
-    s = f"{v:,.{decimals}f}"
-    return s.replace(",", " ").replace(".", ",")
+    return f"{v:,.{decimals}f}"
 
 
 def fmt_pct(v, signed=True):
     if v is None:
         return "–"
     sign = "+" if signed and v > 0 else ""
-    return f"{sign}{fmt_num(v, 0)} %".replace("-", "−")
+    return f"{sign}{v:,.0f}%".replace("-", "−")
+
+
+def _vs_history(s):
+    if not s.get("hist_mean"):
+        return ""
+    direction = "above" if s["diff_pct"] >= 0 else "below"
+    text = (f" That is {fmt_num(abs(s['diff_pct']))}% {direction} the average for the same week"
+            f" in the previous {s['n_seasons']} seasons (index {s['index']})")
+    if s["position"] == "over":
+        text += ", and higher than in any previous season"
+    elif s["position"] == "under":
+        text += ", and lower than in any previous season"
+    return text + "."
+
+
+def _case_sentence(name, s, what):
+    text = f"{name}: {fmt_num(s['value'])} {what} in week {parse_yw(s['week'])[1]}"
+    if s["wow_pct"] is not None:
+        text += f" ({fmt_pct(s['wow_pct'])} on the week before)"
+    return text + "." + _vs_history(s)
 
 
 def findings(result):
-    """Plain Norwegian sentences describing this week's situation."""
+    """Plain English sentences describing this week's situation."""
+    summary = result["summary"]
     out = []
     for code, c in COUNTRIES.items():
-        ind = result["summary"].get(code, {})
-        lab = ind.get("lab_cases")
-        if not lab:
-            continue
-        sentence = f"{c['name']}: {fmt_num(lab['value'])} laboratoriebekreftede tilfeller i uke {parse_yw(lab['week'])[1]}"
-        if lab["wow_pct"] is not None:
-            sentence += f" ({fmt_pct(lab['wow_pct'])} fra uka før)"
-        sentence += "."
-        if lab["hist_mean"]:
-            direction = "over" if lab["diff_pct"] >= 0 else "under"
-            sentence += (
-                f" Det er {fmt_num(abs(lab['diff_pct']))} % {direction} snittet for samme uke"
-                f" i de {lab['n_seasons']} foregående sesongene (indeks {lab['index']})"
-            )
-            if lab["position"] == "over":
-                sentence += ", og høyere enn i alle tidligere sesonger"
-            elif lab["position"] == "under":
-                sentence += ", og lavere enn i alle tidligere sesonger"
-            sentence += "."
-        if lab.get("intensity"):
-            sentence += f" Intensitet: {lab['intensity'].lower()}."
-        out.append(sentence)
+        s = summary.get(code, {}).get("flu_cases")
+        if s:
+            text = _case_sentence(c["name"], s, "lab-confirmed influenza cases")
+            if s.get("intensity"):
+                text += f" Intensity: {s['intensity'].lower()}."
+            out.append(text)
 
     for code, c in COUNTRIES.items():
-        sp = result["summary"].get(code, {}).get("sentinel_positivity")
+        sp = summary.get(code, {}).get("flu_sentinel")
         if sp and not sp.get("low_tests") and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD:
             out.append(
-                f"{c['name']} er over ECDCs epidemiske terskel: {fmt_num(sp['value'], 1)} % positive"
-                f" sentinel-prøver i uke {parse_yw(sp['week'])[1]}."
+                f"{c['name']} is above ECDC's epidemic threshold: {fmt_num(sp['value'], 1)}% of sentinel"
+                f" samples were positive for influenza in week {parse_yw(sp['week'])[1]}."
             )
 
-    ranked = [
-        (result["summary"][code]["lab_cases"]["index"], COUNTRIES[code]["name"])
-        for code in COUNTRIES
-        if result["summary"].get(code, {}).get("lab_cases", {}).get("index") is not None
-    ]
+    ranked = [(summary[c]["flu_cases"]["index"], COUNTRIES[c]["name"])
+              for c in COUNTRIES if summary.get(c, {}).get("flu_cases", {}).get("index") is not None]
     if len(ranked) > 1:
         top = max(ranked)
-        out.append(f"Høyest nivå mot historikk: {top[1]} (indeks {top[0]}, der 100 = historisk snitt).")
+        out.append(f"Highest influenza level against history: {top[1]} (index {top[0]}, where 100 = historical average).")
 
     totals = {}
     for code in COUNTRIES:
         for k, v in result["subtypes"].get(code, {}).get("season", {}).items():
             totals[k] = totals.get(k, 0) + v
-    typed = {k: v for k, v in totals.items() if "ikke" not in k}
+    typed = {k: v for k, v in totals.items() if "not " not in k}
     if sum(typed.values()) >= 10:
         dom = max(typed, key=typed.get)
         share = typed[dom] / sum(typed.values()) * 100
-        out.append(
-            f"Dominerende virus hittil i sesongen (subtypede prøver, alle tre land): {dom} ({fmt_num(share)} %)."
-        )
+        out.append(f"Dominant influenza virus so far this season (subtyped samples, all three countries): {dom} ({fmt_num(share)}%).")
+
+    covid = []
+    for code, c in COUNTRIES.items():
+        s = summary.get(code, {}).get("covid_cases")
+        if s:
+            idx = f", index {s['index']}" if s.get("index") is not None else ""
+            covid.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{idx})")
+    if covid:
+        out.append("COVID-19, lab-confirmed cases this week: " + "; ".join(covid) + ".")
+
+    hospital = []
+    for code, c in COUNTRIES.items():
+        for key, meta in INDICATORS.items():
+            s = summary.get(code, {}).get(key)
+            if meta["group"] == "Hospital & severity" and s:
+                label = meta["label"][0].lower() + meta["label"][1:]
+                hospital.append(f"{c['name']} {fmt_num(s['value'], meta['decimals'])} {label}")
+    if hospital:
+        out.append("Hospital and severity this week: " + "; ".join(hospital) + ".")
     return out
 
 
@@ -339,18 +367,14 @@ def analyse(raw, now=None):
         "latest_week": latest,
         "latest_week_start": week_monday(latest_year, latest_wk).isoformat(),
         "season": season_label(cur_start),
-        "season_weeks": [f"U{w}" for _, w in weeks],
+        "season_weeks": [f"W{w}" for _, w in weeks],
         "season_week_keys": [yw_str(*w) for w in weeks],
-        "countries": {k: {x: c[x] for x in ("name", "authority", "url")} for k, c in COUNTRIES.items()},
-        "indicators": INDICATORS,
+        "countries": {k: {x: c[x] for x in ("name", "authority", "url", "data_url")} for k, c in COUNTRIES.items()},
+        "indicators": {k: {x: v for x, v in m.items() if x != "spec"} for k, m in INDICATORS.items()},
+        "groups": GROUPS,
         "series": {},
         "summary": {},
-        "source": {
-            "name": "ECDC ERVISS – European Respiratory Virus Surveillance Summary",
-            "url": "https://erviss.org/",
-            "data": "https://github.com/EU-ECDC/Respiratory_viruses_weekly_data",
-            "note": "Data rapporteres ukentlig av FHI, Folkhälsomyndigheten og SSI til ECDC. Tallene kan bli revidert i etterkant.",
-        },
+        "source": SOURCE,
     }
 
     latest_dt = parse_yw(latest)
@@ -358,9 +382,9 @@ def analyse(raw, now=None):
         for code, s in series[key].items():
             # Skip indicators that a country has stopped reporting.
             last = parse_yw(s.index.max())
-            if (week_monday(*latest_dt) - week_monday(*last)).days > 8 * 7:
+            if (week_monday(*latest_dt) - week_monday(*last)).days > MAX_STALE_WEEKS * 7:
                 continue
-            tests = sentinel_tests.get(code) if key == "sentinel_positivity" else None
+            tests = sentinel_tests.get(key, {}).get(code)
             r = analyse_series(s, meta["kind"], cur_start, weeks, latest, tests)
             result["series"].setdefault(code, {})[key] = {"seasons": r["seasons"], "band": r["band"]}
             if r["summary"]:
