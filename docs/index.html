@@ -31,6 +31,7 @@
     --alt: #fdeee5;
     --pressed-bg: #110B36;
     --pressed-text: #ffffff;
+    --v-flu_a_cases: #110B36; --v-flu_b_cases: #9B3F96; --v-covid_cases: #E07B39; --v-rsv_cases: #008A7A;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -40,6 +41,7 @@
       --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
       --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
       --pressed-bg: #FAD7C2; --pressed-text: #110B36;
+      --v-flu_a_cases: #FAD7C2; --v-flu_b_cases: #D07ACB; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
     }
   }
   :root[data-theme="dark"] {
@@ -49,6 +51,7 @@
     --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
     --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
     --pressed-bg: #FAD7C2; --pressed-text: #110B36;
+    --v-flu_a_cases: #FAD7C2; --v-flu_b_cases: #D07ACB; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: Georgia, "Times New Roman", serif; line-height: 1.6; }
@@ -167,6 +170,15 @@
   </section>
 
   <section>
+    <p class="label">Last 12 months</p>
+    <h2 id="recentTitle">Lab-confirmed cases by virus</h2>
+    <div class="controls"><div class="seg" id="recentSeg" role="group" aria-label="Choose country or the Nordics"></div></div>
+    <div class="chart-box"><canvas id="recentChart" aria-label="Lab-confirmed cases by virus, last 52 weeks"></canvas></div>
+    <div class="legend" id="recentLegend"></div>
+    <p class="note" id="recentNote"></p>
+  </section>
+
+  <section>
     <p class="label">Season curve</p>
     <h2 id="chartTitle">This season against previous seasons</h2>
     <div class="controls">
@@ -281,10 +293,15 @@
   const ORDER = ["NO", "SE", "DK"];
   const CASES = { "Influenza": "flu_cases", "Influenza A": "flu_a_cases", "Influenza B": "flu_b_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
   const VIRUS_TEXT = { "Influenza": "influenza", "Influenza A": "influenza A", "Influenza B": "influenza B", "COVID-19": "COVID-19", "RSV": "RSV" };
-  const state = { country: "NO", indicator: "flu_cases", indexVirus: "Influenza", exCountry: "NO", exIndicator: "flu_cases" };
+  // Virus lines in the 12-month chart: label and dash pattern (so they differ without colour too).
+  const RECENT = {
+    flu_a_cases: ["Influenza A", []], flu_b_cases: ["Influenza B", [2, 3]],
+    covid_cases: ["COVID-19", [10, 5]], rsv_cases: ["RSV", [5, 4]],
+  };
+  const state = { recent: "ALL", country: "NO", indicator: "flu_cases", indexVirus: "Influenza", exCountry: "NO", exIndicator: "flu_cases" };
   // Mirrors config.INTENSITY_LEVELS: ratio below `limit` gets `label`.
   const INTENSITY = [[0.10, "Baseline"], [0.40, "Low"], [0.70, "Medium"], [1.00, "High"], [Infinity, "Very high"]];
-  let data, seasonChart, indexChart;
+  let data, seasonChart, indexChart, recentChart;
 
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
   document.getElementById("themeToggle").addEventListener("click", () => {
@@ -383,6 +400,14 @@
       b.addEventListener("click", () => { state.indexVirus = v; renderControls(); renderIndexChart(); });
       return b;
     }));
+
+    const rseg = document.getElementById("recentSeg");
+    rseg.replaceChildren(...["ALL", ...ORDER].filter((c) => c === "ALL" || data.recent.countries[c]).map((c) => {
+      const b = el("button", { type: "button" }, c === "ALL" ? "Nordics" : esc(data.countries[c].name));
+      b.setAttribute("aria-pressed", c === state.recent);
+      b.addEventListener("click", () => { state.recent = c; renderControls(); renderRecentChart(); });
+      return b;
+    }));
   }
 
   function baseOptions(yTitle) {
@@ -409,7 +434,30 @@
     };
   }
 
-  function renderCharts() { if (data && window.Chart) { renderSeasonChart(); renderIndexChart(); } }
+  function renderCharts() { if (data && window.Chart) { renderRecentChart(); renderSeasonChart(); renderIndexChart(); } }
+
+  function renderRecentChart() {
+    const rec = data.recent;
+    const values = state.recent === "ALL" ? rec.nordic : rec.countries[state.recent];
+    const keys = Object.keys(RECENT).filter((k) => values[k]);
+    const datasets = keys.map((k) => ({
+      label: RECENT[k][0], data: values[k], borderColor: css("--v-" + k), backgroundColor: css("--v-" + k),
+      borderDash: RECENT[k][1], borderWidth: 3, fill: false, spanGaps: false, tension: 0.2,
+    }));
+    const opts = baseOptions("Lab-confirmed cases");
+    opts.plugins.tooltip.callbacks = { label: (c) => " " + c.dataset.label + ": " + fmt(c.raw) };
+    const labels = rec.weeks.map((w) => w.replace("-W", "-"));
+    if (recentChart) recentChart.destroy();
+    recentChart = new Chart(document.getElementById("recentChart"), { type: "line", data: { labels, datasets }, options: opts });
+    const where = state.recent === "ALL" ? "Norway, Sweden and Denmark combined" : data.countries[state.recent].name;
+    document.getElementById("recentTitle").textContent = "Lab-confirmed cases by virus – " + where;
+    document.getElementById("recentLegend").innerHTML = keys.map((k) =>
+      '<span><svg width="28" height="6" aria-hidden="true"><line x1="0" y1="3" x2="28" y2="3" stroke="' + css("--v-" + k) +
+      '" stroke-width="3" stroke-dasharray="' + RECENT[k][1].join(" ") + '"/></svg>' + esc(RECENT[k][0]) + "</span>").join("");
+    document.getElementById("recentNote").textContent = "Weekly lab-confirmed cases, year-week " + labels[0] + " to " + labels[labels.length - 1] +
+      ". Gaps are weeks a country did not report to ECDC (Sweden pauses RSV reporting in summer)." +
+      (state.recent === "ALL" ? " The Nordic total is only shown for weeks in which all three countries reported." : "");
+  }
 
   function renderSeasonChart() {
     const s = data.series[state.country][state.indicator];

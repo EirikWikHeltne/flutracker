@@ -156,3 +156,25 @@ def test_intensity_explained_with_example():
     assert s["peak_mean"] == 20 and s["intensity"] == "Very high"
     example = emailer.intensity_example(result)
     assert "peaks of 10, 20 and 30 average 20" in example and "250%" in example and "very high" in example
+
+
+def test_recent_weeks_per_country_and_nordic():
+    raw = make_raw()
+    extra = rows("Sweden", "nonSentinelTestsDetections", {"2025-W41": 5}, indicator="detections", pathogen="SARS-CoV-2",
+                 pathogentype="SARS-CoV-2", pathogensubtype="SARS-CoV-2", age="total", survtype="non-sentinel")
+    result = analysis.analyse(pd.concat([raw, pd.DataFrame(extra)], ignore_index=True))
+    recent = result["recent"]
+    assert len(recent["weeks"]) == 52 and recent["weeks"][-1] == "2025-W41" and recent["weeks"][0] == "2024-W42"
+    assert recent["countries"]["NO"]["covid_cases"][-1] == 100
+    # Sweden reports only W41, so the Nordic sum exists for W41 and is left empty the week before.
+    assert recent["nordic"]["covid_cases"][-1] == 105 and recent["nordic"]["covid_cases"][-2] is None
+
+
+def test_influenza_type_missing_week_counts_as_zero():
+    raw = make_raw()
+    extra = rows("Norway", "nonSentinelTestsDetections", {"2025-W40": 3}, pathogen="Influenza", pathogentype="Influenza B",
+                 pathogensubtype="B/Vic", indicator="detections", age="total", survtype="non-sentinel")
+    result = analysis.analyse(pd.concat([raw, pd.DataFrame(extra)], ignore_index=True))
+    b = result["summary"]["NO"]["flu_b_cases"]
+    # Influenza was reported in W41 but no B row exists: that is 0 cases, not a missing week.
+    assert b["value"] == 0 and b["prev"] == 3 and b["week"] == "2025-W41"

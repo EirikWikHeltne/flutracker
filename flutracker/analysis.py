@@ -17,6 +17,8 @@ from .config import (
     INTENSITY_LEVELS,
     MAX_STALE_WEEKS,
     MIN_SENTINEL_TESTS,
+    RECENT_KEYS,
+    RECENT_WEEKS,
     SEASON_START_WEEK,
     SENTINEL_EPIDEMIC_THRESHOLD,
     SOURCE,
@@ -107,7 +109,13 @@ def extract_series(raw):
                 series[key] = {c: s for c, s in pos.items() if s is not None}
         elif kind in ("lab_type", "lab_type_pos"):
             typed = _pick(raw, "nonSentinelTestsDetections", pathogentype=args[0], indicator="detections", age="total")
-            det = _by_country(typed)
+            # ERVISS leaves out subtype rows with no detections, so a week in which the country
+            # reported influenza but nothing of this type counts as 0.
+            flu = _total_rows(raw, "nonSentinelTestsDetections", "Influenza")
+            flu = _by_country(flu[(flu["age"] == "total") & (flu["indicator"] == "detections")])
+            typed_by_country = _by_country(typed)
+            det = {c: typed_by_country.get(c, pd.Series(dtype=float)).reindex(f.index).fillna(0.0)
+                   for c, f in flu.items()}
             if kind == "lab_type":
                 series[key] = det
             else:
@@ -254,6 +262,34 @@ def _prev_week(year, week):
     if week > 1:
         return year, week - 1
     return year - 1, weeks_in_year(year - 1)
+
+
+def recent_weeks(series, latest, n=RECENT_WEEKS):
+    """Lab-confirmed cases per virus for the last `n` weeks, per country and summed for the Nordics.
+
+    The Nordic total is only given for weeks in which every country that reports the virus in
+    the period has a value, so a missing report never shows up as a dip.
+    """
+    weeks = [latest]
+    while len(weeks) < n:
+        weeks.insert(0, yw_str(*_prev_week(*parse_yw(weeks[0]))))
+    out = {"weeks": weeks, "countries": {}}
+    for code in COUNTRIES:
+        values = {}
+        for key in RECENT_KEYS:
+            s = series[key].get(code)
+            vals = [None if s is None or s.get(w) is None else float(s[w]) for w in weeks]
+            if any(v is not None for v in vals):
+                values[key] = vals
+        if values:
+            out["countries"][code] = values
+    nordic = {}
+    for key in RECENT_KEYS:
+        rows = [v[key] for v in out["countries"].values() if key in v]
+        if rows:
+            nordic[key] = [None if any(r[i] is None for r in rows) else sum(r[i] for r in rows) for i in range(n)]
+    out["nordic"] = nordic
+    return out
 
 
 def subtype_breakdown(raw, cur_start, week):
@@ -409,6 +445,7 @@ def analyse(raw, now=None):
             if r["summary"]:
                 result["summary"].setdefault(code, {})[key] = r["summary"]
 
+    result["recent"] = recent_weeks(series, latest)
     result["subtypes"] = subtype_breakdown(raw, cur_start, latest)
     result["findings"] = findings(result)
     return result

@@ -43,6 +43,14 @@ April 2026. The tracker shows any of these automatically as soon as they appear 
 reports in the meantime. History starts with the 2022/23 season. Norway's laboratory RSV figures start in 2024/25 (Sweden's RSV sentinel figures too), so those
 are compared with fewer seasons.
 
+### Last 12 months by virus
+
+The dashboard and the Excel sheet *Last 12 months* show weekly lab-confirmed cases of influenza A, influenza B,
+COVID-19 and RSV in one chart, for the last 52 weeks. The chart is shown for each country and for the Nordics combined.
+The Nordic total is only given for weeks in which all three countries reported. Weeks a country did not report (for
+example Sweden's RSV in summer) are left as gaps. ERVISS leaves out influenza type rows with no detections, so in a
+week where a country reported influenza, a missing A or B row counts as 0.
+
 ## How the comparison with history works
 
 * **Season:** week 40 to week 39.
