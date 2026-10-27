@@ -342,6 +342,51 @@ def _case_sentence(name, s, what):
     return text + "." + _vs_history(s)
 
 
+def _threshold_points(summary):
+    out = []
+    for code, c in COUNTRIES.items():
+        sp = summary.get(code, {}).get("flu_sentinel")
+        if sp and not sp.get("low_tests") and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD:
+            out.append(
+                f"{c['name']} is above ECDC's epidemic threshold: {fmt_num(sp['value'], 1)}% of sentinel"
+                f" samples were positive for influenza in week {parse_yw(sp['week'])[1]}."
+            )
+    return out
+
+
+def _ranking_points(summary):
+    ranked = [(summary[c]["flu_cases"]["index"], COUNTRIES[c]["name"])
+              for c in COUNTRIES if summary.get(c, {}).get("flu_cases", {}).get("index") is not None]
+    if len(ranked) < 2:
+        return []
+    top = max(ranked)
+    return [f"Highest influenza level against history: {top[1]} (index {top[0]}, where 100 = historical average)."]
+
+
+def _dominant_points(result):
+    totals = {}
+    for code in COUNTRIES:
+        for k, v in result["subtypes"].get(code, {}).get("season", {}).items():
+            totals[k] = totals.get(k, 0) + v
+    typed = {k: v for k, v in totals.items() if "not " not in k}
+    if sum(typed.values()) < 10:
+        return []
+    dom = max(typed, key=typed.get)
+    share = typed[dom] / sum(typed.values()) * 100
+    return [f"Dominant influenza virus so far this season (subtyped samples, all three countries): {dom} ({fmt_num(share)}%)."]
+
+
+def _hospital_points(summary):
+    hospital = []
+    for code, c in COUNTRIES.items():
+        for key, meta in INDICATORS.items():
+            s = summary.get(code, {}).get(key)
+            if meta["group"] == "Hospital & severity" and s:
+                label = meta["label"][0].lower() + meta["label"][1:]
+                hospital.append(f"{c['name']} {fmt_num(s['value'], meta['decimals'])} {label}")
+    return ["Hospital and severity this week: " + "; ".join(hospital) + "."] if hospital else []
+
+
 def findings(result):
     """Plain English sentences describing this week's situation."""
     summary = result["summary"]
@@ -354,29 +399,7 @@ def findings(result):
                 text += f" Intensity: {s['intensity'].lower()}."
             out.append(text)
 
-    for code, c in COUNTRIES.items():
-        sp = summary.get(code, {}).get("flu_sentinel")
-        if sp and not sp.get("low_tests") and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD:
-            out.append(
-                f"{c['name']} is above ECDC's epidemic threshold: {fmt_num(sp['value'], 1)}% of sentinel"
-                f" samples were positive for influenza in week {parse_yw(sp['week'])[1]}."
-            )
-
-    ranked = [(summary[c]["flu_cases"]["index"], COUNTRIES[c]["name"])
-              for c in COUNTRIES if summary.get(c, {}).get("flu_cases", {}).get("index") is not None]
-    if len(ranked) > 1:
-        top = max(ranked)
-        out.append(f"Highest influenza level against history: {top[1]} (index {top[0]}, where 100 = historical average).")
-
-    totals = {}
-    for code in COUNTRIES:
-        for k, v in result["subtypes"].get(code, {}).get("season", {}).items():
-            totals[k] = totals.get(k, 0) + v
-    typed = {k: v for k, v in totals.items() if "not " not in k}
-    if sum(typed.values()) >= 10:
-        dom = max(typed, key=typed.get)
-        share = typed[dom] / sum(typed.values()) * 100
-        out.append(f"Dominant influenza virus so far this season (subtyped samples, all three countries): {dom} ({fmt_num(share)}%).")
+    out += _threshold_points(summary) + _ranking_points(summary) + _dominant_points(result)
 
     split = []
     for code, c in COUNTRIES.items():
@@ -396,16 +419,85 @@ def findings(result):
         if parts:
             out.append(f"{name}, lab-confirmed cases this week: " + "; ".join(parts) + ".")
 
-    hospital = []
-    for code, c in COUNTRIES.items():
-        for key, meta in INDICATORS.items():
-            s = summary.get(code, {}).get(key)
-            if meta["group"] == "Hospital & severity" and s:
-                label = meta["label"][0].lower() + meta["label"][1:]
-                hospital.append(f"{c['name']} {fmt_num(s['value'], meta['decimals'])} {label}")
-    if hospital:
-        out.append("Hospital and severity this week: " + "; ".join(hospital) + ".")
+    return out + _hospital_points(summary)
+
+
+# ------------------------------------------------------ executive summary ----
+
+SNAPSHOT_KEYS = ["flu_cases", "flu_a_cases", "flu_b_cases", "covid_cases", "rsv_cases"]
+
+
+def nordic_total(result, key):
+    """This week's cases summed over the three countries, or None unless all reported this week."""
+    rows = [result["summary"].get(c, {}).get(key) for c in COUNTRIES]
+    if any(r is None or r["week"] != result["latest_week"] for r in rows):
+        return None
+    value = sum(r["value"] for r in rows)
+    prev = None if any(r["prev"] is None for r in rows) else sum(r["prev"] for r in rows)
+    mean = None if any(r["hist_mean"] is None for r in rows) else sum(r["hist_mean"] for r in rows)
+    return {"value": value, "prev": prev, "wow_pct": _pct(value, prev), "hist_mean": mean,
+            "index": None if not mean else round(value / mean * 100)}
+
+
+def _level_word(index):
+    if index is None:
+        return None
+    if index > 120:
+        return "above"
+    if index < 80:
+        return "below"
+    return "around"
+
+
+def _trend_word(wow):
+    if wow is None:
+        return "no change data"
+    if wow >= 10:
+        return f"up {fmt_num(wow)}%"
+    if wow <= -10:
+        return f"down {fmt_num(abs(wow))}%"
+    return "stable"
+
+
+def headline(result):
+    """Two or three short sentences for the top of the executive summary."""
+    summary = result["summary"]
+    out = []
+    flu = nordic_total(result, "flu_cases")
+    if flu:
+        text = (f"Influenza: {fmt_num(flu['value'])} lab-confirmed cases in the Nordics this week, "
+                f"{_trend_word(flu['wow_pct'])} on last week")
+        level = _level_word(flu["index"])
+        if level:
+            text += f" and {level} the usual level for the time of year (index {flu['index']})"
+        intensities = [summary[c]["flu_cases"].get("intensity") for c in COUNTRIES if summary.get(c, {}).get("flu_cases")]
+        intensities = [i for i in intensities if i]
+        if intensities:
+            order = [label for _, label in INTENSITY_LEVELS]
+            lo, hi = min(intensities, key=order.index), max(intensities, key=order.index)
+            text += f". Intensity is {lo.lower()}" + (f" to {hi.lower()}" if hi != lo else "")
+        out.append(text + ".")
+    above = [COUNTRIES[c]["name"] for c in COUNTRIES
+             if (sp := summary.get(c, {}).get("flu_sentinel")) and not sp.get("low_tests")
+             and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD]
+    if above:
+        out.append(f"{' and '.join(above)} {'is' if len(above) == 1 else 'are'} above ECDC's epidemic threshold.")
+    others = []
+    for key, name in (("covid_cases", "COVID-19"), ("rsv_cases", "RSV")):
+        n = nordic_total(result, key)
+        if n:
+            level = _level_word(n["index"])
+            others.append(f"{name} {fmt_num(n['value'])} cases ({_trend_word(n['wow_pct'])}"
+                          + (f", {level} usual" if level else "") + ")")
+    if others:
+        out.append("Nordics: " + "; ".join(others) + ".")
     return out
+
+
+def key_points(result):
+    """The few findings worth an executive's attention; the dashboard has the rest."""
+    summary = result["summary"]
+    return _ranking_points(summary) + _dominant_points(result) + _hospital_points(summary)
 
 
 # ----------------------------------------------------------------- main ----
@@ -448,4 +540,6 @@ def analyse(raw, now=None):
     result["recent"] = recent_weeks(series, latest)
     result["subtypes"] = subtype_breakdown(raw, cur_start, latest)
     result["findings"] = findings(result)
+    result["headline"] = headline(result)
+    result["key_points"] = key_points(result)
     return result
