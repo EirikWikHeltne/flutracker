@@ -4,8 +4,9 @@ A weekly status of influenza (A and B), COVID-19 and RSV in the Nordics, in Karo
 compared with previous seasons:
 
 * a **dashboard** (GitHub Pages, `docs/index.html`)
-* an **Outlook-compatible HTML e-mail** with the week's findings, downloadable from the dashboard
-  (`docs/data/email_latest.html`, archived in `reports/YYYY-Www.html`)
+* an **Outlook-compatible HTML e-mail**, downloadable from the dashboard (`docs/data/email_latest.html`, archived in
+  `reports/YYYY-Www.html`). It is a one-screen executive summary: a short headline, a virus × country snapshot with the
+  Nordic total, and the key points. The detail lives on the dashboard and in Excel
 * an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`),
   including a **sales tool** for correlation and forecasting
 

@@ -149,13 +149,11 @@ def test_rsv_and_influenza_types():
     assert "RSV" in emailer.render(result)
 
 
-def test_intensity_explained_with_example():
+def test_intensity_against_average_peak():
     result = analysis.analyse(make_raw())
     s = result["summary"]["NO"]["flu_cases"]
     # Peaks 10, 20 and 30 average 20; 50 / 20 = 250% of the average peak.
     assert s["peak_mean"] == 20 and s["intensity"] == "Very high"
-    example = emailer.intensity_example(result)
-    assert "peaks of 10, 20 and 30 average 20" in example and "250%" in example and "very high" in example
 
 
 def test_recent_weeks_per_country_and_nordic():
@@ -178,3 +176,12 @@ def test_influenza_type_missing_week_counts_as_zero():
     b = result["summary"]["NO"]["flu_b_cases"]
     # Influenza was reported in W41 but no B row exists: that is 0 cases, not a missing week.
     assert b["value"] == 0 and b["prev"] == 3 and b["week"] == "2025-W41"
+
+
+def test_email_is_executive_summary():
+    result = analysis.analyse(make_raw())
+    # Norway only reports here, so there is no Nordic total and no headline from it.
+    assert result["headline"] == [] and analysis.nordic_total(result, "flu_cases") is None
+    html = emailer.render(result)
+    assert "Snapshot" in html and "Influenza intensity" in html
+    assert "Season to date" not in html and "Hospital admissions" not in html
