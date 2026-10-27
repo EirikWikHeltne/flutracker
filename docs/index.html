@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nordic Flu Tracker</title>
-<meta name="description" content="Weekly influenza and COVID-19 status for Norway, Sweden and Denmark compared with previous seasons.">
+<meta name="description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
 <style>
   :root {
     --navy: #110B36;
@@ -133,7 +133,7 @@
   <div class="wrap banner-row">
     <div>
       <p class="eyebrow">Karo Healthcare Norway · Flu tracker</p>
-      <h1 id="title">Flu &amp; COVID-19 in the Nordics</h1>
+      <h1 id="title">Flu, COVID-19 &amp; RSV in the Nordics</h1>
       <p class="sub" id="subtitle">Loading data …</p>
     </div>
     <div class="actions">
@@ -201,10 +201,7 @@
     <section>
       <p class="label">Season to date</p>
       <h2>Cumulative lab-confirmed cases</h2>
-      <h3>Influenza</h3>
-      <div class="scroll"><table id="stdFlu"></table></div>
-      <h3>COVID-19</h3>
-      <div class="scroll"><table id="stdCovid"></table></div>
+      <div id="std"></div>
       <p class="note">From week 40 to the same week in each season.</p>
     </section>
     <section>
@@ -220,7 +217,7 @@
     <div class="downloads">
       <div class="dl">
         <h3>Excel workbook</h3>
-        <p>Overview, season curves, all weekly values and virus types &ndash; plus a <b>sales tool</b>: paste your weekly or monthly sales per country and the workbook calculates the correlation with every flu and COVID-19 indicator at lags of 0&ndash;8 weeks (0&ndash;3 months), and forecasts the next 12 weeks (3 months) from the driver you choose. Your sales stay in your copy of the file.</p>
+        <p>Overview, season curves, all weekly values and virus types &ndash; plus a <b>sales tool</b>: paste your weekly or monthly sales per country and the workbook calculates the correlation with every flu, COVID-19 and RSV indicator at lags of 0&ndash;8 weeks (0&ndash;3 months), and forecasts the next 12 weeks (3 months) from the driver you choose. Your sales stay in your copy of the file.</p>
         <a class="btn dark" href="data/flutracker_latest.xlsx" download>Download Excel</a>
       </div>
       <div class="dl">
@@ -246,7 +243,8 @@
 <script>
 (function () {
   const ORDER = ["NO", "SE", "DK"];
-  const CASES = { "Influenza": "flu_cases", "COVID-19": "covid_cases" };
+  const CASES = { "Influenza": "flu_cases", "Influenza A": "flu_a_cases", "Influenza B": "flu_b_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
+  const VIRUS_TEXT = { "Influenza": "influenza", "Influenza A": "influenza A", "Influenza B": "influenza B", "COVID-19": "COVID-19", "RSV": "RSV" };
   const state = { country: "NO", indicator: "flu_cases", indexVirus: "Influenza" };
   let data, seasonChart, indexChart;
 
@@ -281,7 +279,7 @@
     const start = new Date(data.latest_week_start + "T00:00:00");
     const end = new Date(start); end.setDate(end.getDate() + 6);
     const df = (d, o) => d.toLocaleDateString("en-GB", o);
-    document.getElementById("title").textContent = "Flu & COVID-19 in the Nordics – week " + weekNo(data.latest_week);
+    document.getElementById("title").textContent = "Flu, COVID-19 & RSV in the Nordics – week " + weekNo(data.latest_week);
     document.getElementById("subtitle").textContent =
       df(start, { day: "numeric", month: "short" }) + " – " + df(end, { day: "numeric", month: "short", year: "numeric" }) +
       " · Season " + data.season + " · Updated " + data.generated_at.slice(0, 10);
@@ -290,11 +288,10 @@
     document.getElementById("findings").replaceChildren(...data.findings.map((f) => el("li", {}, esc(f))));
     renderControls();
     renderCharts();
-    renderTable("indTable", ["Influenza", "COVID-19"]);
+    renderTable("indTable", ["Influenza", "COVID-19", "RSV"]);
     renderTable("hospTable", ["Hospital & severity"]);
     renderHospNote();
-    renderSeasonToDate("stdFlu", "flu_cases");
-    renderSeasonToDate("stdCovid", "covid_cases");
+    renderSeasonToDate();
     renderSubtypes();
     renderSources();
     document.getElementById("footer").textContent = "Karo Healthcare Norway · Flu tracker · Data up to " + data.latest_week;
@@ -302,14 +299,17 @@
 
   function renderTiles() {
     const tiles = ORDER.filter((c) => data.summary[c] && data.summary[c].flu_cases).map((c) => {
-      const s = data.summary[c].flu_cases, cv = data.summary[c].covid_cases;
+      const ind = data.summary[c], s = ind.flu_cases, cv = ind.covid_cases, rsv = ind.rsv_cases;
+      const val = (k) => ind[k] ? fmt(ind[k].value) : "–";
       return el("div", { className: "tile" },
         '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " · influenza</div>" +
         '<div class="big">' + fmt(s.value) + "</div>" +
         '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " week on week · positivity " +
         fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
         '<div class="foot"><span>Index <b>' + (s.index ?? "–") + "</b></span><span>Intensity <b>" + esc(s.intensity || "–") + "</b></span>" +
-        "<span>COVID-19 <b>" + (cv ? fmt(cv.value) : "–") + "</b></span><span>COVID index <b>" + (cv && cv.index != null ? cv.index : "–") + "</b></span></div>");
+        "<span>Flu A <b>" + val("flu_a_cases") + "</b></span><span>Flu B <b>" + val("flu_b_cases") + "</b></span>" +
+        "<span>COVID-19 <b>" + (cv ? fmt(cv.value) : "–") + "</b></span><span>COVID index <b>" + (cv && cv.index != null ? cv.index : "–") + "</b></span>" +
+        "<span>RSV <b>" + (rsv ? fmt(rsv.value) : "–") + "</b></span><span>RSV index <b>" + (rsv && rsv.index != null ? rsv.index : "–") + "</b></span></div>");
     });
     document.getElementById("tiles").replaceChildren(...tiles);
   }
@@ -412,7 +412,7 @@
     datasets.push({ label: "Historical average (100)", data: Array(n).fill(100), borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 1.5, pointRadius: 0, noTooltip: true });
     if (indexChart) indexChart.destroy();
     indexChart = new Chart(document.getElementById("indexChart"), { type: "line", data: { labels: data.season_weeks.slice(0, n), datasets }, options: baseOptions("Index") });
-    document.getElementById("indexTitle").textContent = "Weekly index – lab-confirmed " + (state.indexVirus === "Influenza" ? "influenza" : "COVID-19") + " cases";
+    document.getElementById("indexTitle").textContent = "Weekly index – lab-confirmed " + VIRUS_TEXT[state.indexVirus] + " cases";
     document.getElementById("indexLegend").innerHTML = ORDER.map((c) =>
       '<span><i class="key" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + "</span>").join("") +
       '<span><i class="key dash"></i>Historical average = 100</span>';
@@ -458,10 +458,22 @@
     document.getElementById("hospNote").innerHTML = parts.join(" ");
   }
 
-  function renderSeasonToDate(id, key) {
+  function renderSeasonToDate() {
+    const box = document.getElementById("std");
+    box.replaceChildren();
+    Object.entries(CASES).forEach(([virus, key]) => {
+      const table = el("table");
+      if (!seasonToDateTable(table, key)) return;
+      const wrap = el("div", { className: "scroll" });
+      wrap.append(table);
+      box.append(el("h3", {}, esc(virus)), wrap);
+    });
+  }
+
+  function seasonToDateTable(table, key) {
     const rows = ORDER.map((c) => data.summary[c] && data.summary[c][key]).filter(Boolean);
-    if (!rows.length) return;
-    const hist = Object.keys(rows[0].season_to_date_hist);
+    if (!rows.length) return false;
+    const hist = [...new Set(rows.flatMap((r) => Object.keys(r.season_to_date_hist)))].sort();
     let html = '<thead><tr><th>Country</th><th class="num">' + esc(data.season) + "</th>" + hist.map((h) => '<th class="num">' + esc(h) + "</th>").join("") + '<th class="num">Index</th></tr></thead><tbody>';
     ORDER.forEach((c, i) => {
       const s = data.summary[c] && data.summary[c][key]; if (!s) return;
@@ -469,7 +481,8 @@
         hist.map((h) => '<td class="num">' + fmt(s.season_to_date_hist[h]) + "</td>").join("") +
         '<td class="num ' + cls((s.season_to_date_index ?? 100) - 100) + '"><b>' + (s.season_to_date_index ?? "–") + "</b></td></tr>";
     });
-    document.getElementById(id).innerHTML = html + "</tbody>";
+    table.innerHTML = html + "</tbody>";
+    return true;
   }
 
   function renderSubtypes() {

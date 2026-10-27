@@ -94,7 +94,7 @@ def _overview(wb, result):
                "Hist. average", "Hist. min", "Hist. max", "Index", "Level vs history",
                "Avg. season peak", "Intensity", "Season to date", "Hist. season to date", "Season-to-date index"]
     width = len(headers) + 1
-    _banner(ws, "Flu & COVID-19 tracker – Norway, Sweden, Denmark", _week_label(result), width)
+    _banner(ws, "Flu, COVID-19 & RSV tracker – Norway, Sweden, Denmark", _week_label(result), width)
 
     r = 5
     _label(ws, r, 2, "Key findings this week")
@@ -170,7 +170,8 @@ def _curves(wb, result, key, title):
     codes = [c for c in COUNTRIES if key in result["series"].get(c, {})]
     if not codes:
         return
-    seasons = list(result["series"][codes[0]][key]["seasons"])
+    # Countries can have different histories (e.g. RSV), so take every season any of them has.
+    seasons = sorted({s for c in codes for s in result["series"][c][key]["seasons"]})
     prior, current = seasons[:-1], seasons[-1]
     block = len(seasons) + 4  # seasons + avg + min + max + index
     width = 2 + len(codes) * (block + 1)
@@ -200,7 +201,7 @@ def _curves(wb, result, key, title):
         for i in range(len(weeks)):
             r = hr + 1 + i
             for j, season in enumerate(seasons):
-                v = data[season][i]
+                v = data[season][i] if season in data else None
                 cell = ws.cell(r, col + j, v)
                 cell.number_format = fmt
                 cell.font = F_BOLD if season == current else F_BASE
@@ -378,7 +379,7 @@ def _sources(wb, result):
 
 
 SHEET_ORDER = [
-    "Overview", "Influenza curves", "COVID-19 curves",
+    "Overview", "Influenza curves", "Influenza A curves", "Influenza B curves", "COVID-19 curves", "RSV curves",
     "Sales input (weekly)", "Sales vs flu (weekly)", "Correlation (weekly)",
     "Sales input (monthly)", "Sales vs flu (monthly)", "Correlation (monthly)",
     "Weekly data", "Virus types", "Flu by week", "Flu by month", "Sources & method",
@@ -389,7 +390,10 @@ def build(result, path, sales_rows=None):
     wb = Workbook()
     _overview(wb, result)
     _curves(wb, result, "flu_cases", "Influenza curves")
+    _curves(wb, result, "flu_a_cases", "Influenza A curves")
+    _curves(wb, result, "flu_b_cases", "Influenza B curves")
     _curves(wb, result, "covid_cases", "COVID-19 curves")
+    _curves(wb, result, "rsv_cases", "RSV curves")
     _weekly_data(wb, result)
     _subtypes(wb, result)
     _sources(wb, result)

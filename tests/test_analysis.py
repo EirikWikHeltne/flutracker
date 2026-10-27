@@ -121,3 +121,29 @@ def test_month_assignment_uses_thursday():
     assert sales.month_of_week(2026, 1) == (2026, 1)   # Thu 1 Jan 2026
     assert sales.month_of_week(2025, 40) == (2025, 10)  # Thu 2 Oct 2025
     assert (2026, 1) in sales._weeks_in_month(2026, 1) and (2025, 53) not in sales._weeks_in_month(2026, 1)
+
+
+def test_rsv_and_influenza_types():
+    raw = make_raw()
+    rsv = dict(pathogen="RSV", pathogentype="RSV", pathogensubtype="RSV", age="total", survtype="non-sentinel")
+    typed = dict(pathogen="Influenza", age="total", survtype="non-sentinel", indicator="detections")
+    data = []
+    for start, base in [(2022, 10), (2023, 20), (2024, 30)]:
+        data += rows("Norway", "nonSentinelTestsDetections", season_values(start, base), indicator="detections", **rsv)
+        data += rows("Norway", "nonSentinelTestsDetections", season_values(start, 100), indicator="tests", **rsv)
+    current = {"2025-W40": 10, "2025-W41": 40}
+    data += rows("Norway", "nonSentinelTestsDetections", current, indicator="detections", **rsv)
+    data += rows("Norway", "nonSentinelTestsDetections", {k: 200 for k in current}, indicator="tests", **rsv)
+    # Influenza A is the sum of its subtypes; positivity is against all influenza tests (100 a week).
+    for sub, v in [("A(H1)pdm09", 20), ("A(H3)", 10), ("A (unknown)", 5)]:
+        data += rows("Norway", "nonSentinelTestsDetections", {"2025-W41": v}, pathogentype="Influenza A", pathogensubtype=sub, **typed)
+    data += rows("Norway", "nonSentinelTestsDetections", {"2025-W41": 15}, pathogentype="Influenza B", pathogensubtype="B/Vic", **typed)
+    result = analysis.analyse(pd.concat([raw, pd.DataFrame(data)], ignore_index=True))
+    no = result["summary"]["NO"]
+    assert no["rsv_cases"]["value"] == 40 and no["rsv_cases"]["hist_mean"] == 20 and no["rsv_cases"]["index"] == 200
+    assert no["rsv_positivity"]["value"] == 20.0
+    assert no["flu_a_cases"]["value"] == 35 and no["flu_a_positivity"]["value"] == 35.0
+    assert no["flu_b_cases"]["value"] == 15 and no["flu_b_positivity"]["value"] == 15.0
+    assert any(f.startswith("RSV, lab-confirmed") for f in result["findings"])
+    assert any(f.startswith("Influenza A and B") and "A 35, B 15" in f for f in result["findings"])
+    assert "RSV" in emailer.render(result)

@@ -1,6 +1,6 @@
-# Flu & COVID-19 tracker – Norway, Sweden and Denmark
+# Flu, COVID-19 & RSV tracker – Norway, Sweden and Denmark
 
-A weekly status of influenza and COVID-19 in the Nordics, in Karo Healthcare design. It is published three ways, each
+A weekly status of influenza (A and B), COVID-19 and RSV in the Nordics, in Karo Healthcare design. It is published three ways, each
 compared with previous seasons:
 
 * a **dashboard** (GitHub Pages, `docs/index.html`)
@@ -31,14 +31,17 @@ the full history is re-downloaded each week because recent weeks can be revised.
 |---|---|:-:|:-:|:-:|
 | Influenza | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
 | Influenza | Influenza-like illness (ILI) GP consultations per 100,000 | ✓ | – | ✓ |
+| Influenza | Influenza A and B separately: lab-confirmed cases and test positivity | ✓ | ✓ | ✓ |
 | Influenza | Virus types (A(H1N1), A(H3N2), B) | ✓ | ✓ | ✓ |
 | COVID-19 | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
+| RSV | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
 | Hospital & severity | Deaths with influenza / COVID-19 | – | ✓ | – |
 | Hospital & severity | Hospital admissions, ICU admissions, SARI hospitalisations | supported, shown when reported to ECDC |
 
 Norway and Denmark do not currently report hospital admissions to ECDC, and Sweden's ICU reporting has been paused since
 April 2026. The tracker shows any of these automatically as soon as they appear in ERVISS, and links to the national
-reports in the meantime. History starts with the 2022/23 season.
+reports in the meantime. History starts with the 2022/23 season. Norway's laboratory RSV figures start in 2024/25 (Sweden's RSV sentinel figures too), so those
+are compared with fewer seasons.
 
 ## How the comparison with history works
 
@@ -61,7 +64,7 @@ The workbook has a weekly and a monthly version of the same four sheets:
 | Sheet | What it does |
 |---|---|
 | **Sales input** | Yellow cells: paste sales per country (units or NOK), one row per week (`2025-W45`) or month (`2025-11`). |
-| **Correlation** | Pearson correlation of sales with every driver (flu cases, flu positivity, sentinel positivity, ILI, COVID-19 cases and positivity), at lags of 0–8 weeks or 0–3 months. Shows the best combination per country. |
+| **Correlation** | Pearson correlation of sales with every driver (flu cases, flu positivity, sentinel positivity, influenza A and B cases, ILI, COVID-19 cases and positivity, RSV cases and positivity), at lags of 0–8 weeks or 0–3 months. Shows the best combination per country. |
 | **Sales vs flu** | Pick a driver and lag per country. The sheet shows n, r, R², slope, intercept and standard error, and fits `sales = intercept + slope × driver`. It then forecasts the next 12 weeks or 3 months with a 95% band, plus a chart of sales against the fit. |
 | **Flu by week / month** | The drivers per country. Forecast periods use the historical average for that week × the **flu scenario** (100% = a normal season; e.g. 130% for a heavy season). |
 

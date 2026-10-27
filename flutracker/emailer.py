@@ -126,18 +126,23 @@ def kpi_tiles(result):
     cells = []
     for code, c in COUNTRIES.items():
         ind = result["summary"].get(code, {})
-        flu, cov = ind.get("flu_cases"), ind.get("covid_cases")
+        flu, cov, rsv = ind.get("flu_cases"), ind.get("covid_cases"), ind.get("rsv_cases")
+        flu_a, flu_b = ind.get("flu_a_cases"), ind.get("flu_b_cases")
         if not flu:
             continue
         cov_line = (f"COVID-19: <b>{fmt_num(cov['value'])}</b> cases &middot; index {cov['index'] if cov['index'] is not None else '–'}"
                     if cov else "COVID-19: –")
+        rsv_line = (f"RSV: <b>{fmt_num(rsv['value'])}</b> cases &middot; index {rsv['index'] if rsv['index'] is not None else '–'}"
+                    if rsv else "RSV: –")
+        ab_line = (f"Influenza A <b>{fmt_num(flu_a['value'] if flu_a else None)}</b> &middot; "
+                   f"B <b>{fmt_num(flu_b['value'] if flu_b else None)}</b>")
         cells.append(f"""
 <td width="33%" valign="top" style="padding:0 5px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:14px 16px 4px 16px; font-family:{FONT}; font-size:11px; color:{PEACH}; text-transform:uppercase; letter-spacing:2px;">{esc(c['name'])} &middot; influenza</td></tr>
     <tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:0 16px; font-family:{FONT}; font-size:30px; color:#ffffff; mso-line-height-rule:exactly; line-height:38px;">{fmt_num(flu['value'])}</td></tr>
     <tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:0 16px 14px 16px; font-family:{FONT}; font-size:12px; color:#ffffff;">lab-confirmed &middot; {fmt_pct(flu['wow_pct'])} week on week</td></tr>
-    <tr><td bgcolor="{PEACH}" style="background-color:{PEACH}; padding:10px 16px; font-family:{FONT}; font-size:12px; color:{NAVY};">Index vs history: <b>{flu['index'] if flu['index'] is not None else '–'}</b><br />Intensity: <b>{esc(flu.get('intensity') or '–')}</b><br />{cov_line}</td></tr>
+    <tr><td bgcolor="{PEACH}" style="background-color:{PEACH}; padding:10px 16px; font-family:{FONT}; font-size:12px; color:{NAVY};">Index vs history: <b>{flu['index'] if flu['index'] is not None else '–'}</b><br />Intensity: <b>{esc(flu.get('intensity') or '–')}</b><br />{ab_line}<br />{cov_line}<br />{rsv_line}</td></tr>
   </table>
 </td>""")
     return (f'<tr><td style="padding:0 40px;"><table role="presentation" width="100%" cellpadding="0" '
@@ -209,12 +214,14 @@ def indicator_table(result, group):
 
 
 def season_table(result, key):
-    rows, hist_labels = [], None
+    rows = []
+    # Countries can have different histories (e.g. RSV), so show every season any of them has.
+    hist_labels = sorted({h for code in COUNTRIES
+                          for h in result["summary"].get(code, {}).get(key, {}).get("season_to_date_hist", {})})
     for n, (code, c) in enumerate(COUNTRIES.items()):
         s = result["summary"].get(code, {}).get(key)
         if not s or "season_to_date" not in s:
             continue
-        hist_labels = hist_labels or list(s["season_to_date_hist"])
         bg, bgs = _shade(n)
         cells = "".join(f'<td{bg} style="padding:8px; text-align:right;{bgs}">{fmt_num(s["season_to_date_hist"].get(h))}</td>' for h in hist_labels)
         idx = s["season_to_date_index"]
@@ -295,7 +302,7 @@ def render(result, dashboard_url=None):
 <p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; Season {esc(result['season'])}</p>
 </td></tr>""",
         spacer(30),
-        row(f'<p style="margin:0;">Weekly status for influenza and COVID-19 in Norway, Sweden and Denmark. '
+        row(f'<p style="margin:0;">Weekly status for influenza (A and B), COVID-19 and RSV in Norway, Sweden and Denmark. '
             f'Each figure is compared with the same week in the {esc(hist_span)} seasons. '
             f'Index 100 means the same level as the historical average.</p>'),
         spacer(25),
@@ -320,6 +327,11 @@ def render(result, dashboard_url=None):
         divider(),
         spacer(25),
         row(label("COVID-19") + heading("COVID-19 against previous seasons") + indicator_table(result, "COVID-19")),
+        spacer(25),
+        row(label("RSV") + heading("RSV against previous seasons") + indicator_table(result, "RSV")),
+        spacer(25),
+        row(label("RSV season to date") + heading("Cumulative lab-confirmed RSV cases since week 40")
+            + season_table(result, "rsv_cases")),
         spacer(25),
         row(label("Hospital & severity") + heading("Hospital admissions, intensive care and deaths")
             + indicator_table(result, "Hospital & severity")),
