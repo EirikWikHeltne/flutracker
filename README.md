@@ -50,10 +50,38 @@ are compared with fewer seasons.
   (week 53 is compared with week 52).
 * **Index** = this week / historical average × 100 (100 = normal for the time of year).
 * **Level:** above the historical maximum, within the range, or below the historical minimum.
-* **Intensity:** this week against the average of previous season peaks: below 10% baseline, 10–40% low,
-  40–70% medium, 70–100% high, above 100% very high.
+* **Intensity:** this week against the average of previous season peaks (see below).
 * **Season to date:** cumulative cases since week 40, against previous seasons summed to the same week.
 * **Epidemic threshold:** sentinel positivity ≥ 10% (ECDC). Weeks with fewer than 20 sentinel samples are flagged.
+
+### Intensity
+
+Intensity shows how big this week is compared with the top of a typical season. It is calculated for every country
+and indicator:
+
+1. For each previous season (week 40 to 39) with at least 20 weeks of data, take the highest weekly value – that
+   season's peak.
+2. Average those peaks.
+3. Divide this week's value by the average peak.
+4. Classify the ratio:
+
+| Ratio of the average peak | Intensity |
+|---|---|
+| under 10% | Baseline |
+| 10% to under 40% | Low |
+| 40% to under 70% | Medium |
+| 70% to under 100% | High |
+| 100% or more | Very high |
+
+Example: 171 cases this week, with previous season peaks of 1,800, 2,400 and 1,950, gives an average peak of 2,050.
+171 / 2,050 = 8%, so intensity is *baseline*.
+
+The index and intensity answer different questions. The index compares with the **same week** in earlier seasons
+("is this normal for the time of year?"), intensity with the **season peaks** ("how close are we to a full epidemic?").
+Early in a season the index can be high while intensity is still baseline. With few previous seasons the average peak
+is less reliable (RSV in Norway rests on two). ECDC and the national institutes publish intensity levels with their
+own methods, so their labels can differ. The thresholds are `INTENSITY_LEVELS` in `flutracker/config.py`; the
+dashboard has a worked example for every indicator.
 
 In the Excel workbook, change, index, level, intensity and the historical average/min/max are live formulas.
 

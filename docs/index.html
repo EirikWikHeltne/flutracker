@@ -126,6 +126,15 @@
   @media (max-width: 600px) { .sources dl { grid-template-columns: 1fr; } .sources dd { margin-bottom: 8px; } }
   footer { color: var(--muted); font-size: 12px; padding: 10px 16px 30px; }
   .error { color: var(--up); }
+  .method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+  .method p { margin: 0 0 12px; }
+  .method ol { margin: 0 0 12px; padding-left: 20px; }
+  .method li { margin-bottom: 6px; }
+  .formula { font-size: 15px; padding: 10px 14px; background: var(--alt); margin: 0 0 14px; }
+  .example { border-top: 3px solid var(--peach); padding-top: 4px; }
+  .example h3 { margin-top: 10px; }
+  .example .controls { margin: 10px 0; }
+  tr.hit td { font-weight: bold; background: var(--alt); }
 </style>
 </head>
 <body>
@@ -149,7 +158,7 @@
     <p class="label">This week</p>
     <h2>Lab-confirmed cases</h2>
     <div class="tiles" id="tiles"></div>
-    <p class="note">Index 100 = the average for the same week in previous seasons. Intensity = this week against the average of previous season peaks.</p>
+    <p class="note">Index 100 = the average for the same week in previous seasons. Intensity = this week against the average of previous season peaks (<a href="#intensity">how intensity is calculated</a>).</p>
   </section>
 
   <section>
@@ -188,6 +197,33 @@
     <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
     <p class="note">* Latest reported week is older than the latest week in the dataset. † Fewer than 20 sentinel samples – interpret with care.</p>
+  </section>
+
+  <section id="intensity">
+    <p class="label">Method</p>
+    <h2>How intensity is calculated</h2>
+    <div class="method">
+      <div>
+        <p>Intensity answers the question <i>&ldquo;how big is this week compared with the top of a typical season?&rdquo;</i> It is calculated separately for every country and indicator:</p>
+        <ol>
+          <li>For each previous season (week 40 to week 39) with at least 20 weeks of data, find the <b>highest weekly value</b> &ndash; that season&rsquo;s peak.</li>
+          <li>Take the <b>average of those peaks</b>.</li>
+          <li>Divide <b>this week&rsquo;s value</b> by that average peak.</li>
+          <li>Place the result on the scale below.</li>
+        </ol>
+        <p class="formula">Intensity ratio = this week&rsquo;s value &divide; average peak of previous seasons</p>
+        <div class="scroll"><table id="intensityScale"></table></div>
+        <p class="note">Intensity is different from the <b>index</b>. The index compares this week with the <i>same week</i> in earlier seasons (&ldquo;is this normal for the time of year?&rdquo;). Intensity compares it with the <i>season peaks</i> (&ldquo;how close are we to a full epidemic?&rdquo;). Early in the season the index can be high while intensity is still baseline, because the numbers are small. The more previous seasons there are, the more reliable the average peak; for RSV in Norway it rests on two seasons only. ECDC and the national institutes publish their own intensity levels with other methods, so their labels can differ.</p>
+      </div>
+      <div class="example">
+        <h3>Worked example with this week&rsquo;s data</h3>
+        <div class="controls">
+          <div class="seg" id="exCountrySeg" role="group" aria-label="Choose country for the example"></div>
+          <select id="exIndicatorSel" aria-label="Choose indicator for the example"></select>
+        </div>
+        <div id="intensityExample"></div>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -233,7 +269,7 @@
     <p class="label">Sources &amp; method</p>
     <h2>Where the numbers come from</h2>
     <dl id="sourceList"></dl>
-    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Index = this week / historical average × 100. Intensity: below 10% of the average season peak = baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high. Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
+    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Index = this week / historical average × 100. Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
   </section>
 </main>
 
@@ -245,7 +281,9 @@
   const ORDER = ["NO", "SE", "DK"];
   const CASES = { "Influenza": "flu_cases", "Influenza A": "flu_a_cases", "Influenza B": "flu_b_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
   const VIRUS_TEXT = { "Influenza": "influenza", "Influenza A": "influenza A", "Influenza B": "influenza B", "COVID-19": "COVID-19", "RSV": "RSV" };
-  const state = { country: "NO", indicator: "flu_cases", indexVirus: "Influenza" };
+  const state = { country: "NO", indicator: "flu_cases", indexVirus: "Influenza", exCountry: "NO", exIndicator: "flu_cases" };
+  // Mirrors config.INTENSITY_LEVELS: ratio below `limit` gets `label`.
+  const INTENSITY = [[0.10, "Baseline"], [0.40, "Low"], [0.70, "Medium"], [1.00, "High"], [Infinity, "Very high"]];
   let data, seasonChart, indexChart;
 
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
@@ -292,6 +330,7 @@
     renderTable("hospTable", ["Hospital & severity"]);
     renderHospNote();
     renderSeasonToDate();
+    renderIntensity();
     renderSubtypes();
     renderSources();
     document.getElementById("footer").textContent = "Karo Healthcare Norway · Flu tracker · Data up to " + data.latest_week;
@@ -444,6 +483,61 @@
     });
     if (!rows) html += '<tr><td colspan="9">No country currently reports these figures to ECDC.</td></tr>';
     document.getElementById(id).innerHTML = html + "</tbody>";
+  }
+
+  function renderIntensity() {
+    let lo = 0, html = '<thead><tr><th>Intensity</th><th>This week as share of the average peak</th></tr></thead><tbody>';
+    INTENSITY.forEach(([hi, name], i) => {
+      const range = hi === Infinity ? "100% or more" : (lo ? fmt(lo * 100) + "% to under " : "Under ") + fmt(hi * 100) + "%";
+      html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(name) + "</td><td>" + range + "</td></tr>";
+      lo = hi;
+    });
+    document.getElementById("intensityScale").innerHTML = html + "</tbody>";
+    renderIntensityControls();
+    renderIntensityExample();
+  }
+
+  function renderIntensityControls() {
+    const has = (c, k) => data.summary[c] && data.summary[c][k] && data.summary[c][k].peak_mean;
+    const seg = document.getElementById("exCountrySeg");
+    seg.replaceChildren(...ORDER.map((c) => {
+      const b = el("button", { type: "button" }, esc(data.countries[c].name));
+      b.setAttribute("aria-pressed", c === state.exCountry);
+      b.addEventListener("click", () => { state.exCountry = c; renderIntensityControls(); renderIntensityExample(); });
+      return b;
+    }));
+    const available = Object.keys(data.indicators).filter((k) => has(state.exCountry, k));
+    if (!available.includes(state.exIndicator)) state.exIndicator = available[0];
+    const sel = document.getElementById("exIndicatorSel");
+    sel.replaceChildren(...data.groups.map((g) => {
+      const og = el("optgroup", { label: g });
+      keysIn(g).filter((k) => has(state.exCountry, k)).forEach((k) => {
+        const o = el("option", { value: k }, esc(data.indicators[k].label));
+        o.selected = k === state.exIndicator;
+        og.append(o);
+      });
+      return og;
+    }).filter((og) => og.children.length));
+    sel.onchange = () => { state.exIndicator = sel.value; renderIntensityExample(); };
+  }
+
+  function renderIntensityExample() {
+    const box = document.getElementById("intensityExample");
+    const k = state.exIndicator, s = k && data.summary[state.exCountry][k];
+    if (!s || !s.peak_mean) { box.innerHTML = '<p class="note">Not enough history to calculate intensity.</p>'; return; }
+    const meta = data.indicators[k];
+    const peaks = Object.entries(s.peaks);
+    const ratio = s.value / s.peak_mean;
+    let html = "<p><b>" + esc(data.countries[state.exCountry].name) + " &middot; " + esc(meta.label) + "</b></p>" +
+      '<p><b>Step 1.</b> Peak of each previous season:</p><div class="scroll"><table><thead><tr><th>Season</th><th class="num">Peak</th><th class="num">Peak week</th></tr></thead><tbody>' +
+      peaks.map(([season, p], i) => "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(season) + '</td><td class="num">' + fmtVal(p.value, k) + '</td><td class="num">' + p.week + "</td></tr>").join("") +
+      "</tbody></table></div>" +
+      '<p style="margin-top:12px"><b>Step 2.</b> Average peak = (' + peaks.map(([, p]) => fmtVal(p.value, k)).join(" + ") + ") &divide; " + peaks.length +
+      " = <b>" + fmtVal(s.peak_mean, k) + "</b></p>" +
+      "<p><b>Step 3.</b> Week " + weekNo(s.week) + ": " + fmtVal(s.value, k) + " &divide; " + fmtVal(s.peak_mean, k) + " = <b>" + fmt(ratio * 100) + "%</b> of the average peak</p>" +
+      "<p><b>Step 4.</b> " + fmt(ratio * 100) + "% falls in the band &rarr; intensity <b>" + esc(s.intensity || "–") + "</b></p>";
+    box.innerHTML = html;
+    document.querySelectorAll("#intensityScale tbody tr").forEach((tr, i) => tr.classList.toggle("hit", INTENSITY[i][1] === s.intensity));
   }
 
   function renderHospNote() {
