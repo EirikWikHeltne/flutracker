@@ -149,7 +149,8 @@ def _overview(wb, result):
     r += 2
     for note in [
         "Index = this week / historical average for the same ISO week × 100 (100 = normal for the time of year).",
-        "Intensity = this week / average of previous season peaks: <10% baseline, 10–40% low, 40–70% medium, 70–100% high, >100% very high.",
+        "Intensity = this week / average of previous season peaks: <10% baseline, 10–40% low, 40–70% medium, 70–100% high, "
+        ">100% very high. Column O holds the average peak; see 'Sources & method' for the full explanation.",
         "† fewer than 20 sentinel samples this week – interpret with care. Seasons run from week 40 to week 39.",
         f"Source: {SOURCE['name']}. {SOURCE['note']}",
     ]:
@@ -362,8 +363,18 @@ def _sources(wb, result):
         "(week 53 is compared with week 52).",
         "Index = this week / historical average × 100. 100 = normal for the time of year.",
         "Level: above the highest, below the lowest, or within the range of previous seasons for that week.",
-        "Intensity = this week / average of previous season peaks: <10% baseline, 10–40% low, 40–70% medium, "
-        "70–100% high, >100% very high.",
+        "Intensity – how big this week is compared with the top of a typical season. Calculated per country and indicator:",
+        "   1. For each previous season (week 40–39) with at least 20 weeks of data, take the highest weekly value: that season's peak.",
+        "   2. Average those peaks ('Avg. season peak' on the Overview sheet).",
+        "   3. Divide this week's value by the average peak.",
+        "   4. Under 10% = baseline, 10% to under 40% = low, 40% to under 70% = medium, 70% to under 100% = high, "
+        "100% or more = very high.",
+        "   Example: 171 cases this week and season peaks of 1,800, 2,400 and 1,950 give an average peak of 2,050; "
+        "171 / 2,050 = 8% → baseline.",
+        "   Intensity differs from the index: the index compares with the same week in earlier seasons (normal for the time "
+        "of year?), intensity with the season peaks (how close to a full epidemic?). Fewer previous seasons make the "
+        "average peak less reliable (RSV in Norway rests on two). ECDC and the national institutes use their own methods, "
+        "so their intensity labels can differ.",
         "Season to date = sum since week 40, compared with previous seasons summed to the same week.",
         "Indicators a country has not reported for more than 8 weeks are left out. Hospital admissions are only "
         "included where the national institute reports them to ECDC.",

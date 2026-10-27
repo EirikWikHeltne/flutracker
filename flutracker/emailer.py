@@ -342,8 +342,10 @@ def render(result, dashboard_url=None):
             f"Source: {link(src['url'], src['name'])} ({link(src['data'], 'open data')}), published by the "
             f"{esc(src['publisher'])}. {esc(src['note'])} National reports: {authorities}.<br /><br />"
             "Index = this week&rsquo;s value / average for the same ISO week in previous seasons &times; 100. "
-            "Intensity compares this week with the average of previous season peaks (&lt;10% baseline, "
-            "10&ndash;40% low, 40&ndash;70% medium, 70&ndash;100% high, &gt;100% very high). "
+            "Intensity: for each previous season we take the highest weekly value (the season peak) and average those "
+            "peaks; this week&rsquo;s value divided by that average peak gives the intensity (&lt;10% baseline, "
+            "10&ndash;40% low, 40&ndash;70% medium, 70&ndash;100% high, &ge;100% very high). "
+            f"{intensity_example(result)}"
             f"* = latest reported week is older than week {week}. "
             "&dagger; = fewer than 20 sentinel samples, interpret with care."
         ),
@@ -382,6 +384,20 @@ def render(result, dashboard_url=None):
 </html>
 """
     return entities(doc)
+
+
+def intensity_example(result):
+    """One worked intensity example from this week's data, for the footnote."""
+    for code, c in COUNTRIES.items():
+        s = result["summary"].get(code, {}).get("flu_cases")
+        if s and s.get("peak_mean") and s.get("intensity"):
+            vals = [fmt_num(p["value"]) for p in s["peaks"].values()]
+            peaks = ", ".join(vals[:-1]) + " and " + vals[-1] if len(vals) > 1 else vals[0]
+            return (f"Example: {esc(c['name'])} had {fmt_num(s['value'])} influenza cases this week; previous season "
+                    f"peaks of {peaks} average {fmt_num(s['peak_mean'])}, and {fmt_num(s['value'])} / "
+                    f"{fmt_num(s['peak_mean'])} = {fmt_num(s['value'] / s['peak_mean'] * 100)}% &rarr; "
+                    f"{esc(s['intensity'].lower())}. ")
+    return ""
 
 
 def plain_text(result):

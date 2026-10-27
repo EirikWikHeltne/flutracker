@@ -147,3 +147,12 @@ def test_rsv_and_influenza_types():
     assert any(f.startswith("RSV, lab-confirmed") for f in result["findings"])
     assert any(f.startswith("Influenza A and B") and "A 35, B 15" in f for f in result["findings"])
     assert "RSV" in emailer.render(result)
+
+
+def test_intensity_explained_with_example():
+    result = analysis.analyse(make_raw())
+    s = result["summary"]["NO"]["flu_cases"]
+    # Peaks 10, 20 and 30 average 20; 50 / 20 = 250% of the average peak.
+    assert s["peak_mean"] == 20 and s["intensity"] == "Very high"
+    example = emailer.intensity_example(result)
+    assert "peaks of 10, 20 and 30 average 20" in example and "250%" in example and "very high" in example
