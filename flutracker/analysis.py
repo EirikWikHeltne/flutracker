@@ -85,7 +85,7 @@ def _positivity(det, tests):
 
 
 def _total_rows(raw, file, pathogen):
-    """Rows for the pathogen total (influenza total, or SARS-CoV-2)."""
+    """Rows for the pathogen total (influenza total, SARS-CoV-2 or RSV)."""
     sub = "total" if pathogen == "Influenza" else pathogen
     return _pick(raw, file, pathogentype=pathogen, pathogensubtype=sub)
 
@@ -103,6 +103,16 @@ def extract_series(raw):
                 series[key] = det
             else:
                 tests = _by_country(lab[lab["indicator"] == "tests"])
+                pos = {c: _positivity(det[c], tests[c]) for c in det if c in tests}
+                series[key] = {c: s for c, s in pos.items() if s is not None}
+        elif kind in ("lab_type", "lab_type_pos"):
+            typed = _pick(raw, "nonSentinelTestsDetections", pathogentype=args[0], indicator="detections", age="total")
+            det = _by_country(typed)
+            if kind == "lab_type":
+                series[key] = det
+            else:
+                lab = _total_rows(raw, "nonSentinelTestsDetections", "Influenza")
+                tests = _by_country(lab[(lab["age"] == "total") & (lab["indicator"] == "tests")])
                 pos = {c: _positivity(det[c], tests[c]) for c in det if c in tests}
                 series[key] = {c: s for c, s in pos.items() if s is not None}
         elif kind == "sentinel_pos":
@@ -332,14 +342,23 @@ def findings(result):
         share = typed[dom] / sum(typed.values()) * 100
         out.append(f"Dominant influenza virus so far this season (subtyped samples, all three countries): {dom} ({fmt_num(share)}%).")
 
-    covid = []
+    split = []
     for code, c in COUNTRIES.items():
-        s = summary.get(code, {}).get("covid_cases")
-        if s:
-            idx = f", index {s['index']}" if s.get("index") is not None else ""
-            covid.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{idx})")
-    if covid:
-        out.append("COVID-19, lab-confirmed cases this week: " + "; ".join(covid) + ".")
+        a, b = (summary.get(code, {}).get(k) for k in ("flu_a_cases", "flu_b_cases"))
+        if a or b:
+            split.append(f"{c['name']} A {fmt_num(a['value'] if a else None)}, B {fmt_num(b['value'] if b else None)}")
+    if split:
+        out.append("Influenza A and B, lab-confirmed cases this week: " + "; ".join(split) + ".")
+
+    for key, name in (("covid_cases", "COVID-19"), ("rsv_cases", "RSV")):
+        parts = []
+        for code, c in COUNTRIES.items():
+            s = summary.get(code, {}).get(key)
+            if s:
+                idx = f", index {s['index']}" if s.get("index") is not None else ""
+                parts.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{idx})")
+        if parts:
+            out.append(f"{name}, lab-confirmed cases this week: " + "; ".join(parts) + ".")
 
     hospital = []
     for code, c in COUNTRIES.items():

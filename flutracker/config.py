@@ -12,7 +12,7 @@ ERVISS_FILES = [
     "nonSentinelSeverity",
     "activityFluTypeSubtype",
 ]
-PATHOGENS = ["Influenza", "SARS-CoV-2"]
+PATHOGENS = ["Influenza", "SARS-CoV-2", "RSV"]
 
 SOURCE = {
     "name": "ECDC – European Respiratory Virus Surveillance Summary (ERVISS)",
@@ -51,11 +51,13 @@ COUNTRIES = {
     },
 }
 
-GROUPS = ["Influenza", "COVID-19", "Hospital & severity"]
+GROUPS = ["Influenza", "COVID-19", "RSV", "Hospital & severity"]
 
 # spec says where the series comes from:
 #   ("lab", pathogen)            non-sentinel laboratory detections
+#   ("lab_type", type)           non-sentinel detections of "Influenza A" or "Influenza B" (all subtypes)
 #   ("lab_pos", pathogen)        detections / tests * 100
+#   ("lab_type_pos", type)       type detections / all influenza tests * 100
 #   ("sentinel_pos", pathogen)   sentinel GP positivity
 #   ("ili",)                     ILI consultations per 100 000
 #   ("sari",)                    SARI hospitalisations per 100 000
@@ -77,6 +79,26 @@ INDICATORS = {
         "label": "Influenza sentinel positivity (GPs)", "short": "Flu sentinel", "unit": "%",
         "description": "Share of positive samples from sentinel GPs. ECDC uses 10 % as the epidemic threshold.",
     },
+    "flu_a_cases": {
+        "group": "Influenza", "spec": ("lab_type", "Influenza A"), "kind": "count", "decimals": 0,
+        "label": "Lab-confirmed influenza A cases", "short": "Flu A cases", "unit": "cases",
+        "description": "Laboratory-confirmed influenza A cases per week, all subtypes (all non-sentinel testing).",
+    },
+    "flu_a_positivity": {
+        "group": "Influenza", "spec": ("lab_type_pos", "Influenza A"), "kind": "rate", "decimals": 1,
+        "label": "Influenza A test positivity", "short": "Flu A positivity", "unit": "%",
+        "description": "Share of all influenza tests that were positive for influenza A.",
+    },
+    "flu_b_cases": {
+        "group": "Influenza", "spec": ("lab_type", "Influenza B"), "kind": "count", "decimals": 0,
+        "label": "Lab-confirmed influenza B cases", "short": "Flu B cases", "unit": "cases",
+        "description": "Laboratory-confirmed influenza B cases per week, all lineages (all non-sentinel testing).",
+    },
+    "flu_b_positivity": {
+        "group": "Influenza", "spec": ("lab_type_pos", "Influenza B"), "kind": "rate", "decimals": 1,
+        "label": "Influenza B test positivity", "short": "Flu B positivity", "unit": "%",
+        "description": "Share of all influenza tests that were positive for influenza B.",
+    },
     "ili_rate": {
         "group": "Influenza", "spec": ("ili",), "kind": "rate", "decimals": 1,
         "label": "Influenza-like illness (ILI) consultations", "short": "ILI", "unit": "per 100,000",
@@ -96,6 +118,21 @@ INDICATORS = {
         "group": "COVID-19", "spec": ("sentinel_pos", "SARS-CoV-2"), "kind": "rate", "decimals": 1,
         "label": "COVID-19 sentinel positivity (GPs)", "short": "COVID sentinel", "unit": "%",
         "description": "Share of sentinel GP samples positive for SARS-CoV-2.",
+    },
+    "rsv_cases": {
+        "group": "RSV", "spec": ("lab", "RSV"), "kind": "count", "decimals": 0,
+        "label": "Lab-confirmed RSV cases", "short": "RSV cases", "unit": "cases",
+        "description": "Laboratory-confirmed respiratory syncytial virus (RSV) cases per week (all non-sentinel testing).",
+    },
+    "rsv_positivity": {
+        "group": "RSV", "spec": ("lab_pos", "RSV"), "kind": "rate", "decimals": 1,
+        "label": "RSV test positivity", "short": "RSV positivity", "unit": "%",
+        "description": "Share of all RSV tests that were positive.",
+    },
+    "rsv_sentinel": {
+        "group": "RSV", "spec": ("sentinel_pos", "RSV"), "kind": "rate", "decimals": 1,
+        "label": "RSV sentinel positivity (GPs)", "short": "RSV sentinel", "unit": "%",
+        "description": "Share of sentinel GP samples positive for RSV.",
     },
     "sari_rate": {
         "group": "Hospital & severity", "spec": ("sari",), "kind": "rate", "decimals": 1,

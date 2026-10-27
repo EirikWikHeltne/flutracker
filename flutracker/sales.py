@@ -26,7 +26,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from .analysis import parse_yw, week_monday, weeks_in_year, yw_str
 from .config import COUNTRIES, INDICATORS
 
-DRIVERS = ["flu_cases", "flu_positivity", "flu_sentinel", "ili_rate", "covid_cases", "covid_positivity"]
+DRIVERS = ["flu_cases", "flu_positivity", "flu_sentinel", "flu_a_cases", "flu_b_cases", "ili_rate",
+           "covid_cases", "covid_positivity", "rsv_cases", "rsv_positivity"]
 DEFAULT_DRIVER = "flu_cases"
 HR = 23  # header row of the row-aligned tables on every sales sheet
 FILL_INPUT = PatternFill("solid", fgColor="FFF4CC")
@@ -182,7 +183,7 @@ def build(wb, result, freq):
     flu = wb.create_sheet(names["flu"])
     cols = [(c, k) for c in codes for k in DRIVERS]
     flu_width = 4 + len(cols)
-    x._banner(flu, f"Flu & COVID-19 drivers by {cfg['unit']}", sub, flu_width)
+    x._banner(flu, f"Flu, COVID-19 & RSV drivers by {cfg['unit']}", sub, flu_width)
     flu.cell(5, 2, f"Used by the sales sheets. Reported {cfg['units']} come from ECDC ERVISS. Forecast {cfg['units']} hold "
                    f"the historical average for that {cfg['unit']} × the flu scenario set on '{names['fit']}'.").font = x.F_MUTED
     if freq == "month":

@@ -1,4 +1,4 @@
-"""Download ERVISS weekly data and keep the Nordic influenza and COVID-19 rows."""
+"""Download ERVISS weekly data and keep the Nordic influenza, COVID-19 and RSV rows."""
 
 import io
 import time
