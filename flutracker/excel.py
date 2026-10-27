@@ -9,13 +9,14 @@ import datetime as dt
 
 from openpyxl import Workbook
 from openpyxl.chart import LineChart, Reference
+from openpyxl.chart.series import SeriesLabel
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from . import sales
 from .analysis import parse_yw, week_monday
-from .config import COUNTRIES, INDICATORS, INTENSITY_LEVELS, SOURCE
+from .config import COUNTRIES, INDICATORS, INTENSITY_LEVELS, RECENT_KEYS, SOURCE
 
 NAVY = "110B36"
 PEACH = "FAD7C2"
@@ -254,6 +255,69 @@ def _curves(wb, result, key, title):
     ws.column_dimensions["C"].width = 13
 
 
+# ------------------------------------------------------ last 12 months ----
+
+RECENT_STYLE = {  # colour and dash per virus, as on the dashboard
+    "flu_a_cases": ("Influenza A", NAVY, "solid"),
+    "flu_b_cases": ("Influenza B", "9B3F96", "sysDot"),
+    "covid_cases": ("COVID-19", "E07B39", "lgDash"),
+    "rsv_cases": ("RSV", "008A7A", "dash"),
+}
+
+
+def _recent(wb, result):
+    rec = result["recent"]
+    areas = [("Nordics", rec["nordic"])] + [(COUNTRIES[c]["name"], v) for c, v in rec["countries"].items()]
+    ws = wb.create_sheet("Last 12 months")
+    width = 3 + len(areas) * len(RECENT_KEYS)
+    _banner(ws, "Lab-confirmed cases by virus – last 12 months", _week_label(result), width)
+    ws.cell(4, 2, "Weekly lab-confirmed cases per virus. Blank = not reported to ECDC that week. The Nordic total is "
+                  "only given for weeks in which all three countries reported.").font = F_MUTED
+
+    hr = 40  # charts above, table below
+    _header(ws, hr, 2, ["Week", "Week starting"] + [f"{name} – {RECENT_STYLE[k][0]}" for name, _ in areas for k in RECENT_KEYS])
+    for i, wk in enumerate(rec["weeks"]):
+        r = hr + 1 + i
+        ws.cell(r, 2, wk.replace("-W", "-")).font = F_BASE
+        d = ws.cell(r, 3, week_monday(*parse_yw(wk)))
+        d.number_format, d.font = "dd.mm.yyyy", F_BASE
+        for a, (_, values) in enumerate(areas):
+            for j, k in enumerate(RECENT_KEYS):
+                v = values.get(k, [None] * len(rec["weeks"]))[i]
+                cell = ws.cell(r, 4 + a * len(RECENT_KEYS) + j, v)
+                cell.number_format, cell.font = "#,##0", F_BASE
+        for c in range(2, width + 1):
+            ws.cell(r, c).border = LINE
+    last = hr + len(rec["weeks"])
+
+    cats = Reference(ws, min_col=2, min_row=hr + 1, max_row=last)
+    for a, (name, values) in enumerate(areas):
+        chart = LineChart()
+        chart.title = f"{name} – lab-confirmed cases"
+        chart.height, chart.width = 8, 16
+        chart.y_axis.title = "cases"
+        chart.legend.position = "b"
+        chart.display_blanks = "gap"
+        for j, k in enumerate(RECENT_KEYS):
+            if k not in values:
+                continue
+            col = 4 + a * len(RECENT_KEYS) + j
+            chart.add_data(Reference(ws, min_col=col, min_row=hr, max_row=last), titles_from_data=True)
+            series = chart.series[-1]
+            series.tx = SeriesLabel(v=RECENT_STYLE[k][0])
+            series.graphicalProperties.line.solidFill = RECENT_STYLE[k][1]
+            series.graphicalProperties.line.width = 28575
+            series.graphicalProperties.line.dashStyle = RECENT_STYLE[k][2]
+            series.smooth = False
+        chart.set_categories(cats)
+        ws.add_chart(chart, f"{'B' if a % 2 == 0 else 'K'}{6 + (a // 2) * 17}")
+    ws.freeze_panes = ws.cell(hr + 1, 4)
+    ws.column_dimensions["B"].width = 10
+    ws.column_dimensions["C"].width = 13
+    for c in range(4, width + 1):
+        ws.column_dimensions[get_column_letter(c)].width = 12
+
+
 # --------------------------------------------------------- weekly data ----
 
 def _weekly_data(wb, result):
@@ -390,7 +454,7 @@ def _sources(wb, result):
 
 
 SHEET_ORDER = [
-    "Overview", "Influenza curves", "Influenza A curves", "Influenza B curves", "COVID-19 curves", "RSV curves",
+    "Overview", "Last 12 months", "Influenza curves", "Influenza A curves", "Influenza B curves", "COVID-19 curves", "RSV curves",
     "Sales input (weekly)", "Sales vs flu (weekly)", "Correlation (weekly)",
     "Sales input (monthly)", "Sales vs flu (monthly)", "Correlation (monthly)",
     "Weekly data", "Virus types", "Flu by week", "Flu by month", "Sources & method",
@@ -400,6 +464,7 @@ SHEET_ORDER = [
 def build(result, path, sales_rows=None):
     wb = Workbook()
     _overview(wb, result)
+    _recent(wb, result)
     _curves(wb, result, "flu_cases", "Influenza curves")
     _curves(wb, result, "flu_a_cases", "Influenza A curves")
     _curves(wb, result, "flu_b_cases", "Influenza B curves")

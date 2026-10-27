@@ -180,6 +180,10 @@ SUBTYPE_LABELS = {
     "B (unknown)": "B (not typed)",
 }
 
+# Viruses shown together in the "last 12 months" chart, as in the national weekly reports.
+RECENT_KEYS = ["flu_a_cases", "flu_b_cases", "covid_cases", "rsv_cases"]
+RECENT_WEEKS = 52
+
 SEASON_START_WEEK = 40
 SENTINEL_EPIDEMIC_THRESHOLD = 10.0  # % positivity, ECDC convention
 MIN_SENTINEL_TESTS = 20  # below this, sentinel positivity is flagged as uncertain
