@@ -274,6 +274,8 @@ def recent_weeks(series, latest, n=RECENT_WEEKS):
     return out
 
 
+
+
 def yearly(series):
     """Weekly cases per calendar year (ISO weeks 1–53), per country and for the Nordics."""
     areas = {"ALL": nordic_series(series)}
@@ -285,9 +287,14 @@ def yearly(series):
         out["areas"][area] = {}
         for key, s in by_key.items():
             values = s.to_dict()
-            out["areas"][area][key] = {
+            per_year = {
                 str(y): [None if (v := values.get(yw_str(y, w))) is None else float(v) for w in range(1, 54)]
                 for y in years
+            }
+            out["areas"][area][key] = {
+                y: v for y, v in per_year.items()
+                # Leave out years that only start mid-year (e.g. 2022, when the data begins in June).
+                if int(y) == years[-1] or any(x is not None for x in v[:13])
             }
     return out
 
@@ -468,7 +475,7 @@ def headline(result):
 def key_points(result):
     """The few findings worth an executive's attention; the dashboard has the rest."""
     summary = result["summary"]
-    return _ranking_points(summary) + _dominant_points(result) + _hospital_points(summary)
+    return _threshold_points(summary) + _ranking_points(summary) + _dominant_points(result) + _hospital_points(summary)
 
 
 # ----------------------------------------------------------------- main ----
