@@ -167,7 +167,8 @@ def test_email_is_executive_summary():
     # Norway only reports here, so there is no Nordic total and no headline from it.
     assert result["headline"] == [] and "flu_cases" not in result["nordic"]
     html = emailer.render(result)
-    assert "Snapshot" in html and "How intensity is calculated" in html and "40&ndash;70%" in html
+    assert "This week in the Nordics" in html and "By country" in html and "How to read intensity" in html
+    assert "40&ndash;70%" in html and "mso-hide:all" in html  # intensity scale and inbox preview text
     assert emailer.chart_url(result) in html  # the year-by-year chart
     assert "idx" not in html and "index" not in html.lower()
     assert "Season to date" not in html and "Hospital admissions" not in html
