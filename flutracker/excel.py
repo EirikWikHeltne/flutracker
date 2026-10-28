@@ -276,6 +276,7 @@ def _recent(wb, result):
 
     hr = 40  # charts above, table below
     _header(ws, hr, 2, ["Week", "Week starting"] + [f"{name} – {RECENT_STYLE[k][0]}" for name, _ in areas for k in RECENT_KEYS])
+    ws.row_dimensions[hr].height = 52  # room for three wrapped lines ("Denmark – Influenza A")
     for i, wk in enumerate(rec["weeks"]):
         r = hr + 1 + i
         ws.cell(r, 2, wk.replace("-W", "-")).font = F_BASE
