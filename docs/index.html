@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nordic Flu Tracker</title>
 <meta name="description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
+<meta property="og:title" content="Nordic Flu Tracker">
+<meta property="og:description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
+<meta property="og:image" content="https://eirikwikheltne.github.io/flutracker/img/influenza-virus-960.jpg">
+<meta property="og:image:alt" content="Influenza A virus particles under the electron microscope">
 <style>
   :root {
     --navy: #110B36;
@@ -58,7 +62,15 @@
   a { color: inherit; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
   header.banner { background: var(--navy); color: #fff; padding: 36px 0 30px; }
-  .banner-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  header.banner { overflow: hidden; }
+  .banner-row { display: flex; justify-content: space-between; align-items: center; gap: 32px; }
+  .banner-row .actions { margin-top: 22px; }
+  .virus { margin: 0; flex: 0 0 auto; text-align: center; }
+  .virus img { display: block; width: 210px; height: 210px; border-radius: 50%; object-fit: cover; object-position: 42% 50%;
+               border: 4px solid var(--peach); box-shadow: 0 0 0 10px rgba(250, 215, 194, 0.12); background: #fff; }
+  .virus figcaption { margin-top: 12px; font-size: 11px; letter-spacing: 1px; color: var(--peach); opacity: .85; max-width: 210px; }
+  @media (max-width: 720px) { .virus img { width: 130px; height: 130px; } .virus figcaption { display: none; } }
+  @media (max-width: 520px) { .virus { display: none; } }
   .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--peach); margin: 0 0 10px; }
   h1 { font-weight: normal; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0; }
   .sub { margin: 10px 0 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--peach); }
@@ -75,7 +87,12 @@
   .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); font-size: 12px; }
   main { padding: 28px 0 40px; }
   section { background: var(--surface); padding: 28px clamp(16px, 3vw, 36px); margin-bottom: 20px; }
-  .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .ic { width: 16px; height: 16px; flex: 0 0 auto; vertical-align: -3px; }
+  .label .ic { width: 15px; height: 15px; color: var(--text); opacity: .7; }
+  .btn .ic { width: 17px; height: 17px; }
+  .dl h3 { display: flex; align-items: center; gap: 8px; }
+  .dl h3 .ic { width: 20px; height: 20px; }
+  .label { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
   h2 { font-weight: normal; font-size: 22px; margin: 0 0 14px; line-height: 1.3; }
   h3 { font-weight: normal; font-size: 17px; margin: 22px 0 8px; }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
@@ -141,36 +158,57 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2v.1h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-7 4 14 3-7h4"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></symbol>
+  <symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></symbol>
+  <symbol id="i-hospital" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 7.5v9M7.5 12h9"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+  <symbol id="i-virus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4M5.3 5.3l2.8 2.8M15.9 15.9l2.8 2.8M5.3 18.7l2.8-2.8M15.9 8.1l2.8-2.8"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5a1.5 1.5 0 0 0 1.5 1.5H20"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></symbol>
+  <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/></symbol>
+</svg>
 <header class="banner">
   <div class="wrap banner-row">
     <div>
       <p class="eyebrow">Karo Healthcare Norway · Flu tracker</p>
       <h1 id="title">Flu, COVID-19 &amp; RSV in the Nordics</h1>
       <p class="sub" id="subtitle">Loading data …</p>
+      <div class="actions">
+        <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Download Excel</a>
+        <a class="btn primary" id="emailBtn" href="data/email_latest.html" download="flutracker_email_latest.html"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>Download e-mail (HTML)</a>
+        <button class="btn ghost" id="themeToggle" type="button" aria-label="Switch light or dark mode"><svg class="ic" aria-hidden="true"><use href="#i-contrast"/></svg>Light / dark</button>
+      </div>
     </div>
-    <div class="actions">
-      <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download>Download Excel</a>
-      <a class="btn primary" id="emailBtn" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail (HTML)</a>
-      <button class="btn ghost" id="themeToggle" type="button" aria-label="Switch light or dark mode">Light / dark</button>
-    </div>
+    <figure class="virus">
+      <img src="img/influenza-virus-480.webp" srcset="img/influenza-virus-480.webp 480w, img/influenza-virus-960.webp 960w"
+           sizes="210px" width="210" height="210" alt="Influenza A virus particles under the electron microscope">
+      <figcaption>Influenza A virus particles, electron microscope</figcaption>
+    </figure>
   </div>
 </header>
 
 <main class="wrap">
   <section>
-    <p class="label">This week</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>This week</p>
     <h2>Lab-confirmed cases</h2>
     <div class="tiles" id="tiles"></div>
     <p class="note">Index 100 = the average for the same week in previous seasons. Intensity = this week against the average of previous season peaks (<a href="#intensity">how intensity is calculated</a>).</p>
   </section>
 
   <section>
-    <p class="label">Key findings</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Key findings</p>
     <ul class="findings" id="findings"></ul>
   </section>
 
   <section>
-    <p class="label">Last 12 months</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Last 12 months</p>
     <h2 id="recentTitle">Lab-confirmed cases by virus</h2>
     <div class="controls"><div class="seg" id="recentSeg" role="group" aria-label="Choose country or the Nordics"></div></div>
     <div class="chart-box"><canvas id="recentChart" aria-label="Lab-confirmed cases by virus, last 52 weeks"></canvas></div>
@@ -179,7 +217,7 @@
   </section>
 
   <section>
-    <p class="label">Season curve</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg>Season curve</p>
     <h2 id="chartTitle">This season against previous seasons</h2>
     <div class="controls">
       <div class="seg" id="countrySeg" role="group" aria-label="Choose country"></div>
@@ -196,7 +234,7 @@
   </section>
 
   <section>
-    <p class="label">Against history</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Against history</p>
     <h2 id="indexTitle">Weekly index – lab-confirmed cases</h2>
     <div class="controls"><div class="seg" id="indexSeg" role="group" aria-label="Choose virus"></div></div>
     <div class="chart-box short"><canvas id="indexChart" aria-label="Index against history per country"></canvas></div>
@@ -205,14 +243,14 @@
   </section>
 
   <section>
-    <p class="label">All indicators</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>All indicators</p>
     <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
     <p class="note">* Latest reported week is older than the latest week in the dataset. † Fewer than 20 sentinel samples – interpret with care.</p>
   </section>
 
   <section id="intensity">
-    <p class="label">Method</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-thermo"/></svg>Method</p>
     <h2>How intensity is calculated</h2>
     <div class="method">
       <div>
@@ -239,7 +277,7 @@
   </section>
 
   <section>
-    <p class="label">Hospital &amp; severity</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-hospital"/></svg>Hospital &amp; severity</p>
     <h2>Hospital admissions, intensive care and deaths</h2>
     <div class="scroll"><table id="hospTable"></table></div>
     <p class="note" id="hospNote"></p>
@@ -247,29 +285,29 @@
 
   <div class="grid2">
     <section>
-      <p class="label">Season to date</p>
+      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg>Season to date</p>
       <h2>Cumulative lab-confirmed cases</h2>
       <div id="std"></div>
       <p class="note">From week 40 to the same week in each season.</p>
     </section>
     <section>
-      <p class="label">Influenza virus types</p>
+      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-virus"/></svg>Influenza virus types</p>
       <h2>Share so far this season</h2>
       <div id="subtypes"></div>
     </section>
   </div>
 
   <section>
-    <p class="label">Downloads</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Downloads</p>
     <h2>Take this week&rsquo;s numbers with you</h2>
     <div class="downloads">
       <div class="dl">
-        <h3>Excel workbook</h3>
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>Excel workbook</h3>
         <p>Overview, season curves, all weekly values and virus types &ndash; plus a <b>sales tool</b>: paste your weekly or monthly sales per country and the workbook calculates the correlation with every flu, COVID-19 and RSV indicator at lags of 0&ndash;8 weeks (0&ndash;3 months), and forecasts the next 12 weeks (3 months) from the driver you choose. Your sales stay in your copy of the file.</p>
         <a class="btn dark" href="data/flutracker_latest.xlsx" download>Download Excel</a>
       </div>
       <div class="dl">
-        <h3>E-mail (HTML)</h3>
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>E-mail (HTML)</h3>
         <p>A one-screen executive summary in Karo design: the week in three sentences, a snapshot of every virus per country and for the Nordics, and the points worth knowing. Outlook-ready &ndash; open it in a browser, or attach / insert it in Outlook to forward the update.</p>
         <a class="btn dark" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail</a>
         <a class="btn outline" href="data/email_latest.html" target="_blank" rel="noopener">Preview</a>
@@ -278,7 +316,7 @@
   </section>
 
   <section class="sources">
-    <p class="label">Sources &amp; method</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Sources &amp; method</p>
     <h2>Where the numbers come from</h2>
     <dl id="sourceList"></dl>
     <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Index = this week / historical average × 100. Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
@@ -658,6 +696,8 @@
       const k = data.countries[c];
       html += "<dt>" + esc(k.name) + "</dt><dd>" + link(k.url, k.authority + " – weekly respiratory report") + " · " + link(k.data_url, "statistics") + "</dd>";
     });
+    html += "<dt>Image</dt><dd>Coloured transmission electron micrograph of influenza A virus particles. " +
+      link("https://phil.cdc.gov/", "CDC Public Health Image Library") + " (public domain).</dd>";
     html += '<dt>Downloads</dt><dd><a href="data/flutracker_latest.xlsx" download>Excel workbook with sales tool</a> · <a href="data/email_latest.html" download="flutracker_email_latest.html">E-mail (HTML)</a></dd>';
     document.getElementById("sourceList").innerHTML = html;
   }
