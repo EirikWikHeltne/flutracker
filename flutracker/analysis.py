@@ -107,22 +107,6 @@ def extract_series(raw):
                 tests = _by_country(lab[lab["indicator"] == "tests"])
                 pos = {c: _positivity(det[c], tests[c]) for c in det if c in tests}
                 series[key] = {c: s for c, s in pos.items() if s is not None}
-        elif kind in ("lab_type", "lab_type_pos"):
-            typed = _pick(raw, "nonSentinelTestsDetections", pathogentype=args[0], indicator="detections", age="total")
-            # ERVISS leaves out subtype rows with no detections, so a week in which the country
-            # reported influenza but nothing of this type counts as 0.
-            flu = _total_rows(raw, "nonSentinelTestsDetections", "Influenza")
-            flu = _by_country(flu[(flu["age"] == "total") & (flu["indicator"] == "detections")])
-            typed_by_country = _by_country(typed)
-            det = {c: typed_by_country.get(c, pd.Series(dtype=float)).reindex(f.index).fillna(0.0)
-                   for c, f in flu.items()}
-            if kind == "lab_type":
-                series[key] = det
-            else:
-                lab = _total_rows(raw, "nonSentinelTestsDetections", "Influenza")
-                tests = _by_country(lab[(lab["age"] == "total") & (lab["indicator"] == "tests")])
-                pos = {c: _positivity(det[c], tests[c]) for c in det if c in tests}
-                series[key] = {c: s for c, s in pos.items() if s is not None}
         elif kind == "sentinel_pos":
             sent = _total_rows(raw, "sentinelTestsDetectionsPositivity", args[0])
             series[key] = _by_country(sent[sent["indicator"] == "positivity"])
@@ -231,12 +215,11 @@ def analyse_series(s, kind, cur_start, current_weeks, global_latest, tests=None)
         "hist_min": lo,
         "hist_max": hi,
         "hist_by_season": {k: v[i] for k, v in seasons.items()},
-        "index": None if not mean else round(value / mean * 100),
-        "diff_pct": _pct(value, mean),
         "position": position,
         "peak_mean": None if peak_mean is None else round(peak_mean, 1),
         "peaks": {k: {"value": p, "week": w} for k, p, w in zip(seasons, peaks, peak_weeks)},
         "intensity": classify_intensity(value, peak_mean),
+        "intensity_pct": None if not peak_mean else round(value / peak_mean * 100),
         "stale": yw_str(year, week) != global_latest,
         "n_seasons": len(hist),
     }
@@ -248,7 +231,6 @@ def analyse_series(s, kind, cur_start, current_weeks, global_latest, tests=None)
             "season_to_date": cum,
             "season_to_date_hist": hist_cum,
             "season_to_date_mean": None if cum_mean is None else round(cum_mean, 1),
-            "season_to_date_index": None if not cum_mean else round(cum / cum_mean * 100),
         })
     if tests is not None:
         t = tests.get(yw_str(year, week))
@@ -292,6 +274,24 @@ def recent_weeks(series, latest, n=RECENT_WEEKS):
     return out
 
 
+def yearly(series):
+    """Weekly cases per calendar year (ISO weeks 1–53), per country and for the Nordics."""
+    areas = {"ALL": nordic_series(series)}
+    for code in COUNTRIES:
+        areas[code] = {k: series[k][code] for k in RECENT_KEYS if code in series[k]}
+    years = sorted({int(w[:4]) for a in areas.values() for s in a.values() for w in s.index})
+    out = {"years": years, "weeks": list(range(1, 54)), "areas": {}}
+    for area, by_key in areas.items():
+        out["areas"][area] = {}
+        for key, s in by_key.items():
+            values = s.to_dict()
+            out["areas"][area][key] = {
+                str(y): [None if (v := values.get(yw_str(y, w))) is None else float(v) for w in range(1, 54)]
+                for y in years
+            }
+    return out
+
+
 def subtype_breakdown(raw, cur_start, week):
     df = _pick(raw, "activityFluTypeSubtype", survtype="non-sentinel", indicator="detections", age="total")
     season = {yw_str(*w) for w in season_weeks(cur_start)}
@@ -322,24 +322,17 @@ def fmt_pct(v, signed=True):
     return f"{sign}{v:,.0f}%".replace("-", "−")
 
 
-def _vs_history(s):
-    if not s.get("hist_mean"):
+def _intensity_text(s):
+    if not s.get("intensity"):
         return ""
-    direction = "above" if s["diff_pct"] >= 0 else "below"
-    text = (f" That is {fmt_num(abs(s['diff_pct']))}% {direction} the average for the same week"
-            f" in the previous {s['n_seasons']} seasons (index {s['index']})")
-    if s["position"] == "over":
-        text += ", and higher than in any previous season"
-    elif s["position"] == "under":
-        text += ", and lower than in any previous season"
-    return text + "."
+    return f" Intensity: {s['intensity'].lower()} ({fmt_num(s['intensity_pct'])}% of an average season peak)."
 
 
 def _case_sentence(name, s, what):
     text = f"{name}: {fmt_num(s['value'])} {what} in week {parse_yw(s['week'])[1]}"
     if s["wow_pct"] is not None:
         text += f" ({fmt_pct(s['wow_pct'])} on the week before)"
-    return text + "." + _vs_history(s)
+    return text + "." + _intensity_text(s)
 
 
 def _threshold_points(summary):
@@ -355,12 +348,12 @@ def _threshold_points(summary):
 
 
 def _ranking_points(summary):
-    ranked = [(summary[c]["flu_cases"]["index"], COUNTRIES[c]["name"])
-              for c in COUNTRIES if summary.get(c, {}).get("flu_cases", {}).get("index") is not None]
+    ranked = [(summary[c]["flu_cases"]["intensity_pct"], COUNTRIES[c]["name"])
+              for c in COUNTRIES if summary.get(c, {}).get("flu_cases", {}).get("intensity_pct") is not None]
     if len(ranked) < 2:
         return []
     top = max(ranked)
-    return [f"Highest influenza level against history: {top[1]} (index {top[0]}, where 100 = historical average)."]
+    return [f"Highest influenza level: {top[1]}, at {fmt_num(top[0])}% of an average season peak."]
 
 
 def _dominant_points(result):
@@ -394,28 +387,17 @@ def findings(result):
     for code, c in COUNTRIES.items():
         s = summary.get(code, {}).get("flu_cases")
         if s:
-            text = _case_sentence(c["name"], s, "lab-confirmed influenza cases")
-            if s.get("intensity"):
-                text += f" Intensity: {s['intensity'].lower()}."
-            out.append(text)
+            out.append(_case_sentence(c["name"], s, "lab-confirmed influenza cases"))
 
     out += _threshold_points(summary) + _ranking_points(summary) + _dominant_points(result)
-
-    split = []
-    for code, c in COUNTRIES.items():
-        a, b = (summary.get(code, {}).get(k) for k in ("flu_a_cases", "flu_b_cases"))
-        if a or b:
-            split.append(f"{c['name']} A {fmt_num(a['value'] if a else None)}, B {fmt_num(b['value'] if b else None)}")
-    if split:
-        out.append("Influenza A and B, lab-confirmed cases this week: " + "; ".join(split) + ".")
 
     for key, name in (("covid_cases", "COVID-19"), ("rsv_cases", "RSV")):
         parts = []
         for code, c in COUNTRIES.items():
             s = summary.get(code, {}).get(key)
             if s:
-                idx = f", index {s['index']}" if s.get("index") is not None else ""
-                parts.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{idx})")
+                level = f", {s['intensity'].lower()}" if s.get("intensity") else ""
+                parts.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{level})")
         if parts:
             out.append(f"{name}, lab-confirmed cases this week: " + "; ".join(parts) + ".")
 
@@ -424,29 +406,20 @@ def findings(result):
 
 # ------------------------------------------------------ executive summary ----
 
-SNAPSHOT_KEYS = ["flu_cases", "flu_a_cases", "flu_b_cases", "covid_cases", "rsv_cases"]
+SNAPSHOT_KEYS = RECENT_KEYS
 
 
-def nordic_total(result, key):
-    """This week's cases summed over the three countries, or None unless all reported this week."""
-    rows = [result["summary"].get(c, {}).get(key) for c in COUNTRIES]
-    if any(r is None or r["week"] != result["latest_week"] for r in rows):
-        return None
-    value = sum(r["value"] for r in rows)
-    prev = None if any(r["prev"] is None for r in rows) else sum(r["prev"] for r in rows)
-    mean = None if any(r["hist_mean"] is None for r in rows) else sum(r["hist_mean"] for r in rows)
-    return {"value": value, "prev": prev, "wow_pct": _pct(value, prev), "hist_mean": mean,
-            "index": None if not mean else round(value / mean * 100)}
-
-
-def _level_word(index):
-    if index is None:
-        return None
-    if index > 120:
-        return "above"
-    if index < 80:
-        return "below"
-    return "around"
+def nordic_series(series):
+    """Weekly sum over the three countries, only for weeks in which all of them reported."""
+    out = {}
+    for key in RECENT_KEYS:
+        per_country = [series[key].get(c) for c in COUNTRIES]
+        if any(s is None for s in per_country):
+            continue
+        joined = pd.concat(per_country, axis=1).dropna()
+        if not joined.empty:
+            out[key] = joined.sum(axis=1).sort_index()
+    return out
 
 
 def _trend_word(wow):
@@ -459,23 +432,22 @@ def _trend_word(wow):
     return "stable"
 
 
+def _level_text(s):
+    if not s.get("intensity"):
+        return ""
+    return f"{s['intensity'].lower()} intensity ({fmt_num(s['intensity_pct'])}% of an average season peak)"
+
+
 def headline(result):
     """Two or three short sentences for the top of the executive summary."""
-    summary = result["summary"]
+    summary, nordic = result["summary"], result["nordic"]
     out = []
-    flu = nordic_total(result, "flu_cases")
-    if flu:
+    flu = nordic.get("flu_cases")
+    if flu and flu["week"] == result["latest_week"]:
         text = (f"Influenza: {fmt_num(flu['value'])} lab-confirmed cases in the Nordics this week, "
                 f"{_trend_word(flu['wow_pct'])} on last week")
-        level = _level_word(flu["index"])
-        if level:
-            text += f" and {level} the usual level for the time of year (index {flu['index']})"
-        intensities = [summary[c]["flu_cases"].get("intensity") for c in COUNTRIES if summary.get(c, {}).get("flu_cases")]
-        intensities = [i for i in intensities if i]
-        if intensities:
-            order = [label for _, label in INTENSITY_LEVELS]
-            lo, hi = min(intensities, key=order.index), max(intensities, key=order.index)
-            text += f". Intensity is {lo.lower()}" + (f" to {hi.lower()}" if hi != lo else "")
+        if flu.get("intensity"):
+            text += f" – {_level_text(flu)}"
         out.append(text + ".")
     above = [COUNTRIES[c]["name"] for c in COUNTRIES
              if (sp := summary.get(c, {}).get("flu_sentinel")) and not sp.get("low_tests")
@@ -484,11 +456,10 @@ def headline(result):
         out.append(f"{' and '.join(above)} {'is' if len(above) == 1 else 'are'} above ECDC's epidemic threshold.")
     others = []
     for key, name in (("covid_cases", "COVID-19"), ("rsv_cases", "RSV")):
-        n = nordic_total(result, key)
-        if n:
-            level = _level_word(n["index"])
-            others.append(f"{name} {fmt_num(n['value'])} cases ({_trend_word(n['wow_pct'])}"
-                          + (f", {level} usual" if level else "") + ")")
+        n = nordic.get(key)
+        if n and n["week"] == result["latest_week"]:
+            level = f", {n['intensity'].lower()} intensity" if n.get("intensity") else ""
+            others.append(f"{name} {fmt_num(n['value'])} cases ({_trend_word(n['wow_pct'])}{level})")
     if others:
         out.append("Nordics: " + "; ".join(others) + ".")
     return out
@@ -537,7 +508,13 @@ def analyse(raw, now=None):
             if r["summary"]:
                 result["summary"].setdefault(code, {})[key] = r["summary"]
 
+    result["nordic"] = {}
+    for key, s in nordic_series(series).items():
+        r = analyse_series(s, INDICATORS[key]["kind"], cur_start, weeks, latest)
+        if r["summary"]:
+            result["nordic"][key] = r["summary"]
     result["recent"] = recent_weeks(series, latest)
+    result["yearly"] = yearly(series)
     result["subtypes"] = subtype_breakdown(raw, cur_start, latest)
     result["findings"] = findings(result)
     result["headline"] = headline(result)

@@ -55,9 +55,7 @@ GROUPS = ["Influenza", "COVID-19", "RSV", "Hospital & severity"]
 
 # spec says where the series comes from:
 #   ("lab", pathogen)            non-sentinel laboratory detections
-#   ("lab_type", type)           non-sentinel detections of "Influenza A" or "Influenza B" (all subtypes)
 #   ("lab_pos", pathogen)        detections / tests * 100
-#   ("lab_type_pos", type)       type detections / all influenza tests * 100
 #   ("sentinel_pos", pathogen)   sentinel GP positivity
 #   ("ili",)                     ILI consultations per 100 000
 #   ("sari",)                    SARI hospitalisations per 100 000
@@ -78,26 +76,6 @@ INDICATORS = {
         "group": "Influenza", "spec": ("sentinel_pos", "Influenza"), "kind": "rate", "decimals": 1,
         "label": "Influenza sentinel positivity (GPs)", "short": "Flu sentinel", "unit": "%",
         "description": "Share of positive samples from sentinel GPs. ECDC uses 10 % as the epidemic threshold.",
-    },
-    "flu_a_cases": {
-        "group": "Influenza", "spec": ("lab_type", "Influenza A"), "kind": "count", "decimals": 0,
-        "label": "Lab-confirmed influenza A cases", "short": "Flu A cases", "unit": "cases",
-        "description": "Laboratory-confirmed influenza A cases per week, all subtypes (all non-sentinel testing).",
-    },
-    "flu_a_positivity": {
-        "group": "Influenza", "spec": ("lab_type_pos", "Influenza A"), "kind": "rate", "decimals": 1,
-        "label": "Influenza A test positivity", "short": "Flu A positivity", "unit": "%",
-        "description": "Share of all influenza tests that were positive for influenza A.",
-    },
-    "flu_b_cases": {
-        "group": "Influenza", "spec": ("lab_type", "Influenza B"), "kind": "count", "decimals": 0,
-        "label": "Lab-confirmed influenza B cases", "short": "Flu B cases", "unit": "cases",
-        "description": "Laboratory-confirmed influenza B cases per week, all lineages (all non-sentinel testing).",
-    },
-    "flu_b_positivity": {
-        "group": "Influenza", "spec": ("lab_type_pos", "Influenza B"), "kind": "rate", "decimals": 1,
-        "label": "Influenza B test positivity", "short": "Flu B positivity", "unit": "%",
-        "description": "Share of all influenza tests that were positive for influenza B.",
     },
     "ili_rate": {
         "group": "Influenza", "spec": ("ili",), "kind": "rate", "decimals": 1,
@@ -180,8 +158,8 @@ SUBTYPE_LABELS = {
     "B (unknown)": "B (not typed)",
 }
 
-# Viruses shown together in the "last 12 months" chart, as in the national weekly reports.
-RECENT_KEYS = ["flu_a_cases", "flu_b_cases", "covid_cases", "rsv_cases"]
+# Viruses shown together in the "last 12 months" and "year by year" charts.
+RECENT_KEYS = ["flu_cases", "covid_cases", "rsv_cases"]
 RECENT_WEEKS = 52
 
 SEASON_START_WEEK = 40

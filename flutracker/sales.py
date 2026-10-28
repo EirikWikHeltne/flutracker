@@ -26,7 +26,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from .analysis import parse_yw, week_monday, weeks_in_year, yw_str
 from .config import COUNTRIES, INDICATORS
 
-DRIVERS = ["flu_cases", "flu_positivity", "flu_sentinel", "flu_a_cases", "flu_b_cases", "ili_rate",
+DRIVERS = ["flu_cases", "flu_positivity", "flu_sentinel", "ili_rate",
            "covid_cases", "covid_positivity", "rsv_cases", "rsv_positivity"]
 DEFAULT_DRIVER = "flu_cases"
 HR = 23  # header row of the row-aligned tables on every sales sheet

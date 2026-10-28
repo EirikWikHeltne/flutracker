@@ -56,9 +56,9 @@ def test_historical_comparison():
     assert result["latest_week"] == "2025-W41"
     assert s["value"] == 50 and s["prev"] == 40 and s["wow_pct"] == 25.0
     assert s["hist_mean"] == 20 and s["hist_min"] == 10 and s["hist_max"] == 30
-    assert s["index"] == 250 and s["position"] == "over"
-    assert s["season_to_date"] == 90 and s["season_to_date_mean"] == 40 and s["season_to_date_index"] == 225
-    assert s["intensity"] == "Very high"  # 50 is above the mean season peak (20)
+    assert s["position"] == "over" and "index" not in s
+    assert s["season_to_date"] == 90 and s["season_to_date_mean"] == 40
+    assert s["intensity"] == "Very high" and s["intensity_pct"] == 250  # 50 against a mean season peak of 20
     assert result["summary"]["NO"]["flu_positivity"]["value"] == 50.0
     assert result["subtypes"]["NO"]["season"]["A(H3N2)"] == 7
 
@@ -66,9 +66,9 @@ def test_historical_comparison():
 def test_covid_and_hospital_indicators():
     result = analysis.analyse(make_raw())
     cov = result["summary"]["NO"]["covid_cases"]
-    assert cov["value"] == 100 and cov["hist_mean"] == 200 and cov["index"] == 50
+    assert cov["value"] == 100 and cov["hist_mean"] == 200 and cov["intensity_pct"] == 50
     hosp = result["summary"]["SE"]["flu_hospital"]
-    assert hosp["value"] == 15 and hosp["index"] == 75
+    assert hosp["value"] == 15 and hosp["intensity"] == "High"  # 15 / mean peak 20 = 75%
     assert any("COVID-19" in f for f in result["findings"])
     assert any("hospital admissions with influenza" in f for f in result["findings"])
 
@@ -82,7 +82,8 @@ def test_excel_workbook(tmp_path):
     assert wb.sheetnames == excel.SHEET_ORDER
     ws = wb["Overview"]
     formulas = [c.value for row in ws.iter_rows() for c in row if isinstance(c.value, str) and c.value.startswith("=")]
-    assert any("ROUND(G" in f for f in formulas)  # index is a live formula
+    assert any('"Above hist. max"' in f for f in formulas) and any("IF(G" in f and "/N" in f for f in formulas)
+    assert "Index" not in [c.value for row in ws.iter_rows() for c in row]
     assert ws["B2"].font.name == "Georgia"
 
 
@@ -123,10 +124,9 @@ def test_month_assignment_uses_thursday():
     assert (2026, 1) in sales._weeks_in_month(2026, 1) and (2025, 53) not in sales._weeks_in_month(2026, 1)
 
 
-def test_rsv_and_influenza_types():
+def test_rsv_indicators():
     raw = make_raw()
     rsv = dict(pathogen="RSV", pathogentype="RSV", pathogensubtype="RSV", age="total", survtype="non-sentinel")
-    typed = dict(pathogen="Influenza", age="total", survtype="non-sentinel", indicator="detections")
     data = []
     for start, base in [(2022, 10), (2023, 20), (2024, 30)]:
         data += rows("Norway", "nonSentinelTestsDetections", season_values(start, base), indicator="detections", **rsv)
@@ -134,18 +134,12 @@ def test_rsv_and_influenza_types():
     current = {"2025-W40": 10, "2025-W41": 40}
     data += rows("Norway", "nonSentinelTestsDetections", current, indicator="detections", **rsv)
     data += rows("Norway", "nonSentinelTestsDetections", {k: 200 for k in current}, indicator="tests", **rsv)
-    # Influenza A is the sum of its subtypes; positivity is against all influenza tests (100 a week).
-    for sub, v in [("A(H1)pdm09", 20), ("A(H3)", 10), ("A (unknown)", 5)]:
-        data += rows("Norway", "nonSentinelTestsDetections", {"2025-W41": v}, pathogentype="Influenza A", pathogensubtype=sub, **typed)
-    data += rows("Norway", "nonSentinelTestsDetections", {"2025-W41": 15}, pathogentype="Influenza B", pathogensubtype="B/Vic", **typed)
     result = analysis.analyse(pd.concat([raw, pd.DataFrame(data)], ignore_index=True))
     no = result["summary"]["NO"]
-    assert no["rsv_cases"]["value"] == 40 and no["rsv_cases"]["hist_mean"] == 20 and no["rsv_cases"]["index"] == 200
+    assert no["rsv_cases"]["value"] == 40 and no["rsv_cases"]["intensity"] == "Very high"
     assert no["rsv_positivity"]["value"] == 20.0
-    assert no["flu_a_cases"]["value"] == 35 and no["flu_a_positivity"]["value"] == 35.0
-    assert no["flu_b_cases"]["value"] == 15 and no["flu_b_positivity"]["value"] == 15.0
+    assert "flu_a_cases" not in result["indicators"]
     assert any(f.startswith("RSV, lab-confirmed") for f in result["findings"])
-    assert any(f.startswith("Influenza A and B") and "A 35, B 15" in f for f in result["findings"])
     assert "RSV" in emailer.render(result)
 
 
@@ -168,20 +162,29 @@ def test_recent_weeks_per_country_and_nordic():
     assert recent["nordic"]["covid_cases"][-1] == 105 and recent["nordic"]["covid_cases"][-2] is None
 
 
-def test_influenza_type_missing_week_counts_as_zero():
-    raw = make_raw()
-    extra = rows("Norway", "nonSentinelTestsDetections", {"2025-W40": 3}, pathogen="Influenza", pathogentype="Influenza B",
-                 pathogensubtype="B/Vic", indicator="detections", age="total", survtype="non-sentinel")
-    result = analysis.analyse(pd.concat([raw, pd.DataFrame(extra)], ignore_index=True))
-    b = result["summary"]["NO"]["flu_b_cases"]
-    # Influenza was reported in W41 but no B row exists: that is 0 cases, not a missing week.
-    assert b["value"] == 0 and b["prev"] == 3 and b["week"] == "2025-W41"
-
-
 def test_email_is_executive_summary():
     result = analysis.analyse(make_raw())
     # Norway only reports here, so there is no Nordic total and no headline from it.
-    assert result["headline"] == [] and analysis.nordic_total(result, "flu_cases") is None
+    assert result["headline"] == [] and "flu_cases" not in result["nordic"]
     html = emailer.render(result)
-    assert "Snapshot" in html and "Influenza intensity" in html
+    assert "Snapshot" in html and "How intensity is calculated" in html and "40&ndash;70%" in html
+    assert emailer.chart_url(result) in html  # the year-by-year chart
+    assert "idx" not in html and "index" not in html.lower()
     assert "Season to date" not in html and "Hospital admissions" not in html
+
+
+def test_nordic_and_yearly(tmp_path):
+    from flutracker import charts
+
+    raw = make_raw()
+    extra = []
+    for country in ("Sweden", "Denmark"):
+        extra += rows(country, "nonSentinelTestsDetections", {"2024-W02": 3, "2025-W41": 5}, indicator="detections",
+                      pathogen="Influenza", pathogentype="Influenza", pathogensubtype="total", age="total", survtype="non-sentinel")
+    result = analysis.analyse(pd.concat([raw, pd.DataFrame(extra)], ignore_index=True))
+    nordic = result["nordic"]["flu_cases"]
+    assert nordic["value"] == 60 and nordic["week"] == "2025-W41"  # 50 + 5 + 5
+    year = result["yearly"]["areas"]["ALL"]["flu_cases"]
+    assert year["2024"][1] == 26 and year["2024"][0] is None  # W02: 20 + 3 + 3; W01 not reported by all
+    assert result["yearly"]["areas"]["NO"]["flu_cases"]["2025"][40] == 50
+    assert charts.year_chart(result, tmp_path / "c.png").stat().st_size > 10_000
