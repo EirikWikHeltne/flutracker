@@ -6,13 +6,14 @@ import pathlib
 import shutil
 import sys
 
-from . import analysis, emailer, excel, fetch, sales
+from . import analysis, charts, emailer, excel, fetch, sales
 from .config import ERVISS_BASE, EXCEL_NAME
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_JSON = ROOT / "docs" / "data" / "flu.json"
 EXCEL = ROOT / "docs" / "data" / EXCEL_NAME
 EMAIL_HTML = ROOT / "docs" / "data" / "email_latest.html"
+CHARTS = ROOT / "docs" / "data" / "charts"  # weekly e-mail charts, published with the dashboard
 RAW_CSV = ROOT / "data" / "erviss_nordic.csv"
 STATE = ROOT / "data" / "state.json"
 REPORTS = ROOT / "reports"
@@ -45,6 +46,8 @@ def cmd_update(args):
 def cmd_email(args, result=None):
     if result is None:
         result = json.loads(DATA_JSON.read_text())
+    CHARTS.mkdir(parents=True, exist_ok=True)
+    chart = charts.year_chart(result, CHARTS / f"{result['latest_week']}.png")
     html = emailer.render(result, dashboard_url=args.dashboard_url)
     REPORTS.mkdir(exist_ok=True)
     out = REPORTS / f"{result['latest_week']}.html"
@@ -60,7 +63,8 @@ def cmd_email(args, result=None):
         print(f"E-mail for {result['latest_week']} has already been sent – skipping.")
         return
     attachment = EXCEL if EXCEL.exists() else None
-    if emailer.send(html, emailer.subject(result), result, attachment):
+    if emailer.send(html, emailer.subject(result), result, attachment, chart,
+                    emailer.chart_url(result, args.dashboard_url)):
         state["last_email_week"] = result["latest_week"]
         save_state(state)
 

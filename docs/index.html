@@ -35,7 +35,7 @@
     --alt: #fdeee5;
     --pressed-bg: #110B36;
     --pressed-text: #ffffff;
-    --v-flu_a_cases: #110B36; --v-flu_b_cases: #9B3F96; --v-covid_cases: #E07B39; --v-rsv_cases: #008A7A;
+    --v-flu_cases: #110B36; --v-covid_cases: #E07B39; --v-rsv_cases: #008A7A;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -45,7 +45,7 @@
       --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
       --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
       --pressed-bg: #FAD7C2; --pressed-text: #110B36;
-      --v-flu_a_cases: #FAD7C2; --v-flu_b_cases: #D07ACB; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
+      --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
     }
   }
   :root[data-theme="dark"] {
@@ -55,7 +55,7 @@
     --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
     --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
     --pressed-bg: #FAD7C2; --pressed-text: #110B36;
-    --v-flu_a_cases: #FAD7C2; --v-flu_b_cases: #D07ACB; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
+    --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: Georgia, "Times New Roman", serif; line-height: 1.6; }
@@ -104,6 +104,7 @@
   .tile .small { font-size: 13px; opacity: .85; }
   .tile .foot { background: var(--tile-foot); color: var(--tile-foot-text); padding: 10px 18px; font-size: 13px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; margin-top: auto; }
   .tile .foot b { font-size: 15px; }
+  .tile .foot.one { grid-template-columns: 1fr; }
   ul.findings { list-style: none; padding: 0; margin: 0; }
   ul.findings li { padding: 6px 0 6px 20px; position: relative; }
   ul.findings li::before { content: "•"; position: absolute; left: 0; color: var(--current); }
@@ -199,12 +200,24 @@
     <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>This week</p>
     <h2>Lab-confirmed cases</h2>
     <div class="tiles" id="tiles"></div>
-    <p class="note">Index 100 = the average for the same week in previous seasons. Intensity = this week against the average of previous season peaks (<a href="#intensity">how intensity is calculated</a>).</p>
+    <p class="note">Intensity = this week against the average peak of previous seasons (<a href="#intensity">how intensity is calculated</a>).</p>
   </section>
 
   <section>
     <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Key findings</p>
     <ul class="findings" id="findings"></ul>
+  </section>
+
+  <section>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Year by year</p>
+    <h2 id="yearTitle">Lab-confirmed cases, January to December</h2>
+    <div class="controls">
+      <div class="seg" id="yearAreaSeg" role="group" aria-label="Choose country or the Nordics"></div>
+      <div class="seg" id="yearVirusSeg" role="group" aria-label="Choose virus"></div>
+    </div>
+    <div class="chart-box"><canvas id="yearChart" aria-label="Weekly cases per calendar year"></canvas></div>
+    <div class="legend" id="yearLegend"></div>
+    <p class="note">One line per year, by ISO week. The thick line is this year. The Nordic total is only shown for weeks in which all three countries reported.</p>
   </section>
 
   <section>
@@ -234,15 +247,6 @@
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Against history</p>
-    <h2 id="indexTitle">Weekly index – lab-confirmed cases</h2>
-    <div class="controls"><div class="seg" id="indexSeg" role="group" aria-label="Choose virus"></div></div>
-    <div class="chart-box short"><canvas id="indexChart" aria-label="Index against history per country"></canvas></div>
-    <div class="legend" id="indexLegend"></div>
-    <p class="note">100 = average for the same ISO week in previous seasons. Early in the season small numbers give large swings in the index.</p>
-  </section>
-
-  <section>
     <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>All indicators</p>
     <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
@@ -263,7 +267,7 @@
         </ol>
         <p class="formula">Intensity ratio = this week&rsquo;s value &divide; average peak of previous seasons</p>
         <div class="scroll"><table id="intensityScale"></table></div>
-        <p class="note">Intensity is different from the <b>index</b>. The index compares this week with the <i>same week</i> in earlier seasons (&ldquo;is this normal for the time of year?&rdquo;). Intensity compares it with the <i>season peaks</i> (&ldquo;how close are we to a full epidemic?&rdquo;). Early in the season the index can be high while intensity is still baseline, because the numbers are small. The more previous seasons there are, the more reliable the average peak; for RSV in Norway it rests on two seasons only. ECDC and the national institutes publish their own intensity levels with other methods, so their labels can differ.</p>
+        <p class="note">Intensity tells how close we are to a normal season peak, so it reads the same early and late in the season. The more previous seasons there are, the more reliable the average peak; for RSV in Norway it rests on two seasons only. ECDC and the national institutes publish their own intensity levels with other methods, so their labels can differ.</p>
       </div>
       <div class="example">
         <h3>Worked example with this week&rsquo;s data</h3>
@@ -319,7 +323,7 @@
     <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Sources &amp; method</p>
     <h2>Where the numbers come from</h2>
     <dl id="sourceList"></dl>
-    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Index = this week / historical average × 100. Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
+    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
   </section>
 </main>
 
@@ -329,17 +333,19 @@
 <script>
 (function () {
   const ORDER = ["NO", "SE", "DK"];
-  const CASES = { "Influenza": "flu_cases", "Influenza A": "flu_a_cases", "Influenza B": "flu_b_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
-  const VIRUS_TEXT = { "Influenza": "influenza", "Influenza A": "influenza A", "Influenza B": "influenza B", "COVID-19": "COVID-19", "RSV": "RSV" };
+  const CASES = { "Influenza": "flu_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
+  // Year-by-year chart: newest year first (it gets --current), then fixed colours. Mirrors flutracker/charts.py.
+  const YEAR_COLOURS = ["#E07B39", "#008A7A", "#9B3F96", "#9F9DB1", "#C9C7D6"];
+  const MONTH_WEEKS = { 1: "Jan", 5: "Feb", 9: "Mar", 14: "Apr", 18: "May", 22: "Jun", 27: "Jul", 31: "Aug", 36: "Sep", 40: "Oct", 44: "Nov", 49: "Dec" };
   // Virus lines in the 12-month chart: label and dash pattern (so they differ without colour too).
   const RECENT = {
-    flu_a_cases: ["Influenza A", []], flu_b_cases: ["Influenza B", [2, 3]],
+    flu_cases: ["Influenza", []],
     covid_cases: ["COVID-19", [10, 5]], rsv_cases: ["RSV", [5, 4]],
   };
-  const state = { recent: "ALL", country: "NO", indicator: "flu_cases", indexVirus: "Influenza", exCountry: "NO", exIndicator: "flu_cases" };
+  const state = { recent: "ALL", country: "NO", indicator: "flu_cases", yearArea: "ALL", yearVirus: "flu_cases", exCountry: "NO", exIndicator: "flu_cases" };
   // Mirrors config.INTENSITY_LEVELS: ratio below `limit` gets `label`.
   const INTENSITY = [[0.10, "Baseline"], [0.40, "Low"], [0.70, "Medium"], [1.00, "High"], [Infinity, "Very high"]];
-  let data, seasonChart, indexChart, recentChart;
+  let data, seasonChart, recentChart, yearChart;
 
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
   document.getElementById("themeToggle").addEventListener("click", () => {
@@ -400,10 +406,9 @@
         '<div class="big">' + fmt(s.value) + "</div>" +
         '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " week on week · positivity " +
         fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
-        '<div class="foot"><span>Index <b>' + (s.index ?? "–") + "</b></span><span>Intensity <b>" + esc(s.intensity || "–") + "</b></span>" +
-        "<span>Flu A <b>" + val("flu_a_cases") + "</b></span><span>Flu B <b>" + val("flu_b_cases") + "</b></span>" +
-        "<span>COVID-19 <b>" + (cv ? fmt(cv.value) : "–") + "</b></span><span>COVID index <b>" + (cv && cv.index != null ? cv.index : "–") + "</b></span>" +
-        "<span>RSV <b>" + (rsv ? fmt(rsv.value) : "–") + "</b></span><span>RSV index <b>" + (rsv && rsv.index != null ? rsv.index : "–") + "</b></span></div>");
+        '<div class="foot one"><span>Intensity <b>' + esc(s.intensity || "–") + "</b>" + (s.intensity_pct != null ? " · " + s.intensity_pct + "% of an average peak" : "") + "</span>" +
+        "<span>COVID-19 <b>" + val("covid_cases") + "</b> · " + esc((cv && cv.intensity || "–").toLowerCase()) + "</span>" +
+        "<span>RSV <b>" + val("rsv_cases") + "</b> · " + esc((rsv && rsv.intensity || "–").toLowerCase()) + "</span></div>");
     });
     document.getElementById("tiles").replaceChildren(...tiles);
   }
@@ -431,11 +436,18 @@
     }).filter((og) => og.children.length));
     sel.onchange = () => { state.indicator = sel.value; renderSeasonChart(); };
 
-    const iseg = document.getElementById("indexSeg");
-    iseg.replaceChildren(...Object.keys(CASES).map((v) => {
-      const b = el("button", { type: "button" }, esc(v));
-      b.setAttribute("aria-pressed", v === state.indexVirus);
-      b.addEventListener("click", () => { state.indexVirus = v; renderControls(); renderIndexChart(); });
+    const yseg = document.getElementById("yearAreaSeg");
+    yseg.replaceChildren(...["ALL", ...ORDER].filter((c) => data.yearly.areas[c]).map((c) => {
+      const b = el("button", { type: "button" }, c === "ALL" ? "Nordics" : esc(data.countries[c].name));
+      b.setAttribute("aria-pressed", c === state.yearArea);
+      b.addEventListener("click", () => { state.yearArea = c; renderControls(); renderYearChart(); });
+      return b;
+    }));
+    const vseg = document.getElementById("yearVirusSeg");
+    vseg.replaceChildren(...Object.entries(CASES).map(([name, k]) => {
+      const b = el("button", { type: "button" }, esc(name));
+      b.setAttribute("aria-pressed", k === state.yearVirus);
+      b.addEventListener("click", () => { state.yearVirus = k; renderControls(); renderYearChart(); });
       return b;
     }));
 
@@ -472,7 +484,28 @@
     };
   }
 
-  function renderCharts() { if (data && window.Chart) { renderRecentChart(); renderSeasonChart(); renderIndexChart(); } }
+  function renderCharts() { if (data && window.Chart) { renderYearChart(); renderRecentChart(); renderSeasonChart(); } }
+
+  function renderYearChart() {
+    const byYear = (data.yearly.areas[state.yearArea] || {})[state.yearVirus];
+    const years = byYear ? Object.keys(byYear).filter((y) => byYear[y].some((v) => v != null)).sort().reverse() : [];
+    const colour = (i) => i === 0 ? css("--current") : YEAR_COLOURS[Math.min(i - 1, YEAR_COLOURS.length - 1)];
+    const datasets = years.map((y, i) => ({
+      label: y, data: byYear[y], borderColor: colour(i), backgroundColor: colour(i),
+      borderWidth: i === 0 ? 3.5 : 2, order: i, fill: false, spanGaps: false, tension: 0.2,
+    }));
+    const opts = baseOptions("Lab-confirmed cases");
+    opts.scales.x.ticks.autoSkip = false;
+    opts.scales.x.ticks.callback = (v, i) => MONTH_WEEKS[data.yearly.weeks[i]] || "";
+    opts.plugins.tooltip.callbacks = { title: (items) => "Week " + items[0].label, label: (c) => " " + c.dataset.label + ": " + fmt(c.raw) };
+    if (yearChart) yearChart.destroy();
+    yearChart = new Chart(document.getElementById("yearChart"), { type: "line", data: { labels: data.yearly.weeks, datasets }, options: opts });
+    const virus = Object.keys(CASES).find((n) => CASES[n] === state.yearVirus);
+    const where = state.yearArea === "ALL" ? "the Nordics" : data.countries[state.yearArea].name;
+    document.getElementById("yearTitle").textContent = virus + " in " + where + ", January to December";
+    document.getElementById("yearLegend").innerHTML = years.map((y, i) =>
+      '<span><i class="key" style="background:' + colour(i) + ";height:" + (i === 0 ? 4 : 3) + 'px"></i>' + esc(y) + "</span>").join("");
+  }
 
   function renderRecentChart() {
     const rec = data.recent;
@@ -519,41 +552,17 @@
     document.getElementById("indicatorNote").textContent = meta.description + (prior.length ? " Compared with " + prior.join(", ") + "." : "");
   }
 
-  function renderIndexChart() {
-    const key = CASES[state.indexVirus];
-    const datasets = ORDER.filter((c) => data.series[c] && data.series[c][key]).map((c) => {
-      const s = data.series[c][key];
-      const cur = s.seasons[Object.keys(s.seasons).pop()];
-      return {
-        label: data.countries[c].name,
-        data: cur.map((v, i) => v == null || !s.band.mean[i] ? null : Math.round(v / s.band.mean[i] * 100)),
-        borderColor: css("--c-" + c), backgroundColor: css("--c-" + c), borderWidth: 2, fill: false, pointRadius: 4,
-        pointBorderColor: css("--surface"), pointBorderWidth: 2,
-      };
-    });
-    const last = Math.max(...datasets.map((d) => d.data.findLastIndex((v) => v != null)));
-    const n = Math.max(last + 4, 12);
-    datasets.forEach((d) => { d.data = d.data.slice(0, n); });
-    datasets.push({ label: "Historical average (100)", data: Array(n).fill(100), borderColor: css("--mean"), borderDash: [4, 3], borderWidth: 1.5, pointRadius: 0, noTooltip: true });
-    if (indexChart) indexChart.destroy();
-    indexChart = new Chart(document.getElementById("indexChart"), { type: "line", data: { labels: data.season_weeks.slice(0, n), datasets }, options: baseOptions("Index") });
-    document.getElementById("indexTitle").textContent = "Weekly index – lab-confirmed " + VIRUS_TEXT[state.indexVirus] + " cases";
-    document.getElementById("indexLegend").innerHTML = ORDER.map((c) =>
-      '<span><i class="key" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + "</span>").join("") +
-      '<span><i class="key dash"></i>Historical average = 100</span>';
-  }
-
   function renderTable(id, groups) {
     const pos = { over: ["Above hist. max", "over"], under: ["Below hist. min", "under"], within: ["Within range", ""] };
     let html = '<thead><tr><th>Indicator</th><th class="num">Week</th><th class="num">Value</th><th class="num">Change</th>' +
-      '<th class="num">Hist. average</th><th class="num">Hist. range</th><th class="num">Index</th><th>Level</th><th>Intensity</th></tr></thead><tbody>';
+      '<th class="num">Hist. average</th><th class="num">Hist. range</th><th>Level</th><th>Intensity</th></tr></thead><tbody>';
     let rows = 0;
     groups.forEach((g) => {
       ORDER.forEach((c) => {
         const ind = data.summary[c] || {};
         const keys = keysIn(g).filter((k) => ind[k]);
         if (!keys.length) return;
-        html += '<tr class="group"><td colspan="9">' + (groups.length > 1 ? esc(g) + " · " : "") + esc(data.countries[c].name) + " · " + esc(data.countries[c].authority) + "</td></tr>";
+        html += '<tr class="group"><td colspan="8">' + (groups.length > 1 ? esc(g) + " · " : "") + esc(data.countries[c].name) + " · " + esc(data.countries[c].authority) + "</td></tr>";
         keys.forEach((k, i) => {
           const s = ind[k]; rows++;
           const p = pos[s.position] || ["–", ""];
@@ -562,12 +571,11 @@
             '<td class="num">' + weekNo(s.week) + '</td><td class="num"><b>' + fmtVal(s.value, k) + "</b></td>" +
             '<td class="num ' + cls(s.wow_pct) + '">' + pct(s.wow_pct) + "</td>" +
             '<td class="num">' + fmtVal(s.hist_mean, k) + '</td><td class="num">' + fmtVal(s.hist_min, k) + "–" + fmtVal(s.hist_max, k) + "</td>" +
-            '<td class="num ' + cls(s.diff_pct) + '"><b>' + (s.index ?? "–") + "</b></td>" +
             '<td><span class="pill ' + p[1] + '">' + p[0] + "</span></td><td>" + esc(s.intensity || "–") + "</td></tr>";
         });
       });
     });
-    if (!rows) html += '<tr><td colspan="9">No country currently reports these figures to ECDC.</td></tr>';
+    if (!rows) html += '<tr><td colspan="8">No country currently reports these figures to ECDC.</td></tr>';
     document.getElementById(id).innerHTML = html + "</tbody>";
   }
 
@@ -654,12 +662,11 @@
     const rows = ORDER.map((c) => data.summary[c] && data.summary[c][key]).filter(Boolean);
     if (!rows.length) return false;
     const hist = [...new Set(rows.flatMap((r) => Object.keys(r.season_to_date_hist)))].sort();
-    let html = '<thead><tr><th>Country</th><th class="num">' + esc(data.season) + "</th>" + hist.map((h) => '<th class="num">' + esc(h) + "</th>").join("") + '<th class="num">Index</th></tr></thead><tbody>';
+    let html = '<thead><tr><th>Country</th><th class="num">' + esc(data.season) + "</th>" + hist.map((h) => '<th class="num">' + esc(h) + "</th>").join("") + "</tr></thead><tbody>";
     ORDER.forEach((c, i) => {
       const s = data.summary[c] && data.summary[c][key]; if (!s) return;
       html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(data.countries[c].name) + '</td><td class="num"><b>' + fmt(s.season_to_date) + "</b></td>" +
-        hist.map((h) => '<td class="num">' + fmt(s.season_to_date_hist[h]) + "</td>").join("") +
-        '<td class="num ' + cls((s.season_to_date_index ?? 100) - 100) + '"><b>' + (s.season_to_date_index ?? "–") + "</b></td></tr>";
+        hist.map((h) => '<td class="num">' + fmt(s.season_to_date_hist[h]) + "</td>").join("") + "</tr>";
     });
     table.innerHTML = html + "</tbody>";
     return true;

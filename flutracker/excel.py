@@ -1,6 +1,6 @@
 """Karo-branded Excel workbook with this week's figures and the full history.
 
-Comparisons (change, index, level, historical average/min/max) are Excel
+Comparisons (change, level, intensity, historical average/min/max) are Excel
 formulas over the weekly values, so the workbook recalculates if a value is
 edited. Weekly values themselves come from ECDC ERVISS (see Sources sheet).
 """
@@ -92,8 +92,8 @@ def _overview(wb, result):
     ws = wb.active
     ws.title = "Overview"
     headers = ["Group", "Country", "Indicator", "Unit", "Week", "This week", "Previous week", "Change",
-               "Hist. average", "Hist. min", "Hist. max", "Index", "Level vs history",
-               "Avg. season peak", "Intensity", "Season to date", "Hist. season to date", "Season-to-date index"]
+               "Hist. average", "Hist. min", "Hist. max", "Level vs history",
+               "Avg. season peak", "Intensity", "Season to date", "Hist. season to date"]
     width = len(headers) + 1
     _banner(ws, "Flu, COVID-19 & RSV tracker – Norway, Sweden, Denmark", _week_label(result), width)
 
@@ -127,37 +127,33 @@ def _overview(wb, result):
                          s["value"], s["prev"],
                          f'=IF(OR(G{r}="",H{r}="",H{r}=0),"",(G{r}-H{r})/H{r})',
                          s["hist_mean"], s["hist_min"], s["hist_max"],
-                         f'=IF(OR(J{r}="",J{r}=0),"",ROUND(G{r}/J{r}*100,0))',
                          f'=IF(J{r}="","",IF(G{r}>L{r},"Above hist. max",IF(G{r}<K{r},"Below hist. min","Within range")))',
-                         s["peak_mean"], _intensity_formula(f"G{r}", f"O{r}"),
-                         s.get("season_to_date"), s.get("season_to_date_mean"),
-                         f'=IF(OR(Q{r}="",R{r}="",R{r}=0),"",ROUND(Q{r}/R{r}*100,0))']
+                         s["peak_mean"], _intensity_formula(f"G{r}", f"N{r}"),
+                         s.get("season_to_date"), s.get("season_to_date_mean")]
                 for i, v in enumerate(cells):
                     cell = ws.cell(r, 2 + i, v)
                     cell.font = F_BASE
                     cell.border = LINE
                     if n % 2 == 0:
                         cell.fill = FILL_PEACH_LIGHT
-                for col in "GHJKLOQR":
+                for col in "GHJKLNPQ":
                     ws[f"{col}{r}"].number_format = fmt
                 ws[f"I{r}"].number_format = '+0%;-0%;0%'
-                ws[f"M{r}"].font = F_BOLD
-                ws[f"S{r}"].font = F_BOLD
+                ws[f"O{r}"].font = F_BOLD
                 if s.get("low_tests"):
                     ws[f"D{r}"].value = meta["label"] + " †"
     ws.auto_filter.ref = f"B{top}:{get_column_letter(width)}{r}"
     ws.freeze_panes = ws.cell(top + 1, 5)
     r += 2
     for note in [
-        "Index = this week / historical average for the same ISO week × 100 (100 = normal for the time of year).",
         "Intensity = this week / average of previous season peaks: <10% baseline, 10–40% low, 40–70% medium, 70–100% high, "
-        ">100% very high. Column O holds the average peak; see 'Sources & method' for the full explanation.",
+        ">100% very high. Column N holds the average peak; see 'Sources & method' for the full explanation.",
         "† fewer than 20 sentinel samples this week – interpret with care. Seasons run from week 40 to week 39.",
         f"Source: {SOURCE['name']}. {SOURCE['note']}",
     ]:
         ws.cell(r, 2, note).font = F_MUTED
         r += 1
-    widths = [3, 20, 11, 44, 12, 7, 11, 11, 9, 11, 10, 10, 8, 17, 12, 11, 12, 13, 13]
+    widths = [3, 20, 11, 44, 12, 7, 11, 11, 9, 11, 10, 10, 17, 12, 11, 12, 13]
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(i)].width = w
 
@@ -175,7 +171,7 @@ def _curves(wb, result, key, title):
     # Countries can have different histories (e.g. RSV), so take every season any of them has.
     seasons = sorted({s for c in codes for s in result["series"][c][key]["seasons"]})
     prior, current = seasons[:-1], seasons[-1]
-    block = len(seasons) + 4  # seasons + avg + min + max + index
+    block = len(seasons) + 3  # seasons + avg + min + max
     width = 2 + len(codes) * (block + 1)
     _banner(ws, f"{meta['label']} – season curves", _week_label(result) + f" · {meta['unit']}", width)
 
@@ -196,10 +192,8 @@ def _curves(wb, result, key, title):
     for code in codes:
         data = result["series"][code][key]["seasons"]
         ws.cell(5, col, COUNTRIES[code]["name"]).font = Font(name=FONT, size=13, color=NAVY, bold=True)
-        _header(ws, hr, col, seasons + ["Hist. average", "Hist. min", "Hist. max", "Index"])
+        _header(ws, hr, col, seasons + ["Hist. average", "Hist. min", "Hist. max"])
         first, last_prior = get_column_letter(col), get_column_letter(col + len(prior) - 1)
-        cur_col = get_column_letter(col + len(prior))
-        avg_col = get_column_letter(col + len(seasons))
         for i in range(len(weeks)):
             r = hr + 1 + i
             for j, season in enumerate(seasons):
@@ -213,12 +207,10 @@ def _curves(wb, result, key, title):
             ws.cell(r, col + len(seasons), f'=IF(COUNT({rng})<2,"",AVERAGE({rng}))')
             ws.cell(r, col + len(seasons) + 1, f'=IF(COUNT({rng})<2,"",MIN({rng}))')
             ws.cell(r, col + len(seasons) + 2, f'=IF(COUNT({rng})<2,"",MAX({rng}))')
-            ws.cell(r, col + len(seasons) + 3,
-                    f'=IF(OR({cur_col}{r}="",{avg_col}{r}="",{avg_col}{r}=0),"",ROUND({cur_col}{r}/{avg_col}{r}*100,0))')
-            for k in range(4):
+            for k in range(3):
                 c = ws.cell(r, col + len(seasons) + k)
                 c.font = F_BASE
-                c.number_format = "0" if k == 3 else fmt
+                c.number_format = fmt
             for k in range(block):
                 ws.cell(r, col + k).border = LINE
         for k in range(block):
@@ -248,7 +240,7 @@ def _curves(wb, result, key, title):
         ws.add_chart(chart, f"{get_column_letter(col)}{last + 3}")
         col += block + 1
 
-    ws.cell(4, 2, "Each block: weekly values per season (current season shaded), then historical average, min, max and index "
+    ws.cell(4, 2, "Each block: weekly values per season (current season shaded), then historical average, min and max "
                   "calculated with formulas from the previous seasons.").font = F_MUTED
     ws.freeze_panes = ws.cell(hr + 1, 4)
     ws.column_dimensions["B"].width = 8
@@ -258,8 +250,7 @@ def _curves(wb, result, key, title):
 # ------------------------------------------------------ last 12 months ----
 
 RECENT_STYLE = {  # colour and dash per virus, as on the dashboard
-    "flu_a_cases": ("Influenza A", NAVY, "solid"),
-    "flu_b_cases": ("Influenza B", "9B3F96", "sysDot"),
+    "flu_cases": ("Influenza", NAVY, "solid"),
     "covid_cases": ("COVID-19", "E07B39", "lgDash"),
     "rsv_cases": ("RSV", "008A7A", "dash"),
 }
@@ -276,7 +267,7 @@ def _recent(wb, result):
 
     hr = 40  # charts above, table below
     _header(ws, hr, 2, ["Week", "Week starting"] + [f"{name} – {RECENT_STYLE[k][0]}" for name, _ in areas for k in RECENT_KEYS])
-    ws.row_dimensions[hr].height = 52  # room for three wrapped lines ("Denmark – Influenza A")
+    ws.row_dimensions[hr].height = 52  # room for wrapped titles ("Denmark – COVID-19")
     for i, wk in enumerate(rec["weeks"]):
         r = hr + 1 + i
         ws.cell(r, 2, wk.replace("-W", "-")).font = F_BASE
@@ -426,7 +417,6 @@ def _sources(wb, result):
         "Seasons run from ISO week 40 to week 39 the following year.",
         "Each week is compared with the same ISO week in every previous season with at least 20 weeks of data "
         "(week 53 is compared with week 52).",
-        "Index = this week / historical average × 100. 100 = normal for the time of year.",
         "Level: above the highest, below the lowest, or within the range of previous seasons for that week.",
         "Intensity – how big this week is compared with the top of a typical season. Calculated per country and indicator:",
         "   1. For each previous season (week 40–39) with at least 20 weeks of data, take the highest weekly value: that season's peak.",
@@ -436,9 +426,7 @@ def _sources(wb, result):
         "100% or more = very high.",
         "   Example: 171 cases this week and season peaks of 1,800, 2,400 and 1,950 give an average peak of 2,050; "
         "171 / 2,050 = 8% → baseline.",
-        "   Intensity differs from the index: the index compares with the same week in earlier seasons (normal for the time "
-        "of year?), intensity with the season peaks (how close to a full epidemic?). Fewer previous seasons make the "
-        "average peak less reliable (RSV in Norway rests on two). ECDC and the national institutes use their own methods, "
+        "   Fewer previous seasons make the average peak less reliable (RSV in Norway rests on two). ECDC and the national institutes use their own methods, "
         "so their intensity labels can differ.",
         "Season to date = sum since week 40, compared with previous seasons summed to the same week.",
         "Indicators a country has not reported for more than 8 weeks are left out. Hospital admissions are only "
@@ -455,7 +443,7 @@ def _sources(wb, result):
 
 
 SHEET_ORDER = [
-    "Overview", "Last 12 months", "Influenza curves", "Influenza A curves", "Influenza B curves", "COVID-19 curves", "RSV curves",
+    "Overview", "Last 12 months", "Influenza curves", "COVID-19 curves", "RSV curves",
     "Sales input (weekly)", "Sales vs flu (weekly)", "Correlation (weekly)",
     "Sales input (monthly)", "Sales vs flu (monthly)", "Correlation (monthly)",
     "Weekly data", "Virus types", "Flu by week", "Flu by month", "Sources & method",
@@ -467,8 +455,6 @@ def build(result, path, sales_rows=None):
     _overview(wb, result)
     _recent(wb, result)
     _curves(wb, result, "flu_cases", "Influenza curves")
-    _curves(wb, result, "flu_a_cases", "Influenza A curves")
-    _curves(wb, result, "flu_b_cases", "Influenza B curves")
     _curves(wb, result, "covid_cases", "COVID-19 curves")
     _curves(wb, result, "rsv_cases", "RSV curves")
     _weekly_data(wb, result)

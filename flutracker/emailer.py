@@ -11,10 +11,11 @@ import os
 import pathlib
 import smtplib
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, nordic_total, parse_yw
+from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, parse_yw
 from .config import COUNTRIES, DASHBOARD_URL, EXCEL_NAME
 
 NAVY = "#110B36"
@@ -101,8 +102,8 @@ def _table(head, body):
 
 # -------------------------------------------------------------- sections ----
 
-SNAPSHOT_LABELS = {"flu_cases": "Influenza (all)", "flu_a_cases": "Influenza A", "flu_b_cases": "Influenza B",
-                   "covid_cases": "COVID-19", "rsv_cases": "RSV"}
+SNAPSHOT_LABELS = {"flu_cases": "Influenza", "covid_cases": "COVID-19", "rsv_cases": "RSV"}
+INTENSITY_SHADES = {"Baseline": "#EEEDF3", "Low": "#E7F7EF", "Medium": "#9DE3C2", "High": "#FAD7C2", "Very high": "#561A32"}
 
 
 def _snapshot_cell(s, bg, bgs, bold_border=False):
@@ -110,9 +111,8 @@ def _snapshot_cell(s, bg, bgs, bold_border=False):
         return f'<td{bg} align="right" style="padding:9px 8px; text-align:right; color:{MUTED};{bgs}">&ndash;</td>'
     wow = s.get("wow_pct")
     arrow = "" if wow is None or wow == 0 else ("&#9650; " if wow > 0 else "&#9660; ")
-    idx = s.get("index")
     sub = (f'<span style="color:{delta_color(wow)};">{arrow}{fmt_pct(abs(wow), signed=False) if wow is not None else "&ndash;"}</span>'
-           f'<span style="color:{MUTED};"> &middot; idx {idx if idx is not None else "&ndash;"}</span>')
+           f'<span style="color:{MUTED};"> &middot; {esc((s.get("intensity") or "–").lower())}</span>')
     edge = f" border-left:2px solid {NAVY};" if bold_border else ""
     return (f'<td{bg} align="right" style="padding:9px 8px; text-align:right;{edge}{bgs}">'
             f'<span style="font-size:15px; font-weight:bold; color:{NAVY};">{fmt_num(s["value"])}</span><br />'
@@ -120,28 +120,42 @@ def _snapshot_cell(s, bg, bgs, bold_border=False):
 
 
 def snapshot_table(result):
-    """Virus x country grid with this week's cases, change on last week and index vs history."""
+    """Virus x country grid with this week's cases, change on last week and intensity."""
     codes = list(COUNTRIES)
-    head = (f'<tr><td style="{TH}">Lab-confirmed cases</td>'
+    head = (f'<tr><td style="{TH}">Cases this week</td>'
             + "".join(f'<td style="{TH} text-align:right;">{esc(COUNTRIES[c]["name"])}</td>' for c in codes)
             + f'<td style="{TH} text-align:right; border-left:2px solid {NAVY};">Nordics</td></tr>')
     body = []
     for n, key in enumerate(SNAPSHOT_KEYS):
         bg, bgs = _shade(n)
         cells = "".join(_snapshot_cell(result["summary"].get(c, {}).get(key), bg, bgs) for c in codes)
-        cells += _snapshot_cell(nordic_total(result, key), bg, bgs, bold_border=True)
-        weight = " font-weight:bold;" if key == "flu_cases" else ""
-        body.append(f'<tr><td{bg} style="padding:9px 8px;{weight}{bgs}">{esc(SNAPSHOT_LABELS[key])}</td>{cells}</tr>')
-    bg, bgs = _shade(len(SNAPSHOT_KEYS))
-    intensity = "".join(
-        f'<td{bg} align="right" style="padding:9px 8px; text-align:right;{bgs}">'
-        f'{esc((result["summary"].get(c, {}).get("flu_cases") or {}).get("intensity") or "–")}</td>' for c in codes)
-    body.append(f'<tr><td{bg} style="padding:9px 8px;{bgs}">Influenza intensity</td>{intensity}'
-                f'<td{bg} style="padding:9px 8px; border-left:2px solid {NAVY};{bgs}"></td></tr>')
+        nordic = result["nordic"].get(key)
+        cells += _snapshot_cell(nordic if nordic and nordic["week"] == result["latest_week"] else None, bg, bgs, True)
+        body.append(f'<tr><td{bg} style="padding:9px 8px; font-weight:bold;{bgs}">{esc(SNAPSHOT_LABELS[key])}</td>{cells}</tr>')
     return _table(head, body) + (
-        f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Week {parse_yw(result["latest_week"])[1]}. '
-        f'&#9650;/&#9660; = change on last week. idx = index against the same week in previous seasons '
-        f'(100 = normal for the time of year). Nordics only when all three countries reported.</p>')
+        f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Lab-confirmed cases in week {parse_yw(result["latest_week"])[1]}, '
+        f'&#9650;/&#9660; change on last week, and intensity (see below). Nordics only when all three countries reported.</p>')
+
+
+def chart_block(src):
+    return (f'<img src="{esc(src)}" width="550" alt="Lab-confirmed cases per week, each year as a line" '
+            f'style="display:block; width:100%; max-width:550px; height:auto; border:0;" />'
+            f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Norway, Sweden and Denmark combined, January to '
+            f'December. The thick dark line is this year. Gaps are weeks not every country reported (e.g. Swedish RSV in summer).</p>')
+
+
+def intensity_block():
+    """Short explanation of the intensity measure and its intervals."""
+    bands = [("Baseline", "under 10%"), ("Low", "10&ndash;40%"), ("Medium", "40&ndash;70%"),
+             ("High", "70&ndash;100%"), ("Very high", "100% or more")]
+    cells = "".join(
+        f'<td width="20%" bgcolor="{INTENSITY_SHADES[n]}" style="background-color:{INTENSITY_SHADES[n]}; padding:8px 6px; '
+        f'font-family:{FONT}; font-size:12px; text-align:center; color:{"#ffffff" if n == "Very high" else NAVY};">'
+        f'<b>{n}</b><br />{r}</td>' for n, r in bands)
+    return (f'<p style="margin:0 0 10px 0; font-size:14px; line-height:1.6; color:{TEXT};">For each earlier season we take '
+            f'the highest week (the season peak) and average those peaks. This week&rsquo;s cases divided by that average peak '
+            f'gives the intensity &ndash; how close we are to a normal season peak.</p>'
+            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>{cells}</tr></table>')
 
 
 def cta(url):
@@ -179,7 +193,12 @@ def link(url, text):
 
 # ------------------------------------------------------------------ page ----
 
-def render(result, dashboard_url=None):
+def chart_url(result, dashboard_url=None):
+    """Public address of this week's chart (the PNG is published with the dashboard)."""
+    return (dashboard_url or DASHBOARD_URL).rstrip("/") + f"/data/charts/{result['latest_week']}.png"
+
+
+def render(result, dashboard_url=None, chart_src=None):
     url = dashboard_url or DASHBOARD_URL
     week = parse_yw(result["latest_week"])[1]
     seasons = sorted({s for c in result["summary"].values() for i in c.values() for s in i.get("hist_by_season", {})})
@@ -196,15 +215,18 @@ def render(result, dashboard_url=None):
         row(label("In short") + "".join(
             f'<p style="margin:0 0 8px 0; font-size:16px; line-height:1.6; color:{TEXT};">{esc(t)}</p>' for t in result["headline"])),
         spacer(20),
+        row(label("Year by year") + chart_block(chart_src or chart_url(result, url))),
+        spacer(25),
         row(label("Snapshot") + snapshot_table(result)),
+        spacer(25),
+        row(label("How intensity is calculated") + intensity_block()),
         spacer(25),
         *([row(label("Worth knowing") + bullets(result["key_points"])), spacer(25)] if result["key_points"] else []),
         cta(url),
         spacer(25),
         footnote(
             f"Source: {link(src['url'], src['name'])}, reported by FHI, Folkh&auml;lsomyndigheten and SSI. "
-            f"Compared with the {esc(hist_span)} seasons. Intensity = this week against the average peak of "
-            f"previous seasons ({link(url.rstrip('/') + '/#intensity', 'how it is calculated')}). "
+            f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook."
         ),
         spacer(10),
@@ -250,7 +272,7 @@ def plain_text(result):
     return "\n".join(lines)
 
 
-def send(html_body, subj, result=None, attachment=None):
+def send(html_body, subj, result=None, attachment=None, chart=None, chart_src=None):
     """Send over SMTP using SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, MAIL_FROM, MAIL_TO."""
     host = os.environ.get("SMTP_HOST")
     to = [a.strip() for a in os.environ.get("MAIL_TO", "").split(",") if a.strip()]
@@ -265,7 +287,18 @@ def send(html_body, subj, result=None, attachment=None):
     msg["To"] = ", ".join(to)
     body = MIMEMultipart("alternative")
     body.attach(MIMEText(plain_text(result) if result else subj, "plain", "utf-8"))
-    body.attach(MIMEText(html_body, "html", "utf-8"))
+    if chart and chart_src:
+        # Embed the chart in the message so it shows even when remote images are blocked.
+        html_body = html_body.replace(esc(chart_src), "cid:yearchart")
+        related = MIMEMultipart("related")
+        related.attach(MIMEText(html_body, "html", "utf-8"))
+        img = MIMEImage(pathlib.Path(chart).read_bytes(), "png")
+        img.add_header("Content-ID", "<yearchart>")
+        img.add_header("Content-Disposition", "inline", filename="year_by_year.png")
+        related.attach(img)
+        body.attach(related)
+    else:
+        body.attach(MIMEText(html_body, "html", "utf-8"))
     msg.attach(body)
     if attachment:
         path = pathlib.Path(attachment)
