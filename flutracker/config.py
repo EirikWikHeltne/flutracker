@@ -216,7 +216,7 @@ LEADING_MARKETS = {
     "US": {"flunet": "USA", "name": "United States", "hemisphere": "north",
            "report": ("CDC FluView", "https://www.cdc.gov/fluview/")},
     "CA": {"flunet": "CAN", "name": "Canada", "hemisphere": "north"},
-    "GB": {"flunet": "GBR", "name": "United Kingdom", "hemisphere": "north"},
+    "GB": {"flunet": "X09", "name": "England", "hemisphere": "north"},  # FluNet reports the UK nations separately
 }
 
 # FluNet columns summed into the virus groups shown (missing columns count as 0).

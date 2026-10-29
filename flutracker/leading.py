@@ -34,8 +34,9 @@ from .config import (
 )
 from .fetch import _download
 
-MIN_TESTS = 10  # weeks with fewer specimens tested give no positivity
+MIN_TESTS = 30  # weeks with fewer specimens tested give no positivity
 MIN_WEEKS = 20  # an earlier year/season counts as history only with this many weeks of data
+MIN_ONSET_SEASONS = 2  # a usual onset week needs at least this many earlier seasons
 CHART_YEARS = 5
 COLUMNS = ["market", "yearweek", "tests", "tested_positives", "positives", *FLUNET_SUBTYPES]
 
@@ -100,10 +101,17 @@ def fetch_flunet(url=FLUNET_URL):
 
 # --------------------------------------------------------------- series ----
 
+def _complete(d):
+    """Drop the newest weeks while they are still filling up (fewer than half the usual specimens)."""
+    while len(d) > 5 and d["tests"].iloc[-1] < 0.5 * d["tests"].iloc[-5:-1].median():
+        d = d.iloc[:-1]
+    return d
+
+
 def positivity(df):
     """Weekly influenza positivity (%) indexed by 'YYYY-Www', from weeks with enough specimens."""
-    d = df[df["tests"] >= MIN_TESTS].set_index("yearweek").sort_index()
-    return (d["tested_positives"] / d["tests"] * 100).round(1)
+    d = _complete(df[df["tests"] >= MIN_TESTS].set_index("yearweek").sort_index())
+    return (d["tested_positives"] / d["tests"] * 100).round(1).astype(float)
 
 
 def _skipped(yw):
@@ -111,15 +119,19 @@ def _skipped(yw):
 
 
 def _onset(values, labels):
-    """First week label at or above the epidemic threshold, or None."""
-    for v, label in zip(values, labels):
-        if v is not None and v >= LEADING_EPIDEMIC_THRESHOLD:
-            return label
+    """Week label of the first two weeks in a row at or above the epidemic threshold, or None.
+
+    Two weeks in a row, so that a single noisy week (few specimens) does not count as the start of a season.
+    """
+    above = [v is not None and v >= LEADING_EPIDEMIC_THRESHOLD for v in values]
+    for i in range(len(above) - 1):
+        if above[i] and above[i + 1]:
+            return labels[i]
     return None
 
 
 def _median_week(weeks):
-    return round(statistics.median(weeks)) if weeks else None
+    return round(statistics.median(weeks)) if len(weeks) >= MIN_ONSET_SEASONS else None
 
 
 def _dominant(totals):
@@ -202,6 +214,7 @@ def southern_summary(df, pos, year):
         "weeks_above_mean": round(sum(above(v) for v in hist.values()) / len(hist), 1) if hist else None,
         "onset_week": onset,
         "usual_onset_week": _median_week(onsets),
+        "onset_seasons": len(onsets),
         "status": status,
         "n_seasons": len(hist),
         "mix": _virus_mix(df, [yw_str(year, w) for w in labels]),
@@ -227,6 +240,7 @@ def northern_summary(df, pos, cur_start, latest):
         "season": analysis.season_label(cur_start),
         "onset_week": _onset(current, labels),
         "usual_onset_week": _season_median(onsets),
+        "onset_seasons": len(onsets),
         "mix": _virus_mix(df, [k for k in keys if k <= summary["week"]]),
     })
     return summary
@@ -234,7 +248,7 @@ def northern_summary(df, pos, cur_start, latest):
 
 def _season_median(onset_weeks):
     """Median of season weeks (40, 41, ..., 52, 1, 2, ...), keeping the season order."""
-    if not onset_weeks:
+    if len(onset_weeks) < MIN_ONSET_SEASONS:
         return None
     order = [w if w >= 40 else w + 53 for w in onset_weeks]
     m = round(statistics.median(order))
@@ -259,6 +273,7 @@ def nordic_onsets(result):
             "week": latest and latest["week"],
             "onset_week": _onset(current, labels),
             "usual_onset_week": _season_median(past),
+            "onset_seasons": len(past),
             "n_seasons": len(past),
         }
     return out
@@ -290,9 +305,10 @@ def points(leading):
     others = [f"{m['name']} {m['summary']['intensity'].lower()}" for _, m in south[1:] if m["summary"].get("intensity")]
     if others:
         out.append("Other southern-hemisphere seasons: " + ", ".join(others) + ".")
-    mix = leading.get("south_mix")
-    if mix:
-        out.append(f"Southern hemisphere overall: {_mix_text(mix)} – a first hint of the virus mix for the Nordic winter.")
+    doms = [f"{m['name']} {d['virus']}" for _, m in south if (d := m["summary"]["mix"]["dominant"])]
+    if doms:
+        out.append("Dominant virus in the southern-hemisphere winter – a first hint of the mix for the Nordic one: "
+                   + ", ".join(doms) + ".")
 
     north = [m for m in leading["markets"].values() if m["hemisphere"] == "north" and m.get("summary")]
     started = [f"{m['name']} (since week {m['summary']['onset_week']})" for m in north if m["summary"].get("onset_week")]
@@ -313,7 +329,6 @@ def analyse(flunet, result):
     latest = result["latest_week"]
     cur_start = season_start(*parse_yw(latest))
     markets = {}
-    south_totals = {k: 0 for k in FLUNET_SUBTYPES}
     for code, meta in LEADING_MARKETS.items():
         df = flunet[flunet["market"] == code]
         pos = positivity(df)
@@ -324,9 +339,6 @@ def analyse(flunet, result):
         latest_year = parse_yw(last)[0]
         if meta["hemisphere"] == "south":
             summary = southern_summary(df, pos, latest_year)
-            if summary:
-                for k, v in summary["mix"]["totals"].items():
-                    south_totals[k] += v
         else:
             summary = northern_summary(df, pos, cur_start, last)
         markets[code] = {
@@ -344,7 +356,6 @@ def analyse(flunet, result):
         "threshold": LEADING_EPIDEMIC_THRESHOLD,
         "skip_years": list(LEADING_SKIP_YEARS),
         "markets": markets,
-        "south_mix": _dominant(south_totals) and {"totals": south_totals, "dominant": _dominant(south_totals)},
         "nordic_onsets": nordic_onsets(result),
     }
     leading["points"] = points(leading)

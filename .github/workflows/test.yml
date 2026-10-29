@@ -33,27 +33,7 @@ jobs:
           result = leading.add_to(analysis.analyse(pd.read_csv("data/erviss_nordic.csv")), flunet)
           for code, m in result["leading"]["markets"].items():
               s = m["summary"] or {}
-              print(code, m["latest_week"], {k: s.get(k) for k in ("value", "peak", "peak_week", "intensity", "onset_week", "usual_onset_week", "status")})
+              print(code, m["latest_week"], {k: s.get(k) for k in ("week", "value", "peak", "peak_week", "intensity", "onset_week", "usual_onset_week", "onset_seasons", "status")})
           print(*result["leading"]["points"], sep="\n")
           PY
 
-      - name: TEMP FluNet diagnostics
-        run: |
-          python - <<'PY'
-          import json, urllib.parse
-          import pandas as pd
-          from flutracker import leading
-          from flutracker.fetch import _download
-          base = "https://xmart-api-public.who.int/FLUMART/VIW_FNT"
-          q = urllib.parse.urlencode({"$format": "json", "$filter": "ISO_YEAR eq 2025 and ISO_WEEK eq 2", "$select": "COUNTRY_CODE,COUNTRY_AREA_TERRITORY"}, quote_via=urllib.parse.quote, safe="$'")
-          rows = json.loads(_download(f"{base}?{q}"))["value"]
-          print(sorted({(r["COUNTRY_CODE"], r["COUNTRY_AREA_TERRITORY"]) for r in rows if any(s in r["COUNTRY_AREA_TERRITORY"] for s in ("United Kingdom", "England", "Scotland", "Wales", "Ireland"))}))
-          for c in ("AUS", "JPN", "NZL", "USA"):
-              recs = leading._flunet_rows(c)
-              df = pd.DataFrame(recs)
-              print("==", c, "columns:", sorted(df.columns))
-              print(df.groupby("ORIGIN_SOURCE")[["SPEC_PROCESSED_NB", "INF_ALL", "INF_NEGATIVE"]].agg(lambda s: f"{s.notna().mean():.2f}/{s.sum():.0f}"))
-              t = leading.tidy(recs, c)
-              t["pos"] = (t.tested_positives / t.tests * 100).round(1)
-              print(t[t.yearweek.str.startswith(("2024", "2026"))][["yearweek", "tests", "tested_positives", "positives", "pos"]].iloc[::3].to_string())
-          PY

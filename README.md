@@ -61,7 +61,7 @@ Influenza in some markets runs ahead of the Nordic season, so the dashboard, e-m
 | Type | Markets | What it tells us |
 |---|---|---|
 | Southern hemisphere | Australia, New Zealand, Chile, South Africa | Their winter season (May–September) is over before the Nordic one starts. How big it was, and which virus dominated, is a first hint of the Nordic winter. |
-| Early-season markets | Japan, United States, Canada, United Kingdom | Same season as the Nordics, but often a few weeks earlier. When they cross the threshold, the Nordics usually follow. |
+| Early-season markets | Japan, United States, Canada, England | Same season as the Nordics, but often a few weeks earlier. When they cross the threshold, the Nordics usually follow. |
 
 The data comes from **WHO FluNet** ([who.int/tools/flunet](https://www.who.int/tools/flunet)), where every country's
 National Influenza Centre reports its weekly influenza tests and positives to WHO (GISRS). One API gives one format for
@@ -75,6 +75,8 @@ be reached that copy is used so the weekly run never fails because of it.
 * **Early-season markets** (season week 40–39): this week against the same week in earlier seasons, intensity, the week
   positivity crossed 10% this season and the week it usually does. The Nordic countries' own lab positivity is shown
   alongside for comparison.
+* The newest weeks are left out while they are still filling up (fewer than half the usual specimens), a season
+  starts with the first two weeks in a row at or above 10%, and a usual onset week needs at least two earlier seasons.
 * 2020 and 2021 (2020/21 and 2021/22) are left out of the history: COVID-19 measures suppressed influenza.
 * 10% positivity is a rough sign that a season is under way. This is an early hint, not a forecast – the link between
   the southern-hemisphere season and the Nordic one varies from year to year.

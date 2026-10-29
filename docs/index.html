@@ -515,7 +515,7 @@
     document.getElementById("leadPoints").replaceChildren(...L.points.map((f) => el("li", {}, esc(f))));
     const thr = fmt(L.threshold) + "%";
     const mix = (s) => s.mix && s.mix.dominant ? esc(s.mix.dominant.virus) + " (" + s.mix.dominant.share + "%)" : "–";
-    const week = (w) => w == null ? "–" : "week " + w;
+    const usual = (s) => s.usual_onset_week == null ? "–" : "week " + s.usual_onset_week + ' <span class="muted">(' + s.onset_seasons + " seasons)</span>";
 
     const south = leadMarkets("south").filter(([, m]) => m.summary);
     let html = '<thead><tr><th>Market</th><th class="num">Season</th><th class="num">Peak positivity</th><th class="num">Peak week</th>' +
@@ -541,7 +541,7 @@
       html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(m.name) + lagFlag(m) + '</td><td class="num">' + weekNo(s.week) +
         '</td><td class="num"><b>' + fmt(s.value, 1) + '%</b></td><td class="num ' + cls(s.wow_pct) + '">' + pct(s.wow_pct) +
         '</td><td class="num">' + (s.hist_mean == null ? "–" : fmt(s.hist_mean, 1) + "%") + "</td><td>" + esc(s.intensity || "–") +
-        "</td><td>" + (s.onset_week ? "<b>week " + s.onset_week + "</b>" : "not yet") + "</td><td>" + week(s.usual_onset_week) + "</td><td>" + mix(s) + "</td></tr>";
+        "</td><td>" + (s.onset_week ? "<b>week " + s.onset_week + "</b>" : "not yet") + "</td><td>" + usual(s) + "</td><td>" + mix(s) + "</td></tr>";
     });
     const nordic = Object.values(L.nordic_onsets || {});
     if (nordic.length) {
@@ -549,7 +549,7 @@
       nordic.forEach((n, i) => {
         html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(n.name) + '</td><td class="num">' + (n.week ? weekNo(n.week) : "–") +
           '</td><td class="num"><b>' + (n.value == null ? "–" : fmt(n.value, 1) + "%") + '</b></td><td></td><td></td><td></td><td>' +
-          (n.onset_week ? "<b>week " + n.onset_week + "</b>" : "not yet") + "</td><td>" + week(n.usual_onset_week) + "</td><td></td></tr>";
+          (n.onset_week ? "<b>week " + n.onset_week + "</b>" : "not yet") + "</td><td>" + usual(n) + "</td><td></td></tr>";
       });
     }
     document.getElementById("northTable").innerHTML = html + "</tbody>";

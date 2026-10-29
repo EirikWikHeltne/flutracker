@@ -245,3 +245,15 @@ def test_without_leading_data():
     result = leading.add_to(analysis.analyse(make_raw()), None)
     assert result["leading"] is None
     assert "Ahead of the Nordics" not in emailer.render(result)
+
+
+def test_leading_onset_and_incomplete_weeks():
+    from flutracker import leading
+
+    # one noisy week above 10% is not a season start; two in a row are
+    assert leading._onset([12, 3, 11, 14], [40, 41, 42, 43]) == 42
+    weeks = [analysis.yw_str(2026, w) for w in range(30, 38)]
+    df = pd.DataFrame({"market": "AU", "yearweek": weeks, "tests": [4000] * 7 + [900],
+                       "tested_positives": [400] * 7 + [200], "positives": [400] * 7 + [200]})
+    pos = leading.positivity(df)
+    assert pos.index.max() == "2026-W36"  # the half-reported newest week is left out
