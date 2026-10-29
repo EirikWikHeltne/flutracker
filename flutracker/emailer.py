@@ -208,6 +208,11 @@ def intensity_block(result):
             f'<tr>{"".join(cells)}</tr><tr>{"".join(marks)}</tr></table>')
 
 
+def leading_note():
+    return (f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Influenza test positivity reported to WHO FluNet. '
+            f'The southern-hemisphere winter and early-season countries are a first hint for the Nordic season, not a forecast.</p>')
+
+
 def cta(url):
     excel = url.rstrip("/") + "/data/" + EXCEL_NAME
     return f"""<tr>
@@ -268,6 +273,8 @@ def render(result, dashboard_url=None, chart_src=None):
         row(label("This week in the Nordics") + status_cards(result)),
         spacer(26),
         *([row(label("Worth knowing") + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),
+        *([row(label("Ahead of the Nordics") + bullets(lead["points"]) + leading_note()), spacer(26)]
+          if (lead := result.get("leading")) and lead["points"] else []),
         row(label("Year by year") + heading("Lab-confirmed cases, January to December") + chart_block(chart_src or chart_url(result, url))),
         spacer(28),
         row(label("By country") + country_table(result)),
@@ -278,6 +285,7 @@ def render(result, dashboard_url=None, chart_src=None):
         spacer(25),
         footnote(
             f"Source: {link(src['url'], src['name'])}, reported by FHI, Folkh&auml;lsomyndigheten and SSI. "
+            + (f"Leading markets: {link(result['leading']['source']['url'], 'WHO FluNet')}. " if result.get("leading") else "") +
             f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook."
         ),
@@ -319,7 +327,8 @@ def render(result, dashboard_url=None, chart_src=None):
 
 
 def plain_text(result):
-    lines = [subject(result), "", *result["headline"], "", *[f"- {f}" for f in result["key_points"]], "",
+    lead = (result.get("leading") or {}).get("points", [])
+    lines = [subject(result), "", *result["headline"], "", *[f"- {f}" for f in result["key_points"] + lead], "",
              f"Dashboard: {DASHBOARD_URL}"]
     return "\n".join(lines)
 

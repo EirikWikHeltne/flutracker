@@ -16,7 +16,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from . import sales
 from .analysis import parse_yw, week_monday
-from .config import COUNTRIES, INDICATORS, INTENSITY_LEVELS, RECENT_KEYS, SOURCE
+from .config import COUNTRIES, FLUNET_SOURCE, INDICATORS, INTENSITY_LEVELS, RECENT_KEYS, SOURCE
 
 NAVY = "110B36"
 PEACH = "FAD7C2"
@@ -387,6 +387,70 @@ def _subtypes(wb, result):
         ws.column_dimensions[get_column_letter(j)].width = 14
 
 
+# ----------------------------------------------------- leading markets ----
+
+def _leading(wb, result):
+    lead = result.get("leading")
+    if not lead:
+        return
+    ws = wb.create_sheet("Leading markets")
+    _banner(ws, "Leading markets – ahead of the Nordics", _week_label(result), 11)
+    ws.cell(4, 2, "Influenza test positivity (positives / specimens tested) reported to WHO FluNet. A first hint for the "
+                  "Nordic season, not a forecast.").font = F_MUTED
+    r = 6
+    for line in lead["points"]:
+        ws.cell(r, 2, "• " + line).font = F_BASE
+        r += 1
+
+    def table(top, title, headers, rows):
+        _label(ws, top, 2, title)
+        _header(ws, top + 1, 2, headers)
+        for i, values in enumerate(rows):
+            for j, v in enumerate(values):
+                c = ws.cell(top + 2 + i, 2 + j, v)
+                c.font = F_BASE
+                if isinstance(v, float):
+                    c.number_format = "0.0"
+                if i % 2:
+                    c.fill = FILL_PEACH_LIGHT
+        return top + 3 + len(rows)
+
+    def dom(s):
+        d = s["mix"]["dominant"]
+        return f"{d['virus']} ({d['share']}%)" if d else None
+
+    south = [(m, m["summary"]) for m in lead["markets"].values() if m["hemisphere"] == "south" and m["summary"]]
+    r = table(r + 1, "Southern hemisphere – latest season (calendar year)",
+              ["Market", "Season", "Peak positivity %", "Peak week", "Avg. peak %", "Intensity", "% of avg. peak",
+               f"Weeks ≥ {lead['threshold']:.0f}%", "Avg. weeks", "Dominant virus", "Status"],
+              [[m["name"], s["season"], s["peak"], s["peak_week"], s["peak_mean"], s["intensity"], s["intensity_pct"],
+                s["weeks_above"], s["weeks_above_mean"], dom(s), s["status"]] for m, s in south])
+    north = [(m, m["summary"]) for m in lead["markets"].values() if m["hemisphere"] == "north" and m["summary"]]
+    rows = [[m["name"], s["week"], s["value"], s["wow_pct"], s["hist_mean"], s["intensity"],
+             s["onset_week"] or "not yet", s["usual_onset_week"], dom(s)] for m, s in north]
+    rows += [[f"{n['name']} (ECDC)", n["week"], n["value"], None, None, None, n["onset_week"] or "not yet",
+              n["usual_onset_week"], None] for n in lead["nordic_onsets"].values()]
+    r = table(r, f"Early-season markets – season {result['season']}",
+              ["Market", "Week", "Positivity %", "Change %", "Hist. average %", "Intensity",
+               f"Above {lead['threshold']:.0f}% since week", "Usually crosses in week", "Dominant virus"], rows)
+
+    _label(ws, r, 2, "Weekly influenza test positivity (%) by calendar year")
+    _header(ws, r + 1, 2, ["Market", "Year"] + [f"W{w}" for w in range(1, 54)])
+    i = 0
+    for m in lead["markets"].values():
+        for year, values in m["yearly"].items():
+            row = r + 2 + i
+            ws.cell(row, 2, m["name"]).font = F_BASE
+            ws.cell(row, 3, int(year)).font = F_BASE
+            for w, v in enumerate(values):
+                c = ws.cell(row, 4 + w, v)
+                c.font, c.number_format = F_BASE, "0.0"
+            i += 1
+    ws.column_dimensions["B"].width = 22
+    for col in range(3, 4 + 53):
+        ws.column_dimensions[get_column_letter(col)].width = 13 if col < 13 else 7
+
+
 # ------------------------------------------------------------- sources ----
 
 def _sources(wb, result):
@@ -403,6 +467,9 @@ def _sources(wb, result):
     for code, c in COUNTRIES.items():
         rows.append((f"{c['name']} – reports", c["authority"], c["url"]))
         rows.append((f"{c['name']} – statistics", c["authority"] + " statistics", c["data_url"]))
+    if result.get("leading"):
+        rows += [("Leading markets", FLUNET_SOURCE["name"], FLUNET_SOURCE["url"]),
+                 ("Reporting", FLUNET_SOURCE["note"], None)]
     for label, text, url in rows:
         r += 1
         ws.cell(r, 2, label).font = F_BOLD
@@ -446,7 +513,7 @@ SHEET_ORDER = [
     "Overview", "Last 12 months", "Influenza curves", "COVID-19 curves", "RSV curves",
     "Sales input (weekly)", "Sales vs flu (weekly)", "Correlation (weekly)",
     "Sales input (monthly)", "Sales vs flu (monthly)", "Correlation (monthly)",
-    "Weekly data", "Virus types", "Flu by week", "Flu by month", "Sources & method",
+    "Weekly data", "Virus types", "Leading markets", "Flu by week", "Flu by month", "Sources & method",
 ]
 
 
@@ -459,6 +526,7 @@ def build(result, path, sales_rows=None):
     _curves(wb, result, "rsv_cases", "RSV curves")
     _weekly_data(wb, result)
     _subtypes(wb, result)
+    _leading(wb, result)
     _sources(wb, result)
     for freq in ("week", "month"):
         sales.build(wb, result, freq)
