@@ -6,8 +6,10 @@ import pathlib
 import shutil
 import sys
 
-from . import analysis, charts, emailer, excel, fetch, sales
-from .config import ERVISS_BASE, EXCEL_NAME
+import pandas as pd
+
+from . import analysis, charts, emailer, excel, fetch, leading, sales
+from .config import ERVISS_BASE, EXCEL_NAME, FLUNET_URL
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_JSON = ROOT / "docs" / "data" / "flu.json"
@@ -15,6 +17,7 @@ EXCEL = ROOT / "docs" / "data" / EXCEL_NAME
 EMAIL_HTML = ROOT / "docs" / "data" / "email_latest.html"
 CHARTS = ROOT / "docs" / "data" / "charts"  # weekly e-mail charts, published with the dashboard
 RAW_CSV = ROOT / "data" / "erviss_nordic.csv"
+FLUNET_CSV = ROOT / "data" / "flunet_leading.csv"
 STATE = ROOT / "data" / "state.json"
 REPORTS = ROOT / "reports"
 
@@ -27,18 +30,34 @@ def save_state(state):
     STATE.write_text(json.dumps(state, indent=2) + "\n")
 
 
+def load_flunet(url):
+    """FluNet data for the leading markets; falls back to last week's copy if WHO cannot be reached."""
+    flunet = leading.fetch_flunet(url)
+    have = set(flunet["market"])
+    if FLUNET_CSV.exists():
+        cached = pd.read_csv(FLUNET_CSV)
+        missing = cached[~cached["market"].isin(have)]
+        if not missing.empty:
+            print(f"FluNet: using the saved copy for {', '.join(sorted(set(missing['market'])))}")
+            flunet = pd.concat([flunet, missing], ignore_index=True)
+    if not flunet.empty:
+        flunet.sort_values(["market", "yearweek"]).to_csv(FLUNET_CSV, index=False)
+    return flunet
+
+
 def cmd_update(args):
     raw = fetch.fetch_erviss(args.source)
     RAW_CSV.parent.mkdir(parents=True, exist_ok=True)
     raw.sort_values(["file", "countryname", "yearweek"]).to_csv(RAW_CSV, index=False)
     result = analysis.analyse(raw)
+    leading.add_to(result, load_flunet(args.flunet))
     DATA_JSON.parent.mkdir(parents=True, exist_ok=True)
     DATA_JSON.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
     excel.build(result, EXCEL)
     REPORTS.mkdir(exist_ok=True)
     shutil.copyfile(EXCEL, REPORTS / f"{result['latest_week']}.xlsx")
     print(f"Data up to {result['latest_week']} (season {result['season']})")
-    for line in result["findings"]:
+    for line in result["findings"] + (result["leading"] or {}).get("points", []):
         print(" -", line)
     return result
 
@@ -82,6 +101,7 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="flutracker", description=__doc__)
     p.add_argument("command", choices=["update", "email", "all", "excel"])
     p.add_argument("--source", default=ERVISS_BASE, help="Base URL for ERVISS CSV files")
+    p.add_argument("--flunet", default=FLUNET_URL, help="WHO FluNet API for the leading markets")
     p.add_argument("--send", action="store_true", help="Send the e-mail over SMTP (env: SMTP_*, MAIL_*)")
     p.add_argument("--force", action="store_true", help="Send even if this week was already sent")
     p.add_argument("--dashboard-url", default=None)

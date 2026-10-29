@@ -178,3 +178,51 @@ INTENSITY_LEVELS = [
 
 DASHBOARD_URL = "https://eirikwikheltne.github.io/flutracker/"
 EXCEL_NAME = "flutracker_latest.xlsx"
+
+# ------------------------------------------------------- leading markets ----
+# WHO FluNet (Global Influenza Surveillance and Response System, GISRS) holds the
+# weekly influenza laboratory results that the National Influenza Centres of
+# almost every country report to WHO. It gives one consistent format for markets
+# outside Europe whose flu season runs ahead of the Nordic one.
+FLUNET_URL = "https://xmart-api-public.who.int/FLUMART/VIW_FNT"
+FLUNET_FIRST_YEAR = 2017
+FLUNET_SOURCE = {
+    "name": "WHO FluNet – Global Influenza Surveillance and Response System (GISRS)",
+    "publisher": "World Health Organization (WHO)",
+    "url": "https://www.who.int/tools/flunet",
+    "data": "https://xmart-api-public.who.int/FLUMART/VIW_FNT",
+    "note": (
+        "Weekly influenza tests and positives reported by each country's National Influenza Centre to WHO. "
+        "Recent weeks are often incomplete and are revised."
+    ),
+}
+
+# Seasons with almost no influenza (COVID-19 measures) are left out of the history.
+LEADING_SKIP_YEARS = (2020, 2021)
+LEADING_EPIDEMIC_THRESHOLD = 10.0  # % of influenza tests positive: season under way
+LEADING_MAX_LAG_WEEKS = 4  # a market whose latest report is older than this is flagged
+
+# hemisphere "south": season is the calendar year (winter May–September), finished
+# before the Nordic season starts – a preview of its size and virus mix.
+# hemisphere "north": same season as the Nordics but usually earlier – an early warning.
+LEADING_MARKETS = {
+    "AU": {"flunet": "AUS", "name": "Australia", "hemisphere": "south",
+           "report": ("Australian Respiratory Surveillance Report (Australian CDC)",
+                      "https://www.cdc.gov.au/resources/collections/arsr-2026")},
+    "NZ": {"flunet": "NZL", "name": "New Zealand", "hemisphere": "south"},
+    "CL": {"flunet": "CHL", "name": "Chile", "hemisphere": "south"},
+    "ZA": {"flunet": "ZAF", "name": "South Africa", "hemisphere": "south"},
+    "JP": {"flunet": "JPN", "name": "Japan", "hemisphere": "north"},
+    "US": {"flunet": "USA", "name": "United States", "hemisphere": "north",
+           "report": ("CDC FluView", "https://www.cdc.gov/fluview/")},
+    "CA": {"flunet": "CAN", "name": "Canada", "hemisphere": "north"},
+    "GB": {"flunet": "GBR", "name": "United Kingdom", "hemisphere": "north"},
+}
+
+# FluNet columns summed into the virus groups shown (missing columns count as 0).
+FLUNET_SUBTYPES = {
+    "A(H1N1)pdm09": ["AH1N12009", "AH1"],
+    "A(H3N2)": ["AH3"],
+    "A (not subtyped)": ["ANOTSUBTYPED", "ANOTSUBTYPABLE", "AOTHER_SUBTYPE", "AH5", "AH7N9"],
+    "B": ["INF_B"],
+}

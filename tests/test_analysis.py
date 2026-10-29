@@ -79,7 +79,7 @@ def test_excel_workbook(tmp_path):
 
     path = excel.build(analysis.analyse(make_raw()), tmp_path / "out.xlsx")
     wb = load_workbook(path)
-    assert wb.sheetnames == excel.SHEET_ORDER
+    assert wb.sheetnames == [s for s in excel.SHEET_ORDER if s != "Leading markets"]  # only with FluNet data
     ws = wb["Overview"]
     formulas = [c.value for row in ws.iter_rows() for c in row if isinstance(c.value, str) and c.value.startswith("=")]
     assert any('"Above hist. max"' in f for f in formulas) and any("IF(G" in f and "/N" in f for f in formulas)
@@ -189,3 +189,59 @@ def test_nordic_and_yearly(tmp_path):
     assert year["2024"][1] == 26 and year["2024"][0] is None  # W02: 20 + 3 + 3; W01 not reported by all
     assert result["yearly"]["areas"]["NO"]["flu_cases"]["2025"][40] == 50
     assert charts.year_chart(result, tmp_path / "c.png").stat().st_size > 10_000
+
+
+def flunet_records(country, peak_week, last=(2026, 42)):
+    """FluNet-style rows: a sentinel and a non-sentinel row per week, positivity peaking at `peak_week`."""
+    out = []
+    for year in range(2017, last[0] + 1):
+        for week in range(1, 53):
+            if (year, week) > last:
+                break
+            d = min(abs(week - peak_week), 52 - abs(week - peak_week))
+            positivity = 0.5 if year in (2020, 2021) else 2 + (20 + year % 3 * 5) * max(0, 1 - d / 8)
+            for source in ("SENTINEL", "NONSENTINEL"):
+                pos = round(500 * positivity / 100)
+                out.append({"COUNTRY_CODE": country, "ISO_YEAR": year, "ISO_WEEK": week, "ORIGIN_SOURCE": source,
+                            "SPEC_PROCESSED_NB": 500, "INF_ALL": pos, "INF_A": pos, "INF_B": 0,
+                            "AH3": round(pos * 0.7), "AH1N12009": round(pos * 0.2)})
+    return out
+
+
+def test_leading_markets(tmp_path):
+    from flutracker import leading
+
+    result = analysis.analyse(make_raw())
+    assert leading.tidy([], "AU").empty
+    au = leading.tidy(flunet_records("AUS", 30), "AU")
+    assert au.loc[au["yearweek"] == "2024-W30", "tests"].item() == 1000  # sentinel + non-sentinel summed
+    flunet = pd.concat([au, leading.tidy(flunet_records("JPN", 2, last=(2025, 41)), "JP")])
+    leading.add_to(result, flunet)
+    lead = result["leading"]
+
+    s = lead["markets"]["AU"]["summary"]
+    assert s["season"] == "2026" and s["peak_week"] == 30
+    assert s["status"] == "Over"
+    assert "2020" not in s["peaks"] and "2021" not in s["peaks"]
+    assert s["mix"]["dominant"]["virus"] == "A(H3N2)"
+    assert s["intensity"] in ("Medium", "High", "Very high")
+
+    jp = lead["markets"]["JP"]["summary"]
+    assert jp["season"] == result["season"] and jp["onset_week"] is None
+    assert jp["usual_onset_week"] in (46, 47, 48, 49, 50, 51, 52, 1)
+    assert any(p.startswith("Australia's 2026 flu season peaked") for p in lead["points"])
+
+    html = emailer.render(result)
+    assert "Ahead of the Nordics" in html and html.isascii()
+    from flutracker import excel
+    from openpyxl import load_workbook
+    excel.build(result, tmp_path / "w.xlsx")
+    assert "Leading markets" in load_workbook(tmp_path / "w.xlsx").sheetnames
+
+
+def test_without_leading_data():
+    from flutracker import leading
+
+    result = leading.add_to(analysis.analyse(make_raw()), None)
+    assert result["leading"] is None
+    assert "Ahead of the Nordics" not in emailer.render(result)

@@ -147,6 +147,7 @@
   @media (max-width: 600px) { .sources dl { grid-template-columns: 1fr; } .sources dd { margin-bottom: 8px; } }
   footer { color: var(--muted); font-size: 12px; padding: 10px 16px 30px; }
   .error { color: var(--up); }
+  .muted { color: var(--muted); font-size: 13px; }
   .method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
   .method p { margin: 0 0 12px; }
   .method ol { margin: 0 0 12px; padding-left: 20px; }
@@ -173,6 +174,7 @@
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5a1.5 1.5 0 0 0 1.5 1.5H20"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
   <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/></symbol>
 </svg>
 <header class="banner">
@@ -206,6 +208,21 @@
   <section>
     <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Key findings</p>
     <ul class="findings" id="findings"></ul>
+  </section>
+
+  <section id="leading" hidden>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Ahead of the Nordics</p>
+    <h2>Leading markets: the southern hemisphere and early-season countries</h2>
+    <ul class="findings" id="leadPoints"></ul>
+    <h3 id="southTitle">Southern hemisphere &ndash; the winter season that comes before ours</h3>
+    <div class="scroll"><table id="southTable"></table></div>
+    <h3 id="northTitle">Early-season markets &ndash; this season</h3>
+    <div class="scroll"><table id="northTable"></table></div>
+    <h3 id="leadChartTitle">Influenza test positivity, January to December</h3>
+    <div class="controls"><div class="seg" id="leadSeg" role="group" aria-label="Choose market"></div></div>
+    <div class="chart-box short"><canvas id="leadChart" aria-label="Weekly influenza test positivity per calendar year"></canvas></div>
+    <div class="legend" id="leadLegend"></div>
+    <p class="note" id="leadNote"></p>
   </section>
 
   <section>
@@ -342,10 +359,10 @@
     flu_cases: ["Influenza", []],
     covid_cases: ["COVID-19", [10, 5]], rsv_cases: ["RSV", [5, 4]],
   };
-  const state = { recent: "ALL", country: "NO", indicator: "flu_cases", yearArea: "ALL", yearVirus: "flu_cases", exCountry: "NO", exIndicator: "flu_cases" };
+  const state = { recent: "ALL", country: "NO", indicator: "flu_cases", yearArea: "ALL", yearVirus: "flu_cases", exCountry: "NO", exIndicator: "flu_cases", lead: null };
   // Mirrors config.INTENSITY_LEVELS: ratio below `limit` gets `label`.
   const INTENSITY = [[0.10, "Baseline"], [0.40, "Low"], [0.70, "Medium"], [1.00, "High"], [Infinity, "Very high"]];
-  let data, seasonChart, recentChart, yearChart;
+  let data, seasonChart, recentChart, yearChart, leadChart;
 
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
   document.getElementById("themeToggle").addEventListener("click", () => {
@@ -385,6 +402,7 @@
 
     renderTiles();
     document.getElementById("findings").replaceChildren(...data.findings.map((f) => el("li", {}, esc(f))));
+    renderLeading();
     renderControls();
     renderCharts();
     renderTable("indTable", ["Influenza", "COVID-19", "RSV"]);
@@ -484,7 +502,100 @@
     };
   }
 
-  function renderCharts() { if (data && window.Chart) { renderYearChart(); renderRecentChart(); renderSeasonChart(); } }
+  function renderCharts() { if (data && window.Chart) { renderYearChart(); renderRecentChart(); renderSeasonChart(); renderLeadChart(); } }
+
+  // ------------------------------------------------------ leading markets ----
+  const leadMarkets = (h) => Object.entries(data.leading.markets).filter(([, m]) => m.hemisphere === h);
+  const lagFlag = (m) => m.stale ? " *" : "";
+
+  function renderLeading() {
+    const L = data.leading;
+    if (!L) return;
+    document.getElementById("leading").hidden = false;
+    document.getElementById("leadPoints").replaceChildren(...L.points.map((f) => el("li", {}, esc(f))));
+    const thr = fmt(L.threshold) + "%";
+    const mix = (s) => s.mix && s.mix.dominant ? esc(s.mix.dominant.virus) + " (" + s.mix.dominant.share + "%)" : "–";
+    const week = (w) => w == null ? "–" : "week " + w;
+
+    const south = leadMarkets("south").filter(([, m]) => m.summary);
+    let html = '<thead><tr><th>Market</th><th class="num">Season</th><th class="num">Peak positivity</th><th class="num">Peak week</th>' +
+      '<th class="num">Avg. peak</th><th>Intensity</th><th class="num">Weeks &ge; ' + thr + '</th><th>Dominant virus</th><th>Status</th></tr></thead><tbody>';
+    south.forEach(([, m], i) => {
+      const s = m.summary;
+      html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(m.name) + lagFlag(m) + '</td><td class="num">' + esc(s.season) +
+        '</td><td class="num"><b>' + fmt(s.peak, 1) + '%</b></td><td class="num">' + s.peak_week +
+        '</td><td class="num">' + (s.peak_mean == null ? "–" : fmt(s.peak_mean, 1) + "%") + "</td><td>" + esc(s.intensity || "–") +
+        (s.intensity_pct != null ? " · " + s.intensity_pct + "%" : "") + '</td><td class="num">' + s.weeks_above +
+        (s.weeks_above_mean != null ? " <span class=\"muted\">(avg " + fmt(s.weeks_above_mean) + ")</span>" : "") +
+        "</td><td>" + mix(s) + "</td><td>" + esc(s.status) + " · latest week " + weekNo(s.week) + "</td></tr>";
+    });
+    if (!south.length) html += '<tr><td colspan="9">No southern-hemisphere data this week.</td></tr>';
+    document.getElementById("southTable").innerHTML = html + "</tbody>";
+
+    const north = leadMarkets("north");
+    html = '<thead><tr><th>Market</th><th class="num">Week</th><th class="num">Positivity</th><th class="num">Change</th>' +
+      '<th class="num">Hist. average</th><th>Intensity</th><th>Above ' + thr + ' since</th><th>Usually crosses ' + thr + '</th><th>Dominant virus</th></tr></thead><tbody>';
+    north.forEach(([, m], i) => {
+      const s = m.summary;
+      if (!s) { html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(m.name) + lagFlag(m) + '</td><td colspan="8">No report yet this season (latest ' + esc(m.latest_week) + ").</td></tr>"; return; }
+      html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(m.name) + lagFlag(m) + '</td><td class="num">' + weekNo(s.week) +
+        '</td><td class="num"><b>' + fmt(s.value, 1) + '%</b></td><td class="num ' + cls(s.wow_pct) + '">' + pct(s.wow_pct) +
+        '</td><td class="num">' + (s.hist_mean == null ? "–" : fmt(s.hist_mean, 1) + "%") + "</td><td>" + esc(s.intensity || "–") +
+        "</td><td>" + (s.onset_week ? "<b>week " + s.onset_week + "</b>" : "not yet") + "</td><td>" + week(s.usual_onset_week) + "</td><td>" + mix(s) + "</td></tr>";
+    });
+    const nordic = Object.values(L.nordic_onsets || {});
+    if (nordic.length) {
+      html += '<tr class="group"><td colspan="9">For comparison · Nordics (ECDC, influenza lab test positivity)</td></tr>';
+      nordic.forEach((n, i) => {
+        html += "<tr" + (i % 2 ? ' class="alt"' : "") + "><td>" + esc(n.name) + '</td><td class="num">' + (n.week ? weekNo(n.week) : "–") +
+          '</td><td class="num"><b>' + (n.value == null ? "–" : fmt(n.value, 1) + "%") + '</b></td><td></td><td></td><td></td><td>' +
+          (n.onset_week ? "<b>week " + n.onset_week + "</b>" : "not yet") + "</td><td>" + week(n.usual_onset_week) + "</td><td></td></tr>";
+      });
+    }
+    document.getElementById("northTable").innerHTML = html + "</tbody>";
+
+    const codes = Object.keys(L.markets);
+    if (!state.lead || !L.markets[state.lead]) state.lead = codes[0];
+    const seg = document.getElementById("leadSeg");
+    seg.replaceChildren(...codes.map((c) => {
+      const b = el("button", { type: "button" }, esc(L.markets[c].name));
+      b.setAttribute("aria-pressed", c === state.lead);
+      b.addEventListener("click", () => { state.lead = c; renderLeading(); renderLeadChart(); });
+      return b;
+    }));
+    const src = L.source;
+    document.getElementById("leadNote").innerHTML =
+      "Influenza test positivity = positive specimens &divide; specimens tested, all surveillance systems a country reports to " + link(src.url, "WHO FluNet") +
+      ". Positivity is used rather than case counts because testing differs a lot between countries and years. Intensity compares the peak (southern hemisphere) or this week (early markets) with the average peak of earlier seasons; " +
+      L.skip_years.join(" and ") + " are left out because COVID-19 measures suppressed influenza. " + thr + " positivity is a rough sign that the season is under way. " +
+      "* Latest report more than four weeks old. " +
+      "<b>How to read it:</b> a large or early southern-hemisphere season, and the virus that dominated it, are an early hint &ndash; not a forecast &ndash; for the Nordic winter; the link varies from year to year. " +
+      "Early-season markets crossing the threshold are a nearer warning: the Nordics typically follow some weeks later.";
+  }
+
+  function renderLeadChart() {
+    if (!data.leading || !state.lead) return;
+    const m = data.leading.markets[state.lead];
+    const years = Object.keys(m.yearly).sort().reverse();
+    const colour = (i) => i === 0 ? css("--current") : YEAR_COLOURS[Math.min(i - 1, YEAR_COLOURS.length - 1)];
+    const datasets = years.map((y, i) => ({
+      label: y, data: m.yearly[y], borderColor: colour(i), backgroundColor: colour(i),
+      borderWidth: i === 0 ? 3.5 : 2, order: i, fill: false, spanGaps: false, tension: 0.2,
+    }));
+    datasets.push({ label: "Threshold", data: data.yearly.weeks.map(() => data.leading.threshold), borderColor: css("--mean"),
+      borderDash: [4, 3], borderWidth: 1.5, pointRadius: 0, fill: false, noTooltip: true, order: 99 });
+    const opts = baseOptions("% of tests positive");
+    opts.scales.x.ticks.autoSkip = false;
+    opts.scales.x.ticks.callback = (v, i) => MONTH_WEEKS[data.yearly.weeks[i]] || "";
+    opts.plugins.tooltip.callbacks = { title: (items) => "Week " + items[0].label, label: (c) => " " + c.dataset.label + ": " + fmt(c.raw, 1) + "%" };
+    if (leadChart) leadChart.destroy();
+    leadChart = new Chart(document.getElementById("leadChart"), { type: "line", data: { labels: data.yearly.weeks, datasets }, options: opts });
+    document.getElementById("leadChartTitle").textContent = "Influenza test positivity in " + m.name + ", January to December";
+    document.getElementById("leadLegend").innerHTML = years.map((y, i) =>
+      '<span><i class="key" style="background:' + colour(i) + ";height:" + (i === 0 ? 4 : 3) + 'px"></i>' + esc(y) + "</span>").join("") +
+      '<span><i class="key dash"></i>' + fmt(data.leading.threshold) + "% threshold</span>" +
+      (m.report ? "<span>" + link(m.report[1], m.report[0]) + "</span>" : "");
+  }
 
   function renderYearChart() {
     const byYear = (data.yearly.areas[state.yearArea] || {})[state.yearVirus];
@@ -703,6 +814,10 @@
       const k = data.countries[c];
       html += "<dt>" + esc(k.name) + "</dt><dd>" + link(k.url, k.authority + " – weekly respiratory report") + " · " + link(k.data_url, "statistics") + "</dd>";
     });
+    if (data.leading) {
+      const fl = data.leading.source;
+      html += "<dt>Leading markets</dt><dd>" + link(fl.url, fl.name) + " – " + esc(fl.publisher) + ". " + esc(fl.note) + "</dd>";
+    }
     html += "<dt>Image</dt><dd>Coloured transmission electron micrograph of influenza A virus particles. " +
       link("https://phil.cdc.gov/", "CDC Public Health Image Library") + " (public domain).</dd>";
     html += '<dt>Downloads</dt><dd><a href="data/flutracker_latest.xlsx" download>Excel workbook with sales tool</a> · <a href="data/email_latest.html" download="flutracker_email_latest.html">E-mail (HTML)</a></dd>';
