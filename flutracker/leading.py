@@ -36,6 +36,7 @@ from .fetch import _download
 
 MIN_TESTS = 30  # weeks with fewer specimens tested give no positivity
 MIN_WEEKS = 20  # an earlier year/season counts as history only with this many weeks of data
+SOUTH_SEASON_FROM = 10  # southern onset is looked for from this week; earlier weeks are the summer before
 MIN_ONSET_SEASONS = 2  # a usual onset week needs at least this many earlier seasons
 CHART_YEARS = 5
 COLUMNS = ["market", "yearweek", "tests", "tested_positives", "positives", *FLUNET_SUBTYPES]
@@ -190,12 +191,15 @@ def southern_summary(df, pos, year):
     peak_v, peak_w = peak(current)
     peaks = {y: peak(v) for y, v in hist.items()}
     peak_mean = sum(p for p, _ in peaks.values()) / len(peaks) if peaks else None
-    onsets = [o for v in hist.values() if (o := _onset(v, labels))]
+    def winter_onset(vals):
+        return _onset(vals[SOUTH_SEASON_FROM - 1:], labels[SOUTH_SEASON_FROM - 1:])
+
+    onsets = [o for v in hist.values() if (o := winter_onset(v))]
     last_i = reported[-1]
     latest_v = current[last_i]
-    onset = _onset(current, labels)
+    onset = winter_onset(current)
     if onset is None:
-        status = "Not started"
+        status = "Below threshold"
     elif latest_v < LEADING_EPIDEMIC_THRESHOLD:
         status = "Over" if latest_v < peak_v / 2 else "Easing"
     else:
@@ -296,10 +300,22 @@ def points(leading):
     south = [(c, m) for c, m in leading["markets"].items() if m["hemisphere"] == "south" and m.get("summary")]
     for code, m in south[:1]:  # the lead market (Australia) in full
         s = m["summary"]
-        text = (f"{m['name']}'s {s['season']} flu season peaked at {_fmt(s['peak'], 1)}% test positivity in week "
-                f"{s['peak_week']}")
+        week = parse_yw(s["week"])[1]
+        if s["status"] == "Below threshold":
+            text = (f"{m['name']}'s {s['season']} flu season has stayed below {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% test "
+                    f"positivity: {_fmt(s['value'], 1)}% in week {week}, highest so far {_fmt(s['peak'], 1)}% (week {s['peak_week']})")
+        elif s["status"] == "Under way":
+            text = (f"{m['name']}'s {s['season']} flu season is under way: {_fmt(s['value'], 1)}% test positivity in week "
+                    f"{week}, highest so far {_fmt(s['peak'], 1)}% (week {s['peak_week']})")
+        else:
+            text = (f"{m['name']}'s {s['season']} flu season peaked at {_fmt(s['peak'], 1)}% test positivity in week "
+                    f"{s['peak_week']}")
         if s.get("intensity"):
             text += f" – {s['intensity'].lower()} ({s['intensity_pct']}% of an average peak)"
+        usual = s["usual_onset_week"]
+        if usual and (s["onset_week"] or week) - usual >= 4:
+            text += (f"; a late season (usually above {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% from week {usual}"
+                     + (f", this year from week {s['onset_week']})" if s["onset_week"] else ")"))
         text += f", {_mix_text(s['mix'])}."
         out.append(text)
     others = [f"{m['name']} {m['summary']['intensity'].lower()}" for _, m in south[1:] if m["summary"].get("intensity")]
