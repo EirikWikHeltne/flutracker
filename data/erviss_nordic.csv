@@ -1124,11 +1124,16 @@ ILIARIRates,primary care syndromic,Denmark,2026-W41,,,,ILIconsultationrate,15-64
 ILIARIRates,primary care syndromic,Denmark,2026-W41,,,,ILIconsultationrate,5-14,58.0
 ILIARIRates,primary care syndromic,Denmark,2026-W41,,,,ILIconsultationrate,65+,103.6
 ILIARIRates,primary care syndromic,Denmark,2026-W41,,,,ILIconsultationrate,total,95.8
-ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,0-4,233.7
-ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,15-64,104.6
-ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,5-14,60.9
-ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,65+,149.8
-ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,total,116.0
+ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,0-4,221.1
+ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,15-64,114.8
+ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,5-14,75.5
+ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,65+,163.2
+ILIARIRates,primary care syndromic,Denmark,2026-W42,,,,ILIconsultationrate,total,126.2
+ILIARIRates,primary care syndromic,Denmark,2026-W43,,,,ILIconsultationrate,0-4,231.0
+ILIARIRates,primary care syndromic,Denmark,2026-W43,,,,ILIconsultationrate,15-64,92.4
+ILIARIRates,primary care syndromic,Denmark,2026-W43,,,,ILIconsultationrate,5-14,71.5
+ILIARIRates,primary care syndromic,Denmark,2026-W43,,,,ILIconsultationrate,65+,111.7
+ILIARIRates,primary care syndromic,Denmark,2026-W43,,,,ILIconsultationrate,total,101.2
 ILIARIRates,primary care syndromic,Norway,2022-W30,,,,ILIconsultationrate,0-4,1.9
 ILIARIRates,primary care syndromic,Norway,2022-W30,,,,ILIconsultationrate,15-64,13.1
 ILIARIRates,primary care syndromic,Norway,2022-W30,,,,ILIconsultationrate,5-14,1.4
@@ -1885,12 +1890,12 @@ ILIARIRates,primary care syndromic,Norway,2026-W24,,,,ILIconsultationrate,5-14,2
 ILIARIRates,primary care syndromic,Norway,2026-W24,,,,ILIconsultationrate,65+,4.2
 ILIARIRates,primary care syndromic,Norway,2026-W24,,,,ILIconsultationrate,total,10.3
 ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,0-4,4.8
-ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,15-64,13.3
+ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,15-64,13.4
 ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,5-14,1.7
 ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,65+,4.0
-ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,total,9.8
+ILIARIRates,primary care syndromic,Norway,2026-W25,,,,ILIconsultationrate,total,9.9
 ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,0-4,3.7
-ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,15-64,11.9
+ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,15-64,11.8
 ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,5-14,1.6
 ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,65+,3.5
 ILIARIRates,primary care syndromic,Norway,2026-W26,,,,ILIconsultationrate,total,8.7
@@ -1915,7 +1920,7 @@ ILIARIRates,primary care syndromic,Norway,2026-W30,,,,ILIconsultationrate,5-14,0
 ILIARIRates,primary care syndromic,Norway,2026-W30,,,,ILIconsultationrate,65+,2.7
 ILIARIRates,primary care syndromic,Norway,2026-W30,,,,ILIconsultationrate,total,6.1
 ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,0-4,2.5
-ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,15-64,9.8
+ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,15-64,9.7
 ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,5-14,1.1
 ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,65+,2.4
 ILIARIRates,primary care syndromic,Norway,2026-W31,,,,ILIconsultationrate,total,7.0
@@ -1925,55 +1930,60 @@ ILIARIRates,primary care syndromic,Norway,2026-W32,,,,ILIconsultationrate,5-14,1
 ILIARIRates,primary care syndromic,Norway,2026-W32,,,,ILIconsultationrate,65+,3.0
 ILIARIRates,primary care syndromic,Norway,2026-W32,,,,ILIconsultationrate,total,8.1
 ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,0-4,2.2
-ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,15-64,11.4
+ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,15-64,11.5
 ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,5-14,1.8
 ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,65+,4.0
 ILIARIRates,primary care syndromic,Norway,2026-W33,,,,ILIconsultationrate,total,8.5
 ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,0-4,2.6
-ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,15-64,13.2
+ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,15-64,13.1
 ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,5-14,1.8
 ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,65+,3.1
-ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,total,9.5
-ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,0-4,2.6
-ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,15-64,16.2
+ILIARIRates,primary care syndromic,Norway,2026-W34,,,,ILIconsultationrate,total,9.4
+ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,0-4,2.5
+ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,15-64,16.1
 ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,5-14,2.4
 ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,65+,3.9
 ILIARIRates,primary care syndromic,Norway,2026-W35,,,,ILIconsultationrate,total,11.6
-ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,0-4,5.2
+ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,0-4,5.1
 ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,15-64,18.0
 ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,5-14,2.4
 ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,65+,3.8
-ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,total,12.9
+ILIARIRates,primary care syndromic,Norway,2026-W36,,,,ILIconsultationrate,total,13.0
 ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,0-4,3.0
-ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,15-64,21.7
-ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,5-14,3.3
+ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,15-64,21.6
+ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,5-14,3.2
 ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,65+,4.2
-ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,total,15.4
-ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,0-4,3.0
-ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,15-64,22.0
+ILIARIRates,primary care syndromic,Norway,2026-W37,,,,ILIconsultationrate,total,15.3
+ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,0-4,3.4
+ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,15-64,22.1
 ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,5-14,2.6
-ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,65+,5.7
-ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,total,15.8
-ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,0-4,6.2
-ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,15-64,24.2
-ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,5-14,3.6
-ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,65+,5.6
-ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,total,17.5
-ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,0-4,4.1
+ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,65+,5.8
+ILIARIRates,primary care syndromic,Norway,2026-W38,,,,ILIconsultationrate,total,15.9
+ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,0-4,6.1
+ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,15-64,24.4
+ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,5-14,3.5
+ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,65+,5.7
+ILIARIRates,primary care syndromic,Norway,2026-W39,,,,ILIconsultationrate,total,17.6
+ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,0-4,3.9
 ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,15-64,24.4
-ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,5-14,3.0
+ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,5-14,2.9
 ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,65+,5.9
 ILIARIRates,primary care syndromic,Norway,2026-W40,,,,ILIconsultationrate,total,17.5
-ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,0-4,6.9
-ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,15-64,24.9
+ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,0-4,6.1
+ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,15-64,24.4
 ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,5-14,3.2
-ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,65+,5.8
-ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,total,18.0
-ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,0-4,7.4
-ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,15-64,22.1
-ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,5-14,3.0
-ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,65+,6.8
-ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,total,16.3
+ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,65+,5.1
+ILIARIRates,primary care syndromic,Norway,2026-W41,,,,ILIconsultationrate,total,17.5
+ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,0-4,7.6
+ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,15-64,24.2
+ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,5-14,4.8
+ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,65+,7.0
+ILIARIRates,primary care syndromic,Norway,2026-W42,,,,ILIconsultationrate,total,17.9
+ILIARIRates,primary care syndromic,Norway,2026-W43,,,,ILIconsultationrate,0-4,3.2
+ILIARIRates,primary care syndromic,Norway,2026-W43,,,,ILIconsultationrate,15-64,25.1
+ILIARIRates,primary care syndromic,Norway,2026-W43,,,,ILIconsultationrate,5-14,4.2
+ILIARIRates,primary care syndromic,Norway,2026-W43,,,,ILIconsultationrate,65+,8.7
+ILIARIRates,primary care syndromic,Norway,2026-W43,,,,ILIconsultationrate,total,18.5
 activityFluTypeSubtype,non-sentinel,Denmark,2022-W25,Influenza,Influenza A,A (unknown),detections,total,7.0
 activityFluTypeSubtype,non-sentinel,Denmark,2022-W25,Influenza,Influenza A,A(H3),detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Denmark,2022-W25,Influenza,Influenza B,B/Vic,detections,total,1.0
@@ -3808,16 +3818,23 @@ activityFluTypeSubtype,non-sentinel,Denmark,2026-W40,Influenza,Influenza A,A(H3)
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W40,RSV,RSV-B,,detections,total,1.0
 activityFluTypeSubtype,primary care sentinel,Denmark,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A (unknown),detections,total,56.0
-activityFluTypeSubtype,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,16.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H3),detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W41,Influenza,Influenza B,B (unknown),detections,total,1.0
 activityFluTypeSubtype,primary care sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,2.0
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A (unknown),detections,total,77.0
-activityFluTypeSubtype,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,9.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,30.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H3),detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Denmark,2026-W42,Influenza,Influenza B,B (unknown),detections,total,1.0
 activityFluTypeSubtype,primary care sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,9.0
 activityFluTypeSubtype,primary care sentinel,Denmark,2026-W42,Influenza,Influenza B,B (unknown),detections,total,2.0
 activityFluTypeSubtype,primary care sentinel,Denmark,2026-W42,RSV,RSV-A,,detections,total,1.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W43,Influenza,Influenza A,A (unknown),detections,total,82.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,8.0
+activityFluTypeSubtype,non-sentinel,Denmark,2026-W43,Influenza,Influenza B,B (unknown),detections,total,3.0
+activityFluTypeSubtype,primary care sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,3.0
+activityFluTypeSubtype,primary care sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H3),detections,total,1.0
+activityFluTypeSubtype,primary care sentinel,Denmark,2026-W43,RSV,RSV-B,,detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Norway,2022-W25,Influenza,Influenza A,A (unknown),detections,total,17.0
 activityFluTypeSubtype,non-sentinel,Norway,2022-W25,Influenza,Influenza A,A(H3),detections,total,6.0
 activityFluTypeSubtype,primary care sentinel,Norway,2022-W25,Influenza,Influenza untyped,Influenza untyped,detections,total,13.0
@@ -5545,28 +5562,28 @@ activityFluTypeSubtype,non-sentinel,Norway,2026-W34,Influenza,Influenza A,A(H3),
 activityFluTypeSubtype,non-sentinel,Norway,2026-W34,Influenza,Influenza B,B (unknown),detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W34,RSV,RSV untyped,,detections,total,3.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W34,Influenza,Influenza A,A(H3),detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A (unknown),detections,total,88.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A (unknown),detections,total,115.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A(H1)pdm09,detections,total,16.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A(H3),detections,total,23.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W35,Influenza,Influenza B,B (unknown),detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W35,RSV,RSV untyped,,detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W35,RSV,RSV-A,,detections,total,1.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W35,Influenza,Influenza A,A(H3),detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A (unknown),detections,total,52.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A (unknown),detections,total,83.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A(H1)pdm09,detections,total,19.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A(H3),detections,total,18.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W36,Influenza,Influenza B,B/Vic,detections,total,4.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W36,RSV,RSV untyped,,detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W36,RSV,RSV-A,,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A (unknown),detections,total,47.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A (unknown),detections,total,75.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A(H3),detections,total,19.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza B,B (unknown),detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,Influenza,Influenza B,B/Vic,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W37,RSV,RSV untyped,,detections,total,4.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W37,RSV,RSV untyped,,detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,RSV,RSV-A,,detections,total,2.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W37,RSV,RSV-B,,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A (unknown),detections,total,68.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A (unknown),detections,total,112.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A(H1)pdm09,detections,total,40.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A(H3),detections,total,11.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W38,Influenza,Influenza B,B (unknown),detections,total,3.0
@@ -5576,13 +5593,13 @@ activityFluTypeSubtype,non-sentinel,Norway,2026-W38,RSV,RSV-A,,detections,total,
 activityFluTypeSubtype,non-sentinel,Norway,2026-W38,RSV,RSV-B,,detections,total,3.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W38,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W38,RSV,RSV-B,,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A (unknown),detections,total,63.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A (unknown),detections,total,98.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A(H1)pdm09,detections,total,34.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A(H3),detections,total,15.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W39,Influenza,Influenza B,B/Vic,detections,total,4.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W39,RSV,RSV-A,,detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W39,RSV,RSV-B,,detections,total,2.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A (unknown),detections,total,92.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A (unknown),detections,total,136.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,35.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A(H3),detections,total,9.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W40,Influenza,Influenza B,B (unknown),detections,total,2.0
@@ -5591,17 +5608,20 @@ activityFluTypeSubtype,non-sentinel,Norway,2026-W40,RSV,RSV untyped,,detections,
 activityFluTypeSubtype,non-sentinel,Norway,2026-W40,RSV,RSV-A,,detections,total,2.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W40,RSV,RSV-B,,detections,total,4.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A (unknown),detections,total,132.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A (unknown),detections,total,183.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A(H3),detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,Influenza,Influenza B,B (unknown),detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,RSV,RSV untyped,,detections,total,4.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,RSV,RSV-A,,detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W41,RSV,RSV-B,,detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Norway,2026-W42,Influenza,Influenza A,A (unknown),detections,total,165.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W42,Influenza,Influenza A,A (unknown),detections,total,182.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W42,Influenza,Influenza B,B (unknown),detections,total,6.0
 activityFluTypeSubtype,non-sentinel,Norway,2026-W42,RSV,RSV untyped,,detections,total,4.0
 activityFluTypeSubtype,primary care sentinel,Norway,2026-W42,Influenza,Influenza A,A (unknown),detections,total,1.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W43,Influenza,Influenza A,A (unknown),detections,total,230.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W43,Influenza,Influenza B,B (unknown),detections,total,13.0
+activityFluTypeSubtype,non-sentinel,Norway,2026-W43,RSV,RSV untyped,,detections,total,6.0
 activityFluTypeSubtype,non-sentinel,Sweden,2022-W25,Influenza,Influenza A,A (unknown),detections,total,65.0
 activityFluTypeSubtype,non-sentinel,Sweden,2022-W25,Influenza,Influenza A,A(H3),detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Sweden,2022-W25,Influenza,Influenza B,B (unknown),detections,total,2.0
@@ -6939,17 +6959,26 @@ activityFluTypeSubtype,non-sentinel,Sweden,2026-W40,Influenza,Influenza A,A (unk
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,22.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W40,Influenza,Influenza A,A(H3),detections,total,5.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W40,RSV,RSV untyped,,detections,total,5.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,26.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,17.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,25.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H3),detections,total,4.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,Influenza,Influenza B,B (unknown),detections,total,3.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W41,RSV,RSV untyped,,detections,total,3.0
-activityFluTypeSubtype,primary care sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,1.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A (unknown),detections,total,44.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,32.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H3),detections,total,2.0
-activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B (unknown),detections,total,3.0
+activityFluTypeSubtype,primary care sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A (unknown),detections,total,34.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,40.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H3),detections,total,4.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B (unknown),detections,total,2.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B/Vic,detections,total,1.0
 activityFluTypeSubtype,non-sentinel,Sweden,2026-W42,RSV,RSV untyped,,detections,total,1.0
+activityFluTypeSubtype,primary care sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A (unknown),detections,total,68.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,31.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A(H3),detections,total,2.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W43,Influenza,Influenza B,B (unknown),detections,total,2.0
+activityFluTypeSubtype,non-sentinel,Sweden,2026-W43,RSV,RSV untyped,,detections,total,4.0
+activityFluTypeSubtype,primary care sentinel,Sweden,2026-W43,Influenza,Influenza A,A (unknown),detections,total,2.0
+activityFluTypeSubtype,primary care sentinel,Sweden,2026-W43,RSV,RSV-A,,detections,total,1.0
 nonSentinelSeverity,non-sentinel,Denmark,2022-W25,SARS-CoV-2,SARS-CoV-2,,ICUadmissions,15-64,5.0
 nonSentinelSeverity,non-sentinel,Denmark,2022-W25,SARS-CoV-2,SARS-CoV-2,,ICUadmissions,65+,11.0
 nonSentinelSeverity,non-sentinel,Denmark,2022-W25,SARS-CoV-2,SARS-CoV-2,,ICUadmissions,total,16.0
@@ -11320,6 +11349,18 @@ nonSentinelSeverity,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,,deaths,5
 nonSentinelSeverity,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,,deaths,65+,6.0
 nonSentinelSeverity,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,,deaths,total,6.0
 nonSentinelSeverity,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,,deaths,unk,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,0-4,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,15-64,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,5-14,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,65+,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,total,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,Influenza,Influenza,,deaths,unk,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,0-4,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,15-64,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,5-14,0.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,65+,4.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,total,4.0
+nonSentinelSeverity,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,,deaths,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2022-W25,Influenza,Influenza,total,detections,total,13.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2022-W25,Influenza,Influenza,total,tests,total,4769.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2022-W25,Influenza,Influenza A,A (unknown),detections,total,7.0
@@ -15968,7 +16009,7 @@ nonSentinelTestsDetections,non-sentinel,Denmark,2026-W39,SARS-CoV-2,SARS-CoV-2,S
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,1571.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,1571.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza,total,detections,total,86.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza,total,tests,total,1711.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza,total,tests,total,1710.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza A,A (unknown),detections,total,51.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,26.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,Influenza,Influenza A,A(H3),detections,total,9.0
@@ -15987,10 +16028,10 @@ nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,SARS-CoV-2,SARS-CoV-2,S
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,1697.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,1697.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza,total,detections,total,74.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza,total,detections,total,76.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza,total,tests,total,1894.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A (unknown),detections,total,56.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,16.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza A,A(H3),detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,Influenza,Influenza B,B (unknown),detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,RSV,RSV,RSV,detections,total,0.0
@@ -16007,13 +16048,14 @@ nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,S
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,1894.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,1894.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza,total,detections,total,87.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza,total,tests,total,1908.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza,total,detections,total,111.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza,total,tests,total,1906.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A (unknown),detections,total,77.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,9.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,30.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H3),detections,total,3.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,Influenza,Influenza B,B (unknown),detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,RSV,RSV,RSV,detections,total,0.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,RSV,RSV,RSV,tests,total,1740.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,RSV,RSV,RSV,tests,total,1739.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,0.0
@@ -16024,8 +16066,27 @@ nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,S
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,0.0
 nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,0.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,1903.0
-nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,1903.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,1921.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,1921.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,Influenza,Influenza,total,detections,total,93.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,Influenza,Influenza,total,tests,total,2052.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,Influenza,Influenza A,A (unknown),detections,total,82.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,8.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,Influenza,Influenza B,B (unknown),detections,total,3.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,RSV,RSV,RSV,detections,total,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,RSV,RSV,RSV,tests,total,1922.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,71.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,71.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,0.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,2028.0
+nonSentinelTestsDetections,non-sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,2028.0
 nonSentinelTestsDetections,non-sentinel,Norway,2022-W25,Influenza,Influenza,total,detections,total,23.0
 nonSentinelTestsDetections,non-sentinel,Norway,2022-W25,Influenza,Influenza,total,tests,total,6683.0
 nonSentinelTestsDetections,non-sentinel,Norway,2022-W25,Influenza,Influenza A,A (unknown),detections,total,17.0
@@ -20556,9 +20617,9 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W34,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W34,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1555.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W34,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,4346.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W34,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza,total,detections,total,128.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza,total,tests,total,4820.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A (unknown),detections,total,88.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza,total,detections,total,155.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza,total,tests,total,4821.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A (unknown),detections,total,115.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A(H1)pdm09,detections,total,16.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza A,A(H3),detections,total,23.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,Influenza,Influenza B,B (unknown),detections,total,1.0
@@ -20569,23 +20630,23 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,RSV,RSV-A,,detections,to
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,8.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,47.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,2.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,32.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,89.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,31.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,88.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,306.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,307.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,2642.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,197.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1679.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,4824.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,4825.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W35,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza,total,detections,total,93.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza,total,tests,total,4954.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A (unknown),detections,total,52.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza,total,detections,total,124.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza,total,tests,total,4957.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A (unknown),detections,total,83.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A(H1)pdm09,detections,total,19.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza A,A(H3),detections,total,18.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,Influenza,Influenza B,B/Vic,detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,RSV,RSV,RSV,detections,total,4.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,RSV,RSV,RSV,tests,total,4849.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,RSV,RSV,RSV,tests,total,4853.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,RSV,RSV untyped,,detections,total,3.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,RSV,RSV-A,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,8.0
@@ -20595,21 +20656,21 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,119.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,293.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,2804.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,2808.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,205.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1649.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,4951.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,4955.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W36,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza,total,detections,total,90.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza,total,tests,total,5201.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A (unknown),detections,total,47.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza,total,detections,total,118.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza,total,tests,total,5204.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A (unknown),detections,total,75.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza A,A(H3),detections,total,19.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza B,B (unknown),detections,total,5.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,Influenza,Influenza B,B/Vic,detections,total,1.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV,RSV,detections,total,7.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV,RSV,tests,total,5080.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV untyped,,detections,total,4.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV,RSV,detections,total,8.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV,RSV,tests,total,5083.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV untyped,,detections,total,5.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV-A,,detections,total,2.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,RSV,RSV-B,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,1.0
@@ -20619,20 +20680,20 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,101.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,332.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,2961.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,2962.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,209.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1702.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5204.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1704.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5207.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W37,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza,total,detections,total,123.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza,total,tests,total,5451.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A (unknown),detections,total,68.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza,total,detections,total,167.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza,total,tests,total,5453.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A (unknown),detections,total,112.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A(H1)pdm09,detections,total,40.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza A,A(H3),detections,total,11.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza B,B (unknown),detections,total,3.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,Influenza,Influenza B,B/Vic,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV,RSV,detections,total,6.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV,RSV,tests,total,5323.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV,RSV,tests,total,5325.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV untyped,,detections,total,2.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV-A,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,RSV,RSV-B,,detections,total,3.0
@@ -20643,19 +20704,19 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,88.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,371.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3013.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3012.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,240.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1826.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5450.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1829.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5452.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W38,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza,total,detections,total,116.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza,total,tests,total,5642.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A (unknown),detections,total,63.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza,total,detections,total,151.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza,total,tests,total,5644.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A (unknown),detections,total,98.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A(H1)pdm09,detections,total,34.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza A,A(H3),detections,total,15.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,Influenza,Influenza B,B/Vic,detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,RSV,RSV,RSV,detections,total,3.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,RSV,RSV,RSV,tests,total,5529.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,RSV,RSV,RSV,tests,total,5528.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,RSV,RSV-A,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,RSV,RSV-B,,detections,total,2.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,6.0
@@ -20664,65 +20725,65 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,43.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,129.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,409.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,408.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3139.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,189.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1908.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5645.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5644.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W39,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza,total,detections,total,139.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza,total,tests,total,5599.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A (unknown),detections,total,92.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza,total,detections,total,183.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza,total,tests,total,5600.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A (unknown),detections,total,136.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A(H1)pdm09,detections,total,35.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza A,A(H3),detections,total,9.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza B,B (unknown),detections,total,2.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,Influenza,Influenza B,B/Vic,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV,RSV,detections,total,7.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV,RSV,tests,total,5473.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV,RSV,tests,total,5475.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV untyped,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV-A,,detections,total,2.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,RSV,RSV-B,,detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,3.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,54.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,55.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,1.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,71.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,129.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,68.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,127.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,435.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3052.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3054.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,183.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1919.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5589.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1918.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5590.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza,total,detections,total,158.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza,total,tests,total,5686.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A (unknown),detections,total,132.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza,total,detections,total,209.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza,total,tests,total,5687.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A (unknown),detections,total,183.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza A,A(H3),detections,total,3.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,Influenza,Influenza B,B (unknown),detections,total,5.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV,RSV,detections,total,6.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV,RSV,tests,total,5498.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV,RSV,tests,total,5500.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV untyped,,detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV-A,,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,RSV,RSV-B,,detections,total,1.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,7.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,6.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,81.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,1.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,65.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,154.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,64.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,152.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,469.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,468.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3051.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,155.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,2008.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,2009.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5683.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza,total,detections,total,171.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza,total,tests,total,5823.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza A,A (unknown),detections,total,165.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza,total,detections,total,188.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza,total,tests,total,5862.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza A,A (unknown),detections,total,182.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,Influenza,Influenza B,B (unknown),detections,total,6.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,RSV,RSV,RSV,detections,total,4.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,RSV,RSV,RSV,tests,total,5646.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,RSV,RSV,RSV,tests,total,5685.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,RSV,RSV untyped,,detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,6.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,96.0
@@ -20730,12 +20791,31 @@ nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,63.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,167.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,439.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3197.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,445.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3214.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,181.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,1986.0
-nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5803.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,2001.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5841.0
 nonSentinelTestsDetections,non-sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,Influenza,Influenza,total,detections,total,243.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,Influenza,Influenza,total,tests,total,5990.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,Influenza,Influenza A,A (unknown),detections,total,230.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,Influenza,Influenza B,B (unknown),detections,total,13.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,RSV,RSV,RSV,detections,total,6.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,RSV,RSV,RSV,tests,total,5778.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,RSV,RSV untyped,,detections,total,6.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,9.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,129.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,2.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,92.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,232.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,445.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,3155.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,5-14,228.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,2142.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,5970.0
+nonSentinelTestsDetections,non-sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2022-W25,Influenza,Influenza,total,detections,total,72.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2022-W25,Influenza,Influenza A,A (unknown),detections,total,65.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2022-W25,Influenza,Influenza A,A(H3),detections,total,5.0
@@ -24881,10 +24961,10 @@ nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,Influenza,Influenza,tota
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,Influenza,Influenza A,A (unknown),detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,Influenza,Influenza B,B (unknown),detections,total,7.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,1.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,4.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,3.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,0.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,11.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,16.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,15.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,159.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W25,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,834.0
@@ -25162,8 +25242,8 @@ nonSentinelTestsDetections,non-sentinel,Sweden,2026-W40,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,59.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza,total,detections,total,50.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza,total,tests,total,3288.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,26.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,17.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,25.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,18.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H3),detections,total,4.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,Influenza,Influenza B,B (unknown),detections,total,3.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,RSV,RSV,RSV,detections,total,3.0
@@ -25172,8 +25252,8 @@ nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,RSV,RSV untyped,,detecti
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,4.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,20.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,1.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,96.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,121.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,95.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,120.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,0-4,193.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,15-64,968.0
@@ -25183,10 +25263,11 @@ nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,75.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza,total,detections,total,81.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza,total,tests,total,3372.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A (unknown),detections,total,44.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,32.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H3),detections,total,2.0
-nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B (unknown),detections,total,3.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A (unknown),detections,total,34.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,40.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H3),detections,total,4.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B (unknown),detections,total,2.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,Influenza,Influenza B,B/Vic,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,RSV,RSV,RSV,detections,total,1.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,RSV,RSV,RSV,tests,total,3372.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,RSV,RSV untyped,,detections,total,1.0
@@ -25202,6 +25283,19 @@ nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SA
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,65+,2038.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,3372.0
 nonSentinelTestsDetections,non-sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,unk,63.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,Influenza,Influenza,total,detections,total,103.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A (unknown),detections,total,68.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,31.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,Influenza,Influenza A,A(H3),detections,total,2.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,Influenza,Influenza B,B (unknown),detections,total,2.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,RSV,RSV,RSV,detections,total,4.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,RSV,RSV untyped,,detections,total,4.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,0-4,9.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,15-64,28.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,5-14,1.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,83.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,121.0
+nonSentinelTestsDetections,non-sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,unk,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2022-W25,Influenza,Influenza,total,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2022-W25,Influenza,Influenza,total,positivity,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2022-W25,Influenza,Influenza,total,tests,total,98.0
@@ -27848,17 +27942,29 @@ sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W41,SARS-Co
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,2.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,101.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza,total,detections,total,11.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza,total,positivity,total,12.2
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza,total,tests,total,90.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza,total,positivity,total,10.7
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza,total,tests,total,103.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,9.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,Influenza,Influenza B,B (unknown),detections,total,2.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV,RSV,detections,total,1.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV,RSV,positivity,total,1.1
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV,RSV,tests,total,90.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV,RSV,positivity,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV,RSV,tests,total,103.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,RSV,RSV-A,,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,3.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,3.3
-sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,90.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,2.9
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,103.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,Influenza,Influenza,total,detections,total,4.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,Influenza,Influenza,total,positivity,total,5.2
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,Influenza,Influenza,total,tests,total,77.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H1)pdm09,detections,total,3.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,Influenza,Influenza A,A(H3),detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,RSV,RSV,RSV,detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,RSV,RSV,RSV,positivity,total,1.3
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,RSV,RSV,RSV,tests,total,77.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,RSV,RSV-B,,detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,3.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,3.9
+sentinelTestsDetectionsPositivity,primary care sentinel,Denmark,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,77.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2022-W25,Influenza,Influenza,total,detections,total,13.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2022-W25,Influenza,Influenza,total,positivity,total,29.5
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2022-W25,Influenza,Influenza,total,tests,total,44.0
@@ -30300,6 +30406,15 @@ sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W42,RSV,RSV,
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,5.6
 sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,18.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,Influenza,Influenza,total,detections,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,Influenza,Influenza,total,positivity,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,Influenza,Influenza,total,tests,total,19.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,RSV,RSV,RSV,detections,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,RSV,RSV,RSV,positivity,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,RSV,RSV,RSV,tests,total,19.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Norway,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,19.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2022-W25,Influenza,Influenza,total,detections,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2022-W25,Influenza,Influenza,total,positivity,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2022-W25,Influenza,Influenza,total,tests,total,3.0
@@ -31560,19 +31675,31 @@ sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W40,SARS-CoV
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,Influenza,Influenza,total,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,Influenza,Influenza,total,positivity,total,9.1
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,Influenza,Influenza,total,tests,total,11.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,Influenza,Influenza A,A (unknown),detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,RSV,RSV,RSV,detections,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,RSV,RSV,RSV,positivity,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,RSV,RSV,RSV,tests,total,11.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W41,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,11.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza,total,detections,total,0.0
-sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza,total,positivity,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza,total,detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza,total,positivity,total,6.2
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza,total,tests,total,16.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,Influenza,Influenza A,A(H1)pdm09,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,RSV,RSV,RSV,detections,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,RSV,RSV,RSV,positivity,total,0.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,RSV,RSV,RSV,tests,total,16.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,1.0
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,6.2
 sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,16.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,Influenza,Influenza,total,detections,total,2.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,Influenza,Influenza,total,positivity,total,13.3
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,Influenza,Influenza,total,tests,total,15.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,Influenza,Influenza A,A (unknown),detections,total,2.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,RSV,RSV,RSV,detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,RSV,RSV,RSV,positivity,total,6.7
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,RSV,RSV,RSV,tests,total,15.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,RSV,RSV-A,,detections,total,1.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,positivity,total,0.0
+sentinelTestsDetectionsPositivity,primary care sentinel,Sweden,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,15.0
