@@ -232,7 +232,7 @@ def test_leading_markets(tmp_path):
     assert any(p.startswith("Australia's 2026 flu season peaked") for p in lead["points"])
 
     html = emailer.render(result)
-    assert "Ahead of the Nordics" in html and html.isascii()
+    assert "Ahead of the Nordics" not in html and "FluNet" not in html and html.isascii()  # Nordics only
     from flutracker import excel
     from openpyxl import load_workbook
     excel.build(result, tmp_path / "w.xlsx")
