@@ -139,7 +139,7 @@ def test_rsv_indicators():
     assert no["rsv_cases"]["value"] == 40 and no["rsv_cases"]["intensity"] == "Very high"
     assert no["rsv_positivity"]["value"] == 20.0
     assert "flu_a_cases" not in result["indicators"]
-    assert any(f.startswith("RSV, lab-confirmed") for f in result["findings"])
+    assert any(f.startswith("RSV cases this week") for f in result["findings"])
     assert "RSV" in emailer.render(result)
 
 

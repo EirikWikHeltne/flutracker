@@ -185,7 +185,7 @@ def chart_block(src):
     return (f'<img src="{esc(src)}" width="550" alt="Lab-confirmed cases per week, each year as a line" '
             f'style="display:block; width:100%; max-width:550px; height:auto; border:0;" />'
             f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Norway, Sweden and Denmark combined. One line per '
-            f'year; the thick dark line is this year. Gaps are weeks not every country reported (e.g. Swedish RSV in summer).</p>')
+            f'year; the thick dark line is this year. Gaps are weeks when not every country reported, such as Swedish RSV in summer.</p>')
 
 
 def intensity_block(result):
@@ -201,9 +201,9 @@ def intensity_block(result):
         mark = (f"&#9650; Influenza now<br />{fmt_num(flu['intensity_pct'])}% of peak" if name == now else "&nbsp;")
         marks.append(f'<td width="20%" style="padding:6px 4px 0 4px; font-family:{FONT}; font-size:11px; text-align:center; '
                      f'color:{NAVY}; font-weight:bold;">{mark}</td>')
-    return (f'<p style="margin:0 0 12px 0; font-size:14px; line-height:1.6; color:{TEXT};">For each earlier season we take '
-            f'the busiest week (the season peak) and average those peaks. <b>This week&rsquo;s cases &divide; that average '
-            f'peak</b> is the intensity &ndash; how close we are to a normal season peak.</p>'
+    return (f'<p style="margin:0 0 12px 0; font-size:14px; line-height:1.6; color:{TEXT};">Take the busiest week of each '
+            f'earlier season and average them. <b>This week&rsquo;s cases &divide; that average peak</b> is the intensity. '
+            f'It shows how close we are to the top of a normal season.</p>'
             f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
             f'<tr>{"".join(cells)}</tr><tr>{"".join(marks)}</tr></table>')
 
@@ -265,6 +265,8 @@ def render(result, dashboard_url=None, chart_src=None):
 <p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; Norway, Sweden, Denmark</p>
 </td></tr>""",
         spacer(28),
+        *([row(f'<p style="margin:0; font-family:{FONT}; font-size:17px; line-height:1.55; color:{NAVY};">'
+               f'{esc(" ".join(result["headline"]))}</p>'), spacer(24)] if result["headline"] else []),
         row(label("This week in the Nordics") + status_cards(result)),
         spacer(26),
         *([row(label("Worth knowing") + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),

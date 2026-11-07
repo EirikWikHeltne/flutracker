@@ -329,17 +329,27 @@ def fmt_pct(v, signed=True):
     return f"{sign}{v:,.0f}%".replace("-", "−")
 
 
-def _intensity_text(s):
-    if not s.get("intensity"):
+def join_words(items, last="and"):
+    """'a', 'a and b', 'a, b and c'."""
+    items = list(items)
+    if len(items) <= 1:
+        return "".join(items)
+    return ", ".join(items[:-1]) + f" {last} " + items[-1]
+
+
+def _change_words(wow):
+    if wow is None:
         return ""
-    return f" Intensity: {s['intensity'].lower()} ({fmt_num(s['intensity_pct'])}% of an average season peak)."
+    if wow == 0:
+        return ", unchanged on the week before"
+    return f", {'up' if wow > 0 else 'down'} {fmt_num(abs(wow))}% on the week before"
 
 
 def _case_sentence(name, s, what):
-    text = f"{name}: {fmt_num(s['value'])} {what} in week {parse_yw(s['week'])[1]}"
-    if s["wow_pct"] is not None:
-        text += f" ({fmt_pct(s['wow_pct'])} on the week before)"
-    return text + "." + _intensity_text(s)
+    text = f"{name} had {fmt_num(s['value'])} {what} in week {parse_yw(s['week'])[1]}{_change_words(s['wow_pct'])}."
+    if s.get("intensity"):
+        text += f" That is {fmt_num(s['intensity_pct'])}% of an average season peak ({s['intensity'].lower()} intensity)."
+    return text
 
 
 def _threshold_points(summary):
@@ -349,7 +359,7 @@ def _threshold_points(summary):
         if sp and not sp.get("low_tests") and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD:
             out.append(
                 f"{c['name']} is above ECDC's epidemic threshold: {fmt_num(sp['value'], 1)}% of sentinel"
-                f" samples were positive for influenza in week {parse_yw(sp['week'])[1]}."
+                f" samples tested positive for influenza in week {parse_yw(sp['week'])[1]}."
             )
     return out
 
@@ -360,7 +370,7 @@ def _ranking_points(summary):
     if len(ranked) < 2:
         return []
     top = max(ranked)
-    return [f"Highest influenza level: {top[1]}, at {fmt_num(top[0])}% of an average season peak."]
+    return [f"{top[1]} has the most influenza relative to a normal season: {fmt_num(top[0])}% of an average season peak."]
 
 
 def _dominant_points(result):
@@ -373,18 +383,21 @@ def _dominant_points(result):
         return []
     dom = max(typed, key=typed.get)
     share = typed[dom] / sum(typed.values()) * 100
-    return [f"Dominant influenza virus so far this season (subtyped samples, all three countries): {dom} ({fmt_num(share)}%)."]
+    return [f"{dom} accounts for {fmt_num(share)}% of subtyped influenza samples this season, across all three countries."]
 
 
 def _hospital_points(summary):
-    hospital = []
+    by_country = []
     for code, c in COUNTRIES.items():
+        items = []
         for key, meta in INDICATORS.items():
             s = summary.get(code, {}).get(key)
             if meta["group"] == "Hospital & severity" and s:
                 label = meta["label"][0].lower() + meta["label"][1:]
-                hospital.append(f"{c['name']} {fmt_num(s['value'], meta['decimals'])} {label}")
-    return ["Hospital and severity this week: " + "; ".join(hospital) + "."] if hospital else []
+                items.append(f"{fmt_num(s['value'], meta['decimals'])} {label}")
+        if items:
+            by_country.append(f"{c['name']} reported {join_words(items)}")
+    return [join_words(by_country, "and") + " this week."] if by_country else []
 
 
 def findings(result):
@@ -406,7 +419,7 @@ def findings(result):
                 level = f", {s['intensity'].lower()}" if s.get("intensity") else ""
                 parts.append(f"{c['name']} {fmt_num(s['value'])} ({fmt_pct(s['wow_pct'])}{level})")
         if parts:
-            out.append(f"{name}, lab-confirmed cases this week: " + "; ".join(parts) + ".")
+            out.append(f"{name} cases this week: " + "; ".join(parts) + ".")
 
     return out + _hospital_points(summary)
 
@@ -436,13 +449,7 @@ def _trend_word(wow):
         return f"up {fmt_num(wow)}%"
     if wow <= -10:
         return f"down {fmt_num(abs(wow))}%"
-    return "stable"
-
-
-def _level_text(s):
-    if not s.get("intensity"):
-        return ""
-    return f"{s['intensity'].lower()} intensity ({fmt_num(s['intensity_pct'])}% of an average season peak)"
+    return "about the same as"
 
 
 def headline(result):
@@ -451,24 +458,28 @@ def headline(result):
     out = []
     flu = nordic.get("flu_cases")
     if flu and flu["week"] == result["latest_week"]:
-        text = (f"Influenza: {fmt_num(flu['value'])} lab-confirmed cases in the Nordics this week, "
-                f"{_trend_word(flu['wow_pct'])} on last week")
+        trend = _trend_word(flu["wow_pct"])
+        text = (f"The Nordics had {fmt_num(flu['value'])} lab-confirmed influenza cases this week, "
+                + (f"{trend} last week." if trend == "about the same as" else f"{trend} on last week."))
         if flu.get("intensity"):
-            text += f" – {_level_text(flu)}"
-        out.append(text + ".")
+            text += (f" That is {fmt_num(flu['intensity_pct'])}% of an average season peak "
+                     f"({flu['intensity'].lower()} intensity).")
+        out.append(text)
     above = [COUNTRIES[c]["name"] for c in COUNTRIES
              if (sp := summary.get(c, {}).get("flu_sentinel")) and not sp.get("low_tests")
              and sp["value"] >= SENTINEL_EPIDEMIC_THRESHOLD]
     if above:
-        out.append(f"{' and '.join(above)} {'is' if len(above) == 1 else 'are'} above ECDC's epidemic threshold.")
+        out.append(f"{join_words(above)} {'is' if len(above) == 1 else 'are'} above ECDC's epidemic threshold.")
     others = []
     for key, name in (("covid_cases", "COVID-19"), ("rsv_cases", "RSV")):
         n = nordic.get(key)
         if n and n["week"] == result["latest_week"]:
-            level = f", {n['intensity'].lower()} intensity" if n.get("intensity") else ""
-            others.append(f"{name} {fmt_num(n['value'])} cases ({_trend_word(n['wow_pct'])}{level})")
+            trend = _trend_word(n["wow_pct"])
+            trend = "flat" if trend == "about the same as" else trend
+            level = f", {n['intensity'].lower()}" if n.get("intensity") else ""
+            others.append(f"{name} {fmt_num(n['value'])} ({trend}{level})")
     if others:
-        out.append("Nordics: " + "; ".join(others) + ".")
+        out.append("Other viruses: " + join_words(others) + ".")
     return out
 
 
