@@ -186,6 +186,40 @@
     .method, .downloads { gap: 20px; }
     .scroll { -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 0 16px; }
   }
+
+  /* Microinteractions: short and functional, switched off for reduced motion. */
+  :root { --ease: cubic-bezier(.2, .7, .2, 1); }
+  a { text-underline-offset: 2px; text-decoration-thickness: 1px; transition: text-decoration-thickness .15s var(--ease); }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--c-NO); outline-offset: 2px; }
+  header.banner :focus-visible { outline-color: var(--peach); }
+  .btn, .seg button, select { transition: background-color .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease), transform .12s var(--ease), box-shadow .18s var(--ease); }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -6px rgba(17, 11, 54, .45); }
+  .btn:active, .seg button:active { transform: translateY(0) scale(.98); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--peach); color: var(--peach); box-shadow: none; }
+  .btn.outline:hover { border-color: var(--text); }
+  .btn .ic { transition: transform .2s var(--ease); }
+  .btn[download]:hover .ic { transform: translateY(2px); }
+  .btn.sent { pointer-events: none; }
+  .btn.sent .ic { animation: pop .35s var(--ease); }
+  .seg button:not([aria-pressed="true"]):hover { background: var(--alt); }
+  select:hover { border-color: var(--muted); }
+  td { transition: background-color .15s var(--ease); }
+  tbody tr:not(.group):hover td { background: var(--alt); }
+  #intensityScale td { transition: background-color .3s var(--ease), font-weight .3s; }
+  details > summary { transition: color .15s var(--ease); }
+  details > summary:hover { color: var(--text); }
+  details[open] > :not(summary) { animation: rise .35s var(--ease) both; }
+  .reveal { opacity: 0; transform: translateY(14px); }
+  .reveal.in { opacity: 1; transform: none; transition: opacity .55s var(--ease), transform .55s var(--ease); }
+  html.theme-fade, html.theme-fade * { transition: background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease) !important; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { 0% { transform: scale(.4); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    .btn:hover, .btn[download]:hover .ic { transform: none; }
+  }
+  @media print { .reveal { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
@@ -204,6 +238,7 @@
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5a1.5 1.5 0 0 0 1.5 1.5H20"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
   <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/></symbol>
 </svg>
 <header class="banner">
@@ -399,7 +434,10 @@
   let data, seasonChart, recentChart, yearChart, leadChart;
 
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
+  const calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.getElementById("themeToggle").addEventListener("click", () => {
+    const root = document.documentElement;
+    if (!calm) { root.classList.add("theme-fade"); setTimeout(() => root.classList.remove("theme-fade"), 350); }
     const dark = css("--surface") !== "#ffffff";
     document.documentElement.dataset.theme = dark ? "light" : "dark";
     try { localStorage.setItem("flu-theme", document.documentElement.dataset.theme); } catch (e) {}
@@ -449,6 +487,7 @@
     renderIntensity();
     renderSubtypes();
     renderSources();
+    reveal();
     document.getElementById("footer").textContent = "Karo Healthcare Norway · Flu tracker · Data up to " + data.latest_week;
   }
 
@@ -458,7 +497,7 @@
       const val = (k) => ind[k] ? fmt(ind[k].value) : "–";
       return el("div", { className: "tile" },
         '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " · influenza</div>" +
-        '<div class="big">' + fmt(s.value) + "</div>" +
+        '<div class="big" data-value="' + (s.value == null ? "" : s.value) + '">' + fmt(s.value) + "</div>" +
         '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " on last week · positivity " +
         fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
         '<div class="foot one"><span>Intensity <b>' + esc(s.intensity || "–") + "</b>" + (s.intensity_pct != null ? " · " + s.intensity_pct + "% of an average peak" : "") + "</span>" +
@@ -466,7 +505,51 @@
         "<span>RSV <b>" + val("rsv_cases") + "</b> · " + esc((rsv && rsv.intensity || "–").toLowerCase()) + "</span></div>");
     });
     document.getElementById("tiles").replaceChildren(...tiles);
+    countUp(document.querySelectorAll("#tiles .big[data-value]"));
   }
+
+  // The headline numbers count up once on load, so the eye lands on them.
+  function countUp(nodes) {
+    if (calm || !window.requestAnimationFrame) return;
+    nodes.forEach((n) => {
+      const target = +n.dataset.value;
+      if (!target) return;
+      const t0 = performance.now(), dur = 750;
+      n.style.minWidth = n.offsetWidth + "px";
+      const step = (t) => {
+        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        n.textContent = fmt(target * e);
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  // Sections below the fold rise in as they scroll into view.
+  function reveal() {
+    if (calm || !("IntersectionObserver" in window)) return;
+    // Any section in view also releases those above it, so a fast scroll or jump never leaves one hidden.
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((en) => en.isIntersecting)) return;
+      document.querySelectorAll(".reveal:not(.in)").forEach((sec) => {
+        if (sec.getBoundingClientRect().top < innerHeight * 0.92) { sec.classList.add("in"); io.unobserve(sec); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll("main > section, main > .grid2").forEach((sec) => {
+      if (sec.getBoundingClientRect().top < innerHeight) return;
+      sec.classList.add("reveal");
+      io.observe(sec);
+    });
+  }
+
+  // Download buttons confirm the click, then return to normal.
+  document.querySelectorAll("a.btn[download]").forEach((a) => a.addEventListener("click", () => {
+    const html = a.innerHTML;
+    a.style.minWidth = a.offsetWidth + "px";
+    a.classList.add("sent");
+    a.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Download started';
+    setTimeout(() => { a.innerHTML = html; a.classList.remove("sent"); a.style.minWidth = ""; }, 2200);
+  }));
 
   function renderControls() {
     const seg = document.getElementById("countrySeg");
@@ -518,7 +601,7 @@
   function baseOptions(yTitle) {
     const grid = css("--grid"), muted = css("--muted");
     return {
-      responsive: true, maintainAspectRatio: false, animation: false,
+      responsive: true, maintainAspectRatio: false, animation: calm ? false : { duration: 450, easing: "easeOutQuart" },
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: { display: false },
