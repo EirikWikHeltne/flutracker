@@ -89,12 +89,13 @@
   main { padding: 28px 0 40px; }
   section { background: var(--surface); padding: 28px clamp(16px, 3vw, 36px); margin-bottom: 20px; }
   .ic { width: 16px; height: 16px; flex: 0 0 auto; vertical-align: -3px; }
-  .label .ic { width: 15px; height: 15px; color: var(--text); opacity: .7; }
   .btn .ic { width: 17px; height: 17px; }
   .dl h3 { display: flex; align-items: center; gap: 8px; }
   .dl h3 .ic { width: 20px; height: 20px; }
   .label { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
   h2 { font-weight: normal; font-size: 22px; margin: 0 0 14px; line-height: 1.3; }
+  .lede { font-size: 19px; line-height: 1.5; margin: 0 0 20px; max-width: 62ch; }
+  .lede:empty { display: none; }
   h3 { font-weight: normal; font-size: 17px; margin: 22px 0 8px; }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 14px; }
   .tile { background: var(--tile-bg); color: var(--tile-text); display: flex; flex-direction: column; }
@@ -170,6 +171,7 @@
     main { padding: 16px 0 24px; }
     section { padding: 20px 16px; margin-bottom: 14px; }
     h2 { font-size: 20px; }
+    .lede { font-size: 17px; }
     .tile .big { font-size: 34px; }
     .controls { flex-direction: column; align-items: stretch; }
     .seg { display: flex; width: 100%; }
@@ -226,19 +228,21 @@
 
 <main class="wrap">
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>This week</p>
-    <h2>Lab-confirmed cases</h2>
+    <p class="label">This week</p>
+    <p class="lede" id="lede"></p>
+    <h2>Lab-confirmed influenza cases by country</h2>
     <div class="tiles" id="tiles"></div>
-    <p class="note">Intensity = this week against the average peak of previous seasons (<a href="#intensity">how intensity is calculated</a>).</p>
+    <p class="note">Intensity is this week&rsquo;s value as a share of the average peak in earlier seasons (<a href="#intensity">how it is calculated</a>).</p>
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Key findings</p>
+    <p class="label">Key findings</p>
+    <h2>What the numbers say</h2>
     <ul class="findings" id="findings"></ul>
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Year by year</p>
+    <p class="label">Year by year</p>
     <h2 id="yearTitle">Lab-confirmed cases, January to December</h2>
     <div class="controls">
       <div class="seg" id="yearAreaSeg" role="group" aria-label="Choose country or the Nordics"></div>
@@ -246,11 +250,11 @@
     </div>
     <div class="chart-box"><canvas id="yearChart" aria-label="Weekly cases per calendar year"></canvas></div>
     <div class="legend" id="yearLegend"></div>
-    <p class="note">One line per year, by ISO week. The thick line is this year. The Nordic total is only shown for weeks in which all three countries reported.</p>
+    <p class="note">One line per year, by ISO week; the thick line is this year. The Nordic total only covers weeks in which all three countries reported.</p>
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Last 12 months</p>
+    <p class="label">Last 12 months</p>
     <h2 id="recentTitle">Lab-confirmed cases by virus</h2>
     <div class="controls"><div class="seg" id="recentSeg" role="group" aria-label="Choose country or the Nordics"></div></div>
     <div class="chart-box"><canvas id="recentChart" aria-label="Lab-confirmed cases by virus, last 52 weeks"></canvas></div>
@@ -259,7 +263,7 @@
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg>Season curve</p>
+    <p class="label">Season curve</p>
     <h2 id="chartTitle">This season against previous seasons</h2>
     <div class="controls">
       <div class="seg" id="countrySeg" role="group" aria-label="Choose country"></div>
@@ -276,27 +280,27 @@
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>All indicators</p>
+    <p class="label">All indicators</p>
     <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
-    <p class="note">* Latest reported week is older than the latest week in the dataset. † Fewer than 20 sentinel samples – interpret with care.</p>
+    <p class="note">* The country&rsquo;s latest report is older than the newest week in the data. † Fewer than 20 sentinel samples, so read with care.</p>
   </section>
 
   <section id="intensity">
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-thermo"/></svg>Method</p>
+    <p class="label">Method</p>
     <h2>How intensity is calculated</h2>
     <div class="method">
       <div>
-        <p>Intensity answers the question <i>&ldquo;how big is this week compared with the top of a typical season?&rdquo;</i> It is calculated separately for every country and indicator:</p>
+        <p>Intensity compares this week with the top of a typical season. Each country and indicator gets its own figure:</p>
         <ol>
-          <li>For each previous season (week 40 to week 39) with at least 20 weeks of data, find the <b>highest weekly value</b> &ndash; that season&rsquo;s peak.</li>
+          <li>For each previous season (week 40 to week 39) with at least 20 weeks of data, find the <b>highest weekly value</b>. That is the season&rsquo;s peak.</li>
           <li>Take the <b>average of those peaks</b>.</li>
           <li>Divide <b>this week&rsquo;s value</b> by that average peak.</li>
           <li>Place the result on the scale below.</li>
         </ol>
         <p class="formula">Intensity ratio = this week&rsquo;s value &divide; average peak of previous seasons</p>
         <div class="scroll"><table id="intensityScale"></table></div>
-        <p class="note">Intensity tells how close we are to a normal season peak, so it reads the same early and late in the season. The more previous seasons there are, the more reliable the average peak; for RSV in Norway it rests on two seasons only. ECDC and the national institutes publish their own intensity levels with other methods, so their labels can differ.</p>
+        <p class="note">Because it is measured against the peak, intensity means the same thing early and late in the season. More seasons give a steadier average peak; RSV in Norway has only two. ECDC and the national institutes use their own methods, so their intensity labels can differ from these.</p>
       </div>
       <div class="example">
         <h3>Worked example with this week&rsquo;s data</h3>
@@ -310,7 +314,7 @@
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-hospital"/></svg>Hospital &amp; severity</p>
+    <p class="label">Hospital &amp; severity</p>
     <h2>Hospital admissions, intensive care and deaths</h2>
     <div class="scroll"><table id="hospTable"></table></div>
     <p class="note" id="hospNote"></p>
@@ -318,27 +322,27 @@
 
   <div class="grid2">
     <section>
-      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg>Season to date</p>
+      <p class="label">Season to date</p>
       <h2>Cumulative lab-confirmed cases</h2>
       <div id="std"></div>
       <p class="note">From week 40 to the same week in each season.</p>
     </section>
     <section>
-      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-virus"/></svg>Influenza virus types</p>
+      <p class="label">Influenza virus types</p>
       <h2>Share so far this season</h2>
       <div id="subtypes"></div>
     </section>
   </div>
 
   <section id="leading" class="compact" hidden>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Other markets</p>
+    <p class="label">Other markets</p>
     <h2>Early signals from outside the Nordics</h2>
     <ul class="findings" id="leadPoints"></ul>
     <details id="leadDetails">
       <summary>Show tables and chart</summary>
-      <h3 id="southTitle">Southern hemisphere &ndash; the winter season that comes before ours</h3>
+      <h3 id="southTitle">Southern hemisphere: the winter before ours</h3>
       <div class="scroll"><table id="southTable"></table></div>
-      <h3 id="northTitle">Early-season markets &ndash; this season</h3>
+      <h3 id="northTitle">Early-season markets this season</h3>
       <div class="scroll"><table id="northTable"></table></div>
       <h3 id="leadChartTitle">Influenza test positivity, January to December</h3>
       <div class="controls"><div class="seg" id="leadSeg" role="group" aria-label="Choose market"></div></div>
@@ -349,17 +353,17 @@
   </section>
 
   <section>
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Downloads</p>
-    <h2>Take this week&rsquo;s numbers with you</h2>
+    <p class="label">Downloads</p>
+    <h2>Excel workbook and e-mail</h2>
     <div class="downloads">
       <div class="dl">
         <h3><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>Excel workbook</h3>
-        <p>Overview, season curves, all weekly values and virus types &ndash; plus a <b>sales tool</b>: paste your weekly or monthly sales per country and the workbook calculates the correlation with every flu, COVID-19 and RSV indicator at lags of 0&ndash;8 weeks (0&ndash;3 months), and forecasts the next 12 weeks (3 months) from the driver you choose. Your sales stay in your copy of the file.</p>
+        <p>Overview, season curves, every weekly value and the virus types. It also has a <b>sales tool</b>: paste in weekly or monthly sales per country, and it shows how closely they track each flu, COVID-19 and RSV indicator 0 to 8 weeks earlier, then forecasts the next 12 weeks from the indicator you pick. Your sales figures stay in your own copy.</p>
         <a class="btn dark" href="data/flutracker_latest.xlsx" download>Download Excel</a>
       </div>
       <div class="dl">
         <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>E-mail (HTML)</h3>
-        <p>A one-screen executive summary in Karo design: the week in three sentences, a snapshot of every virus per country and for the Nordics, and the points worth knowing. Outlook-ready &ndash; open it in a browser, or attach / insert it in Outlook to forward the update.</p>
+        <p>A one-screen summary to forward: the headline, cases and intensity for each virus and country, and the main points. It works in Outlook. Open it in a browser, or attach or insert it in a message.</p>
         <a class="btn dark" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail</a>
         <a class="btn outline" href="data/email_latest.html" target="_blank" rel="noopener">Preview</a>
       </div>
@@ -367,10 +371,10 @@
   </section>
 
   <section class="sources">
-    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Sources &amp; method</p>
+    <p class="label">Sources &amp; method</p>
     <h2>Where the numbers come from</h2>
     <dl id="sourceList"></dl>
-    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. Data is refreshed automatically every Friday.</p>
+    <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. The data updates every Friday.</p>
   </section>
 </main>
 
@@ -404,7 +408,7 @@
 
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const fmt = (v, d = 0) => v == null ? "–" : v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const pct = (v) => v == null ? "–" : (v > 0 ? "+" : "") + fmt(v) + "%";
+  const pct = (v) => v == null ? "–" : (v > 0 ? "+" : v < 0 ? "−" : "") + fmt(Math.abs(v)) + "%";
   const cls = (v) => v == null || v === 0 ? "" : (v > 0 ? "up" : "down");
   const weekNo = (yw) => +yw.split("-W")[1];
   const fmtVal = (v, key) => {
@@ -433,6 +437,7 @@
       " · Season " + data.season + " · Updated " + data.generated_at.slice(0, 10);
 
     renderTiles();
+    document.getElementById("lede").textContent = (data.headline || []).join(" ");
     document.getElementById("findings").replaceChildren(...data.findings.map((f) => el("li", {}, esc(f))));
     renderLeading();
     renderControls();
@@ -454,7 +459,7 @@
       return el("div", { className: "tile" },
         '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " · influenza</div>" +
         '<div class="big">' + fmt(s.value) + "</div>" +
-        '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " week on week · positivity " +
+        '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " on last week · positivity " +
         fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
         '<div class="foot one"><span>Intensity <b>' + esc(s.intensity || "–") + "</b>" + (s.intensity_pct != null ? " · " + s.intensity_pct + "% of an average peak" : "") + "</span>" +
         "<span>COVID-19 <b>" + val("covid_cases") + "</b> · " + esc((cv && cv.intensity || "–").toLowerCase()) + "</span>" +
@@ -598,11 +603,11 @@
     const src = L.source;
     document.getElementById("leadNote").innerHTML =
       "Influenza test positivity = positive specimens &divide; specimens tested, all surveillance systems a country reports to " + link(src.url, "WHO FluNet") +
-      ". Positivity is used rather than case counts because testing differs a lot between countries and years. Intensity compares the peak (southern hemisphere) or this week (early markets) with the average peak of earlier seasons; " +
-      L.skip_years.join(" and ") + " are left out because COVID-19 measures suppressed influenza. " + thr + " positivity is a rough sign that the season is under way. " +
+      ". Positivity is used instead of case counts because testing varies a lot between countries and years. Intensity compares the peak (southern hemisphere) or this week (early markets) with the average peak of earlier seasons. " +
+      L.skip_years.join(" and ") + " are left out because COVID-19 measures held influenza down. Positivity above " + thr + " is a rough sign the season has started. " +
       "* Latest report more than four weeks old. " +
-      "<b>How to read it:</b> a large or early southern-hemisphere season, and the virus that dominated it, are an early hint &ndash; not a forecast &ndash; for the Nordic winter; the link varies from year to year. " +
-      "Early-season markets crossing the threshold are a nearer warning: the Nordics typically follow some weeks later.";
+      "<b>How to read it:</b> a large or early southern-hemisphere season, and the virus behind it, hint at the Nordic winter. It is not a forecast, and the link changes from year to year. " +
+      "Early-season markets passing the threshold are a closer warning: the Nordics often follow a few weeks later.";
   }
 
   function renderLeadChart() {
@@ -780,10 +785,10 @@
   function renderHospNote() {
     const keys = keysIn("Hospital & severity");
     const missing = ORDER.filter((c) => !keys.some((k) => data.summary[c] && data.summary[c][k]));
-    const parts = ["Shown where the national institute reports hospital, intensive care or death figures to ECDC each week."];
+    const parts = ["Shown for countries whose institute reports hospital, intensive care or death figures to ECDC each week."];
     if (missing.length) {
       parts.push("Not reported to ECDC this season: " + missing.map((c) => data.countries[c].name).join(", ") +
-        ". Their weekly hospital figures are published in the national reports: " +
+        ". Their hospital figures are in the national weekly reports: " +
         missing.map((c) => link(data.countries[c].url, data.countries[c].authority)).join(", ") + ".");
     }
     document.getElementById("hospNote").innerHTML = parts.join(" ");
@@ -852,7 +857,6 @@
     }
     html += "<dt>Image</dt><dd>Coloured transmission electron micrograph of influenza A virus particles. " +
       link("https://phil.cdc.gov/", "CDC Public Health Image Library") + " (public domain).</dd>";
-    html += '<dt>Downloads</dt><dd><a href="data/flutracker_latest.xlsx" download>Excel workbook with sales tool</a> · <a href="data/email_latest.html" download="flutracker_email_latest.html">E-mail (HTML)</a></dd>';
     document.getElementById("sourceList").innerHTML = html;
   }
 })();

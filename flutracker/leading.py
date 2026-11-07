@@ -291,50 +291,52 @@ def _fmt(v, d=0):
 
 def _mix_text(mix):
     dom = mix and mix.get("dominant")
-    return f"mostly {dom['virus']} ({dom['share']}% of subtyped samples)" if dom else "virus mix not yet known"
+    return (f"{dom['virus']} made up {dom['share']}% of subtyped samples." if dom
+            else "The virus mix is not yet known.")
 
 
 def points(leading):
     """Plain sentences on the leading markets for the findings and the e-mail."""
+    thr = f"{_fmt(LEADING_EPIDEMIC_THRESHOLD)}%"
     out = []
     south = [(c, m) for c, m in leading["markets"].items() if m["hemisphere"] == "south" and m.get("summary")]
     for code, m in south[:1]:  # the lead market (Australia) in full
         s = m["summary"]
         week = parse_yw(s["week"])[1]
         if s["status"] == "Below threshold":
-            text = (f"{m['name']}'s {s['season']} flu season has stayed below {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% test "
-                    f"positivity: {_fmt(s['value'], 1)}% in week {week}, highest so far {_fmt(s['peak'], 1)}% (week {s['peak_week']})")
+            text = (f"{m['name']}'s {s['season']} flu season has stayed below {thr} test positivity: "
+                    f"{_fmt(s['value'], 1)}% in week {week}, with a high of {_fmt(s['peak'], 1)}% in week {s['peak_week']}")
         elif s["status"] == "Under way":
             text = (f"{m['name']}'s {s['season']} flu season is under way: {_fmt(s['value'], 1)}% test positivity in week "
-                    f"{week}, highest so far {_fmt(s['peak'], 1)}% (week {s['peak_week']})")
+                    f"{week}, with a high so far of {_fmt(s['peak'], 1)}% in week {s['peak_week']}")
         else:
-            text = (f"{m['name']}'s {s['season']} flu season peaked at {_fmt(s['peak'], 1)}% test positivity in week "
-                    f"{s['peak_week']}")
+            text = (f"{m['name']}'s {s['season']} flu season peaked in week {s['peak_week']} at "
+                    f"{_fmt(s['peak'], 1)}% test positivity")
         if s.get("intensity"):
-            text += f" – {s['intensity'].lower()} ({s['intensity_pct']}% of an average peak)"
+            text += f", {s['intensity_pct']}% of an average peak ({s['intensity'].lower()} intensity)"
+        text += "."
         usual = s["usual_onset_week"]
         if usual and (s["onset_week"] or week) - usual >= 4:
-            text += (f"; a late season (usually above {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% from week {usual}"
-                     + (f", this year from week {s['onset_week']})" if s["onset_week"] else ")"))
-        text += f", {_mix_text(s['mix'])}."
+            text += (f" It came late: positivity usually passes {thr} around week {usual}"
+                     + (f", this year in week {s['onset_week']}." if s["onset_week"] else "."))
+        text += " " + _mix_text(s["mix"])
         out.append(text)
     others = [f"{m['name']} {m['summary']['intensity'].lower()}" for _, m in south[1:] if m["summary"].get("intensity")]
     if others:
-        out.append("Other southern-hemisphere seasons: " + ", ".join(others) + ".")
-    doms = [f"{m['name']} {d['virus']}" for _, m in south if (d := m["summary"]["mix"]["dominant"])]
+        out.append("Intensity of the other southern-hemisphere seasons: " + analysis.join_words(others) + ".")
+    doms = [f"{d['virus']} in {m['name']}" for _, m in south if (d := m["summary"]["mix"]["dominant"])]
     if doms:
-        out.append("Dominant virus in the southern-hemisphere winter – a first hint of the mix for the Nordic one: "
-                   + ", ".join(doms) + ".")
+        out.append("Main virus in the southern-hemisphere winter, an early hint of what the Nordics may see: "
+                   + analysis.join_words(doms) + ".")
 
     north = [m for m in leading["markets"].values() if m["hemisphere"] == "north" and m.get("summary")]
     started = [f"{m['name']} (since week {m['summary']['onset_week']})" for m in north if m["summary"].get("onset_week")]
-    waiting = [m["name"] for m in north if not m["summary"].get("onset_week")]
+    waiting = [("the " if m["name"].startswith("United") else "") + m["name"] for m in north if not m["summary"].get("onset_week")]
     if started:
-        out.append(f"Above {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% influenza positivity already: " + ", ".join(started) + "."
-                   + (f" Not yet: {', '.join(waiting)}." if waiting else ""))
+        out.append(f"Influenza positivity is already above {thr} in " + analysis.join_words(started)
+                   + (f", but not yet in {analysis.join_words(waiting, 'or')}." if waiting else "."))
     elif north:
-        out.append(f"No early-season market is above {_fmt(LEADING_EPIDEMIC_THRESHOLD)}% influenza positivity yet "
-                   f"({', '.join(waiting)}).")
+        out.append(f"No early-season market is above {thr} influenza positivity yet.")
     return out
 
 
