@@ -9,10 +9,15 @@
 <meta property="og:description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
 <meta property="og:image" content="https://eirikwikheltne.github.io/flutracker/img/influenza-virus-960.jpg">
 <meta property="og:image:alt" content="Influenza A virus particles under the electron microscope">
+<script>document.documentElement.classList.add("js")</script>
 <style>
   :root {
     --navy: #110B36;
     --peach: #FAD7C2;
+    --mint: #9DE3C2;
+    --plum: #561A32;
+    --lavender: #9F9DB1;
+    --accent: #110B36;
     --bg: #f4f4f4;
     --surface: #ffffff;
     --text: #1a1a2e;
@@ -44,7 +49,7 @@
       --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
       --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
       --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
-      --pressed-bg: #FAD7C2; --pressed-text: #110B36;
+      --pressed-bg: #FAD7C2; --pressed-text: #110B36; --accent: #FAD7C2;
       --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
     }
   }
@@ -54,7 +59,7 @@
     --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
     --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
     --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
-    --pressed-bg: #FAD7C2; --pressed-text: #110B36;
+    --pressed-bg: #FAD7C2; --pressed-text: #110B36; --accent: #FAD7C2;
     --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
   }
   * { box-sizing: border-box; }
@@ -69,12 +74,13 @@
   .virus { margin: 0; flex: 0 0 auto; text-align: center; }
   .virus img { display: block; width: 210px; height: 210px; border-radius: 50%; object-fit: cover; object-position: 42% 50%;
                border: 4px solid var(--peach); box-shadow: 0 0 0 10px rgba(250, 215, 194, 0.12); background: #fff; }
-  .virus figcaption { margin-top: 12px; font-size: 11px; letter-spacing: 1px; color: var(--peach); opacity: .85; max-width: 210px; }
+  .virus figcaption { margin-top: 12px; font-size: 12px; font-style: italic; color: var(--peach); opacity: .85; max-width: 210px; }
   @media (max-width: 720px) { .virus img { width: 130px; height: 130px; } .virus figcaption { display: none; } }
   @media (max-width: 520px) { .virus { display: none; } }
-  .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--peach); margin: 0 0 10px; }
+  .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--peach); margin: 0 0 12px; }
+  .eyebrow .ic { width: 18px; height: 18px; }
   h1 { font-weight: normal; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0; }
-  .sub { margin: 10px 0 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--peach); }
+  .sub { margin: 10px 0 0; font-size: 15px; color: var(--peach); font-style: italic; }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 14px; padding: 10px 16px; min-height: 40px; cursor: pointer; text-decoration: none; border: 1px solid var(--peach); }
   .btn.primary { background: var(--peach); color: var(--navy); font-weight: bold; }
@@ -84,7 +90,7 @@
   .dl { border-top: 3px solid var(--peach); padding-top: 4px; }
   .dl h3 { margin-top: 10px; }
   .dl p { margin: 0 0 14px; }
-  .dl .btn { margin: 0 6px 6px 0; }
+  .dl .btn { margin: 0 6px 6px 0; vertical-align: top; }
   .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); font-size: 12px; }
   main { padding: 28px 0 40px; }
   section { background: var(--surface); padding: 28px clamp(16px, 3vw, 36px); margin-bottom: 20px; }
@@ -92,7 +98,8 @@
   .btn .ic { width: 17px; height: 17px; }
   .dl h3 { display: flex; align-items: center; gap: 8px; }
   .dl h3 .ic { width: 20px; height: 20px; }
-  .label { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-style: italic; color: var(--muted); margin: 0 0 6px; }
+  .label .ic { width: 18px; height: 18px; color: var(--accent); }
   h2 { font-weight: normal; font-size: 22px; margin: 0 0 14px; line-height: 1.3; }
   .lede { font-size: 19px; line-height: 1.5; margin: 0 0 20px; max-width: 62ch; }
   .lede:empty { display: none; }
@@ -100,7 +107,7 @@
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 14px; }
   .tile { background: var(--tile-bg); color: var(--tile-text); display: flex; flex-direction: column; }
   .tile .top { padding: 16px 18px 12px; }
-  .tile .name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--peach); display: flex; align-items: center; gap: 8px; }
+  .tile .name { font-size: 15px; color: var(--peach); display: flex; align-items: center; gap: 8px; }
   .tile .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
   .tile .big { font-size: 40px; line-height: 1.1; margin-top: 6px; font-variant-numeric: tabular-nums; }
   .tile .small { font-size: 13px; opacity: .85; }
@@ -129,7 +136,7 @@
   th { text-align: left; font-weight: bold; border-bottom: 2px solid var(--current); padding: 9px 10px; font-size: 13px; white-space: nowrap; }
   td { padding: 9px 10px; border-bottom: 1px solid var(--divider); }
   td.num, th.num { text-align: right; }
-  tr.group td { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border-bottom: 0; padding-top: 18px; }
+  tr.group td { font-size: 13px; font-style: italic; color: var(--muted); border-bottom: 0; padding-top: 18px; }
   tbody tr.alt td { background: var(--alt); }
   .up { color: var(--up); }
   .down { color: var(--down); }
@@ -187,42 +194,139 @@
     .scroll { -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 0 16px; }
   }
 
-  /* Microinteractions: short and functional, switched off for reduced motion. */
-  :root { --ease: cubic-bezier(.2, .7, .2, 1); }
+  /* Microinteractions (Karo, subtle): every motion confirms an action or guides the eye. */
+  :root { --ease: cubic-bezier(.2, .8, .2, 1); --pop: cubic-bezier(.3, 1.6, .5, 1); }
   a { text-underline-offset: 2px; text-decoration-thickness: 1px; transition: text-decoration-thickness .15s var(--ease); }
   a:hover { text-decoration-thickness: 2px; }
   :focus-visible { outline: 2px solid var(--c-NO); outline-offset: 2px; }
-  header.banner :focus-visible { outline-color: var(--peach); }
-  .btn, .seg button, select { transition: background-color .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease), transform .12s var(--ease), box-shadow .18s var(--ease); }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -6px rgba(17, 11, 54, .45); }
-  .btn:active, .seg button:active { transform: translateY(0) scale(.98); box-shadow: none; }
-  .btn.ghost:hover { border-color: var(--peach); color: var(--peach); box-shadow: none; }
+  header.banner :focus-visible, .loader :focus-visible { outline-color: var(--peach); }
+  .btn, .seg button, select { transition: background-color .18s var(--ease), color .25s var(--ease), border-color .18s var(--ease), transform .12s var(--ease); }
+  .btn:active, .seg button:active { transform: scale(.97); }
+  .btn.primary:hover { background: #fde5d6; }
+  .btn.dark:hover { border-color: var(--peach); }
   .btn.outline:hover { border-color: var(--text); }
-  .btn .ic { transition: transform .2s var(--ease); }
-  .btn[download]:hover .ic { transform: translateY(2px); }
-  .btn.sent { pointer-events: none; }
-  .btn.sent .ic { animation: pop .35s var(--ease); }
-  .seg button:not([aria-pressed="true"]):hover { background: var(--alt); }
+  .btn.ghost:hover { border-color: var(--peach); color: var(--peach); }
   select:hover { border-color: var(--muted); }
+
+  /* Icon crossfade: two stacked icons swap with a small scale. */
+  .swap { position: relative; display: inline-flex; width: 17px; height: 17px; flex: 0 0 auto; }
+  .swap .ic { position: absolute; inset: 0; transition: opacity .2s ease-out, transform .2s ease-out, color .25s; }
+  .swap .i2 { opacity: 0; transform: scale(.8); }
+  .on > .swap .i1, .swap.on .i1 { opacity: 0; transform: scale(.8); }
+  .on > .swap .i2, .swap.on .i2 { opacity: 1; transform: none; }
+  /* Download: arrow dips 2px on hover; check lifts 2px into place on click. */
+  .btn[download]:hover .i1 { transform: translateY(2px); }
+  .btn[download] .i2 { transform: translateY(2px) scale(.8); }
+  .btn[download].on .i2 { transform: none; }
+  .btn.dark.on .i2 { color: var(--mint); }
+  .btn.on { pointer-events: none; }
+  /* Open link: 3px nudge right. */
+  .nudge .ic { transition: transform .3s ease-out; }
+  .nudge:hover .ic, a:hover > .nudge-ic { animation: nudge .3s ease-out; }
+  .nudge-ic { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-left: 2px; }
+
+  /* Round navy icon buttons (theme, copy link). */
+  .k-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center;
+            position: relative; cursor: pointer; border: 1px solid rgba(255, 255, 255, .28); padding: 0; flex: 0 0 auto; font: inherit;
+            transition: transform .12s var(--ease), color .25s var(--ease), border-color .2s var(--ease); }
+  .k-icon:hover { border-color: var(--peach); }
+  .k-icon:active { transform: scale(.94); }
+  .k-icon .swap { width: 20px; height: 20px; }
+  .k-icon.mint.on { color: var(--mint); }
+  .k-icon.peach.on { color: var(--peach); }
+  .k-icon .tip { position: absolute; top: calc(100% + 8px); left: 50%; transform: translate(-50%, -3px); white-space: nowrap; font-size: 12px;
+                 background: var(--mint); color: var(--navy); padding: 3px 8px; opacity: 0; pointer-events: none; transition: opacity .2s ease-out, transform .2s ease-out; }
+  .k-icon.on .tip { opacity: 1; transform: translate(-50%, 0); }
+  .actions .tools { display: inline-flex; gap: 8px; margin-left: 4px; }
+
+  /* Segmented controls: the pressed fill slides to the chosen option. */
+  .seg { position: relative; isolation: isolate; background: var(--surface); }
+  .seg::before { content: ""; position: absolute; left: 0; top: 0; z-index: -1; background: var(--pressed-bg); opacity: 0;
+                 width: var(--w, 0); height: var(--h, 0); transform: translate(var(--x, 0), var(--y, 0)); }
+  .seg.placed::before { opacity: 1; }
+  .seg.glide::before { transition: transform .3s var(--ease), width .3s var(--ease), height .3s var(--ease), background-color .3s; }
+  .seg button { background: transparent; }
+  .seg.placed button[aria-pressed="true"] { background: transparent; }
+  .seg button:not([aria-pressed="true"]):hover { background: color-mix(in srgb, var(--alt) 70%, transparent); }
+
+  /* Week-on-week change in the tiles: arrow rises (or falls) once, after the count-up. */
+  .delta { white-space: nowrap; }
+  .delta .ic { width: 13px; height: 13px; vertical-align: -1px; margin-right: 2px; display: inline-block; }
+  .delta.up { color: var(--peach); }
+  .delta.down { color: var(--mint); }
+  .tiles.counted .delta.up .ic { animation: rise .3s ease-out .05s both; }
+  .tiles.counted .delta.down .ic { animation: fall .3s ease-out .05s both; }
+  .tile .name i.swatch { flex: 0 0 auto; }
+  .tile .name small { font-size: 13px; color: rgba(255, 255, 255, .65); font-style: italic; }
+
+  /* Disclosure: chevron turns to show what opened. */
+  details > summary { display: flex; align-items: center; gap: 6px; list-style: none; transition: color .15s var(--ease); }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary .ic { width: 16px; height: 16px; transition: transform .3s var(--ease); }
+  details[open] > summary .ic { transform: rotate(90deg); }
+  details > summary:hover { color: var(--text); }
+  details[open] > :not(summary) { animation: fadeup .35s var(--ease) both; }
+
   td { transition: background-color .15s var(--ease); }
   tbody tr:not(.group):hover td { background: var(--alt); }
-  #intensityScale td { transition: background-color .3s var(--ease), font-weight .3s; }
-  details > summary { transition: color .15s var(--ease); }
-  details > summary:hover { color: var(--text); }
-  details[open] > :not(summary) { animation: rise .35s var(--ease) both; }
-  .reveal { opacity: 0; transform: translateY(14px); }
-  .reveal.in { opacity: 1; transform: none; transition: opacity .55s var(--ease), transform .55s var(--ease); }
+  #intensityScale td { transition: background-color .3s var(--ease); }
+  .reveal { opacity: 0; transform: translateY(12px); }
+  .reveal.in { opacity: 1; transform: none; transition: opacity .46s var(--ease), transform .46s var(--ease); }
   html.theme-fade, html.theme-fade * { transition: background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease) !important; }
-  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @keyframes pop { 0% { transform: scale(.4); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Loader: a season curve draws itself on navy, the peak dot pops in, then it fades and repeats. */
+  .loader { display: none; }
+  .js .loader { position: fixed; inset: 0; z-index: 50; display: grid; place-content: center; justify-items: center; gap: 18px;
+                background: var(--navy); color: var(--peach); text-align: center; padding: 16px;
+                transition: opacity .46s var(--ease), visibility 0s linear .46s; }
+  .js .loader.done { opacity: 0; visibility: hidden; }
+  .loader svg { width: min(280px, 72vw); height: auto; overflow: visible; }
+  .loader .axis { stroke: rgba(250, 215, 194, .22); stroke-width: 1; }
+  .loader .prior { fill: none; stroke: var(--lavender); stroke-width: 1.5; stroke-dasharray: 3 4; opacity: .45; }
+  .loader .curve { fill: none; stroke: var(--peach); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1;
+                   animation: draw 2.4s var(--ease) infinite; }
+  .loader .peak { fill: var(--peach); transform-box: fill-box; transform-origin: center; transform: scale(0); animation: peak 2.4s infinite; }
+  .loader .halo { fill: none; stroke: var(--peach); stroke-width: 1; transform-box: fill-box; transform-origin: center; opacity: 0; animation: halo 2.4s ease-out infinite; }
+  .loader p { margin: 0; font-size: 17px; font-style: italic; }
+  .loader .who { font-size: 13px; color: var(--lavender); font-style: normal; }
+  .loader .retry { margin-top: 4px; }
+  .loader.failed .curve, .loader.failed .peak, .loader.failed .halo { animation: none; }
+  .loader.failed .curve { stroke-dashoffset: 0; stroke: var(--lavender); }
+  .js body.loading main, .js body.loading footer { opacity: 0; }
+  .js body.arrive main, .js body.arrive footer { animation: fadeup .32s var(--ease) .18s both; }
+  .js body.arrive .banner-row { animation: fadeup .32s var(--ease) both; }
+
+  @keyframes draw { 0% { stroke-dashoffset: 1; opacity: 1; } 62% { stroke-dashoffset: 0; opacity: 1; } 88% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+  @keyframes peak { 0%, 30% { transform: scale(0); } 40% { transform: scale(1); animation-timing-function: var(--pop); } 88% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+  @keyframes halo { 0%, 34% { opacity: 0; transform: scale(.6); } 40% { opacity: .7; } 70%, 100% { opacity: 0; transform: scale(2.2); } }
+  @keyframes fadeup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes rise { 0% { transform: translate(-2px, 2px); opacity: .3; } }
+  @keyframes fall { 0% { transform: translate(-2px, -2px); opacity: .3; } }
+  @keyframes nudge { 50% { transform: translateX(3px); } }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-    .btn:hover, .btn[download]:hover .ic { transform: none; }
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    .btn[download]:hover .i1 { transform: none; }
+    .loader .curve { animation: none; stroke-dashoffset: 0; }
+    .loader .peak { animation: none; transform: none; }
+    .loader .halo { animation: none; }
   }
-  @media print { .reveal { opacity: 1; transform: none; } }
+  @media print { .reveal { opacity: 1; transform: none; } .loader { display: none !important; } }
+  @media (max-width: 600px) { .actions .tools { margin-left: auto; } }
 </style>
 </head>
-<body>
+<body class="loading">
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <svg viewBox="0 0 240 96" aria-hidden="true">
+    <path class="axis" d="M4 88H236"/>
+    <path class="prior" d="M4 86C40 85 70 80 92 68S122 36 138 38S166 74 196 82S226 86 236 86"/>
+    <path class="curve" pathLength="1" d="M4 86C42 85 72 78 96 58S124 10 140 12S170 70 200 80S226 86 236 86"/>
+    <circle class="halo" cx="136.5" cy="11.6" r="5"/>
+    <circle class="peak" cx="136.5" cy="11.6" r="4"/>
+  </svg>
+  <p id="loaderText">Loading this week&rsquo;s figures</p>
+  <p class="who">Karo Healthcare Norway, flu tracker</p>
+</div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></symbol>
   <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2v.1h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
@@ -230,7 +334,6 @@
   <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
   <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></symbol>
   <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></symbol>
-  <symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></symbol>
   <symbol id="i-hospital" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 7.5v9M7.5 12h9"/></symbol>
   <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
   <symbol id="i-virus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4M5.3 5.3l2.8 2.8M15.9 15.9l2.8 2.8M5.3 18.7l2.8-2.8M15.9 8.1l2.8-2.8"/></symbol>
@@ -239,18 +342,29 @@
   <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
-  <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M7 16v-3M12 16V9M17 16V5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 9v8H9"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13.5 6.5L19 12l-5.5 5.5"/></symbol>
 </svg>
 <header class="banner">
   <div class="wrap banner-row">
     <div>
-      <p class="eyebrow">Karo Healthcare Norway · Flu tracker</p>
+      <p class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-virus"/></svg>Karo Healthcare Norway flu tracker</p>
       <h1 id="title">Flu, COVID-19 &amp; RSV in the Nordics</h1>
-      <p class="sub" id="subtitle">Loading data …</p>
+      <p class="sub" id="subtitle">&nbsp;</p>
       <div class="actions">
-        <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Download Excel</a>
-        <a class="btn primary" id="emailBtn" href="data/email_latest.html" download="flutracker_email_latest.html"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>Download e-mail (HTML)</a>
-        <button class="btn ghost" id="themeToggle" type="button" aria-label="Switch light or dark mode"><svg class="ic" aria-hidden="true"><use href="#i-contrast"/></svg>Light / dark</button>
+        <a class="btn primary" id="excelBtn" href="data/flutracker_latest.xlsx" download><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-download"/></svg><svg class="ic i2"><use href="#i-check"/></svg></span><span class="t">Download Excel</span></a>
+        <a class="btn primary" id="emailBtn" href="data/email_latest.html" download="flutracker_email_latest.html"><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-download"/></svg><svg class="ic i2"><use href="#i-check"/></svg></span><span class="t">Download e-mail (HTML)</span></a>
+        <span class="tools">
+          <button class="k-icon mint" id="copyLink" type="button" aria-label="Copy link to this page"><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-link"/></svg><svg class="ic i2"><use href="#i-check"/></svg></span><span class="tip" aria-hidden="true">Link copied</span></button>
+          <button class="k-icon peach" id="themeToggle" type="button" aria-label="Switch to dark mode"><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-moon"/></svg><svg class="ic i2"><use href="#i-sun"/></svg></span></button>
+        </span>
+        <span class="sr" id="announce" aria-live="polite"></span>
       </div>
     </div>
     <figure class="virus">
@@ -263,21 +377,21 @@
 
 <main class="wrap">
   <section>
-    <p class="label">This week</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>This week</p>
     <p class="lede" id="lede"></p>
     <h2>Lab-confirmed influenza cases by country</h2>
     <div class="tiles" id="tiles"></div>
-    <p class="note">Intensity is this week&rsquo;s value as a share of the average peak in earlier seasons (<a href="#intensity">how it is calculated</a>).</p>
+    <p class="note">Intensity is this week&rsquo;s value as a share of the average peak in earlier seasons (<a href="#intensity">how it is calculated<svg class="nudge-ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>).</p>
   </section>
 
   <section>
-    <p class="label">Key findings</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Key findings</p>
     <h2>What the numbers say</h2>
     <ul class="findings" id="findings"></ul>
   </section>
 
   <section>
-    <p class="label">Year by year</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg>Year by year</p>
     <h2 id="yearTitle">Lab-confirmed cases, January to December</h2>
     <div class="controls">
       <div class="seg" id="yearAreaSeg" role="group" aria-label="Choose country or the Nordics"></div>
@@ -289,7 +403,7 @@
   </section>
 
   <section>
-    <p class="label">Last 12 months</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Last 12 months</p>
     <h2 id="recentTitle">Lab-confirmed cases by virus</h2>
     <div class="controls"><div class="seg" id="recentSeg" role="group" aria-label="Choose country or the Nordics"></div></div>
     <div class="chart-box"><canvas id="recentChart" aria-label="Lab-confirmed cases by virus, last 52 weeks"></canvas></div>
@@ -298,7 +412,7 @@
   </section>
 
   <section>
-    <p class="label">Season curve</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg>Season curve</p>
     <h2 id="chartTitle">This season against previous seasons</h2>
     <div class="controls">
       <div class="seg" id="countrySeg" role="group" aria-label="Choose country"></div>
@@ -315,14 +429,14 @@
   </section>
 
   <section>
-    <p class="label">All indicators</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>All indicators</p>
     <h2>Level against the same week in previous seasons</h2>
     <div class="scroll"><table id="indTable"></table></div>
     <p class="note">* The country&rsquo;s latest report is older than the newest week in the data. † Fewer than 20 sentinel samples, so read with care.</p>
   </section>
 
   <section id="intensity">
-    <p class="label">Method</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Method</p>
     <h2>How intensity is calculated</h2>
     <div class="method">
       <div>
@@ -349,7 +463,7 @@
   </section>
 
   <section>
-    <p class="label">Hospital &amp; severity</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-hospital"/></svg>Hospital &amp; severity</p>
     <h2>Hospital admissions, intensive care and deaths</h2>
     <div class="scroll"><table id="hospTable"></table></div>
     <p class="note" id="hospNote"></p>
@@ -357,24 +471,24 @@
 
   <div class="grid2">
     <section>
-      <p class="label">Season to date</p>
+      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-bars"/></svg>Season to date</p>
       <h2>Cumulative lab-confirmed cases</h2>
       <div id="std"></div>
       <p class="note">From week 40 to the same week in each season.</p>
     </section>
     <section>
-      <p class="label">Influenza virus types</p>
+      <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-virus"/></svg>Influenza virus types</p>
       <h2>Share so far this season</h2>
       <div id="subtypes"></div>
     </section>
   </div>
 
   <section id="leading" class="compact" hidden>
-    <p class="label">Other markets</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Other markets</p>
     <h2>Early signals from outside the Nordics</h2>
     <ul class="findings" id="leadPoints"></ul>
     <details id="leadDetails">
-      <summary>Show tables and chart</summary>
+      <summary><svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg>Show tables and chart</summary>
       <h3 id="southTitle">Southern hemisphere: the winter before ours</h3>
       <div class="scroll"><table id="southTable"></table></div>
       <h3 id="northTitle">Early-season markets this season</h3>
@@ -388,25 +502,25 @@
   </section>
 
   <section>
-    <p class="label">Downloads</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Downloads</p>
     <h2>Excel workbook and e-mail</h2>
     <div class="downloads">
       <div class="dl">
         <h3><svg class="ic" aria-hidden="true"><use href="#i-table"/></svg>Excel workbook</h3>
         <p>Overview, season curves, every weekly value and the virus types. It also has a <b>sales tool</b>: paste in weekly or monthly sales per country, and it shows how closely they track each flu, COVID-19 and RSV indicator 0 to 8 weeks earlier, then forecasts the next 12 weeks from the indicator you pick. Your sales figures stay in your own copy.</p>
-        <a class="btn dark" href="data/flutracker_latest.xlsx" download>Download Excel</a>
+        <a class="btn dark" href="data/flutracker_latest.xlsx" download><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-download"/></svg><svg class="ic i2"><use href="#i-check"/></svg></span><span class="t">Download Excel</span></a>
       </div>
       <div class="dl">
         <h3><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>E-mail (HTML)</h3>
         <p>A one-screen summary to forward: the headline, cases and intensity for each virus and country, and the main points. It works in Outlook. Open it in a browser, or attach or insert it in a message.</p>
-        <a class="btn dark" href="data/email_latest.html" download="flutracker_email_latest.html">Download e-mail</a>
-        <a class="btn outline" href="data/email_latest.html" target="_blank" rel="noopener">Preview</a>
+        <a class="btn dark" href="data/email_latest.html" download="flutracker_email_latest.html"><span class="swap" aria-hidden="true"><svg class="ic i1"><use href="#i-download"/></svg><svg class="ic i2"><use href="#i-check"/></svg></span><span class="t">Download e-mail</span></a>
+        <a class="btn outline nudge" href="data/email_latest.html" target="_blank" rel="noopener">Preview<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
 
   <section class="sources">
-    <p class="label">Sources &amp; method</p>
+    <p class="label"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Sources &amp; method</p>
     <h2>Where the numbers come from</h2>
     <dl id="sourceList"></dl>
     <p class="note">Seasons run from week 40 to week 39. Each week is compared with the same ISO week in every previous season with data (week 53 is compared with week 52). Intensity = this week / average of previous season peaks: below 10% baseline, 10–40% low, 40–70% medium, 70–100% high, above 100% very high (<a href="#intensity">details</a>). Indicators a country has not reported to ECDC for more than 8 weeks are left out. The data updates every Friday.</p>
@@ -433,16 +547,56 @@
   const INTENSITY = [[0.10, "Baseline"], [0.40, "Low"], [0.70, "Medium"], [1.00, "High"], [Infinity, "Very high"]];
   let data, seasonChart, recentChart, yearChart, leadChart;
 
+  const t0 = performance.now();
   try { const saved = localStorage.getItem("flu-theme"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
   const calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.getElementById("themeToggle").addEventListener("click", () => {
+  const isDark = () => getComputedStyle(document.documentElement).getPropertyValue("--surface").trim() !== "#ffffff";
+  const themeBtn = document.getElementById("themeToggle");
+  // Moon in light mode, sun in dark mode: the icon names the mode you switch to.
+  const syncTheme = () => {
+    const dark = isDark();
+    themeBtn.classList.toggle("on", dark);
+    themeBtn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  };
+  syncTheme();
+  themeBtn.addEventListener("click", () => {
     const root = document.documentElement;
     if (!calm) { root.classList.add("theme-fade"); setTimeout(() => root.classList.remove("theme-fade"), 350); }
-    const dark = css("--surface") !== "#ffffff";
-    document.documentElement.dataset.theme = dark ? "light" : "dark";
-    try { localStorage.setItem("flu-theme", document.documentElement.dataset.theme); } catch (e) {}
+    root.dataset.theme = isDark() ? "light" : "dark";
+    try { localStorage.setItem("flu-theme", root.dataset.theme); } catch (e) {}
+    syncTheme();
     renderCharts();
+    syncSegs();
   });
+
+  // Copy link: link icon crossfades to a mint check, then returns.
+  const copyBtn = document.getElementById("copyLink");
+  copyBtn.addEventListener("click", () => {
+    const url = location.href.split("#")[0];
+    const done = () => {
+      copyBtn.classList.remove("on"); void copyBtn.offsetWidth; copyBtn.classList.add("on");
+      document.getElementById("announce").textContent = "Link copied";
+      clearTimeout(copyBtn.timer);
+      copyBtn.timer = setTimeout(() => { copyBtn.classList.remove("on"); document.getElementById("announce").textContent = ""; }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, () => prompt("Copy this link:", url));
+    else prompt("Copy this link:", url);
+  });
+
+  // Segmented controls: move the pressed fill to the chosen button. It glides after the first placement.
+  function syncSegs() {
+    document.querySelectorAll(".seg").forEach((seg) => {
+      const b = seg.querySelector('button[aria-pressed="true"]');
+      if (!b || !b.offsetWidth) return;
+      seg.style.setProperty("--x", b.offsetLeft + "px");
+      seg.style.setProperty("--y", b.offsetTop + "px");
+      seg.style.setProperty("--w", b.offsetWidth + "px");
+      seg.style.setProperty("--h", b.offsetHeight + "px");
+      if (!seg.classList.contains("placed")) { seg.classList.add("placed"); void seg.offsetWidth; seg.classList.add("glide"); }
+    });
+  }
+  let resizeTimer;
+  addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(syncSegs, 80); });
 
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const fmt = (v, d = 0) => v == null ? "–" : v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -458,12 +612,36 @@
   const link = (url, text) => '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(text) + "</a>";
   const keysIn = (group) => Object.keys(data.indicators).filter((k) => data.indicators[k].group === group);
 
-  document.getElementById("leadDetails").addEventListener("toggle", () => renderLeadChart());
+  document.getElementById("leadDetails").addEventListener("toggle", () => { renderLeadChart(); syncSegs(); });
 
-  fetch("data/flu.json", { cache: "no-store" })
-    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then((d) => { data = d; render(); })
-    .catch((e) => { document.getElementById("subtitle").innerHTML = '<span class="error">Could not load data (' + esc(e.message) + ")</span>"; });
+  // Loader: stays at least one draw of the curve (unless motion is reduced), then fades as the page rises in.
+  const loader = document.getElementById("loader");
+  function load() {
+    loader.classList.remove("failed");
+    document.getElementById("loaderText").textContent = "Loading this week\u2019s figures";
+    const old = loader.querySelector(".retry"); if (old) old.remove();
+    fetch("data/flu.json", { cache: "no-store" })
+      .then((r) => { if (!r.ok) throw new Error("the server answered " + r.status); return r.json(); })
+      .then((d) => {
+        data = d;
+        const wait = calm ? 0 : Math.max(0, 1500 - (performance.now() - t0));
+        setTimeout(() => {
+          document.body.classList.remove("loading");
+          document.body.classList.add("arrive");
+          loader.classList.add("done");
+          render();
+        }, wait);
+      })
+      .catch((e) => {
+        loader.classList.add("failed");
+        document.getElementById("loaderText").textContent = "This week\u2019s figures did not load (" + e.message + "). Check your connection and try again.";
+        const b = el("button", { type: "button", className: "btn primary retry" }, "Try again");
+        b.addEventListener("click", load);
+        loader.append(b);
+        b.focus();
+      });
+  }
+  load();
 
   function render() {
     const start = new Date(data.latest_week_start + "T00:00:00");
@@ -488,6 +666,7 @@
     renderSubtypes();
     renderSources();
     reveal();
+    requestAnimationFrame(syncSegs);
     document.getElementById("footer").textContent = "Karo Healthcare Norway · Flu tracker · Data up to " + data.latest_week;
   }
 
@@ -496,9 +675,9 @@
       const ind = data.summary[c], s = ind.flu_cases, cv = ind.covid_cases, rsv = ind.rsv_cases;
       const val = (k) => ind[k] ? fmt(ind[k].value) : "–";
       return el("div", { className: "tile" },
-        '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " · influenza</div>" +
+        '<div class="top"><div class="name"><i class="swatch" style="background:var(--c-' + c + ')"></i>' + esc(data.countries[c].name) + " <small>influenza cases</small></div>" +
         '<div class="big" data-value="' + (s.value == null ? "" : s.value) + '">' + fmt(s.value) + "</div>" +
-        '<div class="small">week ' + weekNo(s.week) + " · " + pct(s.wow_pct) + " on last week · positivity " +
+        '<div class="small">week ' + weekNo(s.week) + " · " + delta(s.wow_pct) + " on last week · positivity " +
         fmtVal(data.summary[c].flu_positivity ? data.summary[c].flu_positivity.value : null, "flu_positivity") + "</div></div>" +
         '<div class="foot one"><span>Intensity <b>' + esc(s.intensity || "–") + "</b>" + (s.intensity_pct != null ? " · " + s.intensity_pct + "% of an average peak" : "") + "</span>" +
         "<span>COVID-19 <b>" + val("covid_cases") + "</b> · " + esc((cv && cv.intensity || "–").toLowerCase()) + "</span>" +
@@ -506,18 +685,27 @@
     });
     document.getElementById("tiles").replaceChildren(...tiles);
     countUp(document.querySelectorAll("#tiles .big[data-value]"));
+    setTimeout(() => document.getElementById("tiles").classList.add("counted"), calm ? 0 : 750);
+  }
+
+  // Week-on-week change with a direction arrow, so the trend reads without colour.
+  function delta(v) {
+    if (v == null || v === 0) return pct(v);
+    const up = v > 0;
+    return '<span class="delta ' + (up ? "up" : "down") + '"><svg class="ic" aria-hidden="true"><use href="#i-' + (up ? "up" : "down") + '"/></svg>' + pct(v) + "</span>";
   }
 
   // The headline numbers count up once on load, so the eye lands on them.
   function countUp(nodes) {
     if (calm || !window.requestAnimationFrame) return;
     nodes.forEach((n) => {
+      const t0 = performance.now() + 180;
       const target = +n.dataset.value;
       if (!target) return;
-      const t0 = performance.now(), dur = 750;
+      const dur = 750;
       n.style.minWidth = n.offsetWidth + "px";
       const step = (t) => {
-        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - Math.pow(1 - k, 3);
         n.textContent = fmt(target * e);
         if (k < 1) requestAnimationFrame(step);
       };
@@ -542,13 +730,13 @@
     });
   }
 
-  // Download buttons confirm the click, then return to normal.
+  // Download buttons: the arrow crossfades to a check that lifts into place, then the button returns to normal.
   document.querySelectorAll("a.btn[download]").forEach((a) => a.addEventListener("click", () => {
-    const html = a.innerHTML;
+    const t = a.querySelector(".t"), label = t.textContent;
     a.style.minWidth = a.offsetWidth + "px";
-    a.classList.add("sent");
-    a.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Download started';
-    setTimeout(() => { a.innerHTML = html; a.classList.remove("sent"); a.style.minWidth = ""; }, 2200);
+    a.classList.add("on");
+    t.textContent = "Download started";
+    setTimeout(() => { t.textContent = label; a.classList.remove("on"); a.style.minWidth = ""; }, 1600);
   }));
 
   function renderControls() {
@@ -556,7 +744,7 @@
     seg.replaceChildren(...ORDER.map((c) => {
       const b = el("button", { type: "button" }, esc(data.countries[c].name));
       b.setAttribute("aria-pressed", c === state.country);
-      b.addEventListener("click", () => { state.country = c; renderControls(); renderSeasonChart(); });
+      b.addEventListener("click", () => { state.country = c; renderControls(); syncSegs(); renderSeasonChart(); });
       return b;
     }));
     const sel = document.getElementById("indicatorSel");
@@ -578,14 +766,14 @@
     yseg.replaceChildren(...["ALL", ...ORDER].filter((c) => data.yearly.areas[c]).map((c) => {
       const b = el("button", { type: "button" }, c === "ALL" ? "Nordics" : esc(data.countries[c].name));
       b.setAttribute("aria-pressed", c === state.yearArea);
-      b.addEventListener("click", () => { state.yearArea = c; renderControls(); renderYearChart(); });
+      b.addEventListener("click", () => { state.yearArea = c; renderControls(); syncSegs(); renderYearChart(); });
       return b;
     }));
     const vseg = document.getElementById("yearVirusSeg");
     vseg.replaceChildren(...Object.entries(CASES).map(([name, k]) => {
       const b = el("button", { type: "button" }, esc(name));
       b.setAttribute("aria-pressed", k === state.yearVirus);
-      b.addEventListener("click", () => { state.yearVirus = k; renderControls(); renderYearChart(); });
+      b.addEventListener("click", () => { state.yearVirus = k; renderControls(); syncSegs(); renderYearChart(); });
       return b;
     }));
 
@@ -593,7 +781,7 @@
     rseg.replaceChildren(...["ALL", ...ORDER].filter((c) => c === "ALL" || data.recent.countries[c]).map((c) => {
       const b = el("button", { type: "button" }, c === "ALL" ? "Nordics" : esc(data.countries[c].name));
       b.setAttribute("aria-pressed", c === state.recent);
-      b.addEventListener("click", () => { state.recent = c; renderControls(); renderRecentChart(); });
+      b.addEventListener("click", () => { state.recent = c; renderControls(); syncSegs(); renderRecentChart(); });
       return b;
     }));
   }
@@ -680,7 +868,7 @@
     seg.replaceChildren(...codes.map((c) => {
       const b = el("button", { type: "button" }, esc(L.markets[c].name));
       b.setAttribute("aria-pressed", c === state.lead);
-      b.addEventListener("click", () => { state.lead = c; renderLeading(); renderLeadChart(); });
+      b.addEventListener("click", () => { state.lead = c; renderLeading(); syncSegs(); renderLeadChart(); });
       return b;
     }));
     const src = L.source;
@@ -828,7 +1016,7 @@
     seg.replaceChildren(...ORDER.map((c) => {
       const b = el("button", { type: "button" }, esc(data.countries[c].name));
       b.setAttribute("aria-pressed", c === state.exCountry);
-      b.addEventListener("click", () => { state.exCountry = c; renderIntensityControls(); renderIntensityExample(); });
+      b.addEventListener("click", () => { state.exCountry = c; renderIntensityControls(); syncSegs(); renderIntensityExample(); });
       return b;
     }));
     const available = Object.keys(data.indicators).filter((k) => has(state.exCountry, k));
