@@ -383,7 +383,7 @@ def _dominant_points(result):
         return []
     dom = max(typed, key=typed.get)
     share = typed[dom] / sum(typed.values()) * 100
-    return [f"{dom} accounts for {fmt_num(share)}% of subtyped influenza samples this season, across all three countries."]
+    return [f"{dom} accounts for {fmt_num(share)}% of subtyped influenza samples this season, across the Nordic countries."]
 
 
 def _hospital_points(summary):
@@ -430,7 +430,7 @@ SNAPSHOT_KEYS = RECENT_KEYS
 
 
 def nordic_series(series):
-    """Weekly sum over the three countries, only for weeks in which all of them reported."""
+    """Weekly sum over the Nordic countries, only for weeks in which all of them reported."""
     out = {}
     for key in RECENT_KEYS:
         per_country = [series[key].get(c) for c in COUNTRIES]

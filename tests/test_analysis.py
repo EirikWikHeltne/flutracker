@@ -100,9 +100,10 @@ def test_sales_sheets_and_import(tmp_path):
     from flutracker import excel, sales
 
     csv = tmp_path / "my_sales.csv"
-    csv.write_text("country,week,sales\nNorway,2025-W40,1200\nSE,2025-W41,800\nDanmark,2025-W41,\n")
+    csv.write_text("country,week,sales\nNorway,2025-W40,1200\nSE,2025-W41,800\nDanmark,2025-W41,\nSuomi,2025-W41,300\n")
     rows = sales.read_sales(csv)
-    assert rows == {("week", "2025-W40", "NO"): 1200.0, ("week", "2025-W41", "SE"): 800.0}
+    assert rows == {("week", "2025-W40", "NO"): 1200.0, ("week", "2025-W41", "SE"): 800.0,
+                    ("week", "2025-W41", "FI"): 300.0}
 
     path = excel.build(analysis.analyse(make_raw()), tmp_path / "out.xlsx", rows)
     wb = load_workbook(path)
@@ -179,15 +180,16 @@ def test_nordic_and_yearly(tmp_path):
 
     raw = make_raw()
     extra = []
-    for country in ("Sweden", "Denmark"):
+    for country in ("Sweden", "Denmark", "Finland"):
         extra += rows(country, "nonSentinelTestsDetections", {"2024-W02": 3, "2025-W41": 5}, indicator="detections",
                       pathogen="Influenza", pathogentype="Influenza", pathogensubtype="total", age="total", survtype="non-sentinel")
     result = analysis.analyse(pd.concat([raw, pd.DataFrame(extra)], ignore_index=True))
     nordic = result["nordic"]["flu_cases"]
-    assert nordic["value"] == 60 and nordic["week"] == "2025-W41"  # 50 + 5 + 5
+    assert nordic["value"] == 65 and nordic["week"] == "2025-W41"  # 50 + 5 + 5 + 5
     year = result["yearly"]["areas"]["ALL"]["flu_cases"]
-    assert year["2024"][1] == 26 and year["2024"][0] is None  # W02: 20 + 3 + 3; W01 not reported by all
+    assert year["2024"][1] == 29 and year["2024"][0] is None  # W02: 20 + 3 + 3 + 3; W01 not reported by all
     assert result["yearly"]["areas"]["NO"]["flu_cases"]["2025"][40] == 50
+    assert result["summary"]["FI"]["flu_cases"]["value"] == 5 and result["countries"]["FI"]["name"] == "Finland"
     assert charts.year_chart(result, tmp_path / "c.png").stat().st_size > 10_000
 
 

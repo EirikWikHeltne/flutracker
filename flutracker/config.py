@@ -2,7 +2,7 @@
 
 # ECDC ERVISS (European Respiratory Virus Surveillance Summary) publishes the
 # weekly surveillance data that each national public health institute reports
-# to ECDC: FHI (Norway), Folkhälsomyndigheten (Sweden) and SSI (Denmark).
+# to ECDC: FHI (Norway), Folkhälsomyndigheten (Sweden), SSI (Denmark) and THL (Finland).
 ERVISS_BASE = "https://raw.githubusercontent.com/EU-ECDC/Respiratory_viruses_weekly_data/main/data"
 ERVISS_FILES = [
     "nonSentinelTestsDetections",
@@ -21,12 +21,12 @@ SOURCE = {
     "data": "https://github.com/EU-ECDC/Respiratory_viruses_weekly_data",
     "note": (
         "Figures are reported every week by the national public health institutes "
-        "(FHI, Folkhälsomyndigheten and SSI) to ECDC, which publishes them openly every Friday. "
+        "(FHI, Folkhälsomyndigheten, SSI and THL) to ECDC, which publishes them openly every Friday. "
         "Recent weeks can be revised."
     ),
 }
 
-# Links checked against the authorities' own sites (October 2026).
+# Links checked against the authorities' own sites (October 2026; Finland added November 2026).
 COUNTRIES = {
     "NO": {
         "erviss": "Norway",
@@ -49,7 +49,20 @@ COUNTRIES = {
         "url": "https://www.ssi.dk/sygdomme-beredskab-og-forskning/overvaagning-af-luftvejssygdomme",
         "data_url": "https://statistik.ssi.dk/sygdomsdata",
     },
+    "FI": {
+        "erviss": "Finland",
+        "name": "Finland",
+        "authority": "Finnish Institute for Health and Welfare (THL)",
+        "url": "https://thl.fi/aiheet/infektiotaudit-ja-rokotukset/taudit-ja-torjunta/taudit-ja-taudinaiheuttajat-a-o/influenssa/ajantasainen-influenssakatsaus",
+        "data_url": "https://thl.fi/en/data-and-statistics/infectious-diseases/respiratory-infections",
+    },
 }
+
+# "Norway, Sweden, Denmark and Finland" / "Norway, Sweden, Denmark, Finland" for titles and captions.
+COUNTRY_NAMES = [c["name"] for c in COUNTRIES.values()]
+COUNTRY_LIST = ", ".join(COUNTRY_NAMES[:-1]) + " and " + COUNTRY_NAMES[-1]
+COUNTRY_COMMAS = ", ".join(COUNTRY_NAMES)
+AUTHORITY_SHORT = "FHI, Folkhälsomyndigheten, SSI and THL"
 
 GROUPS = ["Influenza", "COVID-19", "RSV", "Hospital & severity"]
 

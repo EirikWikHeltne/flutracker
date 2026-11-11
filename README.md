@@ -1,4 +1,4 @@
-# Flu, COVID-19 & RSV tracker – Norway, Sweden and Denmark
+# Flu, COVID-19 & RSV tracker – Norway, Sweden, Denmark and Finland
 
 A weekly status of influenza, COVID-19 and RSV in the Nordics, in Karo Healthcare design. It is published three ways, each
 compared with previous seasons:
@@ -23,24 +23,29 @@ weekly figures that each national public health institute reports to ECDC:
 | Norway | Norwegian Institute of Public Health (FHI) | [fhi.no](https://www.fhi.no/tema/influensa/overvaakingssystemet) · [statistikk.fhi.no](https://statistikk.fhi.no/) |
 | Sweden | Public Health Agency of Sweden (Folkhälsomyndigheten) | [Lägesrapport luftvägsvirus](https://www.folkhalsomyndigheten.se/statistik-och-data/lagesrapporter/luftvagsvirus-lagesrapporter/aktuell-lagesrapport-om-luftvagsvirus/) |
 | Denmark | Statens Serum Institut (SSI) | [Overvågning af luftvejssygdomme](https://www.ssi.dk/sygdomme-beredskab-og-forskning/overvaagning-af-luftvejssygdomme) |
+| Finland | Finnish Institute for Health and Welfare (THL) | [Ajantasainen influenssakatsaus](https://thl.fi/aiheet/infektiotaudit-ja-rokotukset/taudit-ja-torjunta/taudit-ja-taudinaiheuttajat-a-o/influenssa/ajantasainen-influenssakatsaus) · [Respiratory infections](https://thl.fi/en/data-and-statistics/infectious-diseases/respiratory-infections) |
 
-Using ERVISS gives one consistent, documented format for all three countries. ECDC publishes it every Friday, and
+Using ERVISS gives one consistent, documented format for all four countries. ECDC publishes it every Friday, and
 the full history is re-downloaded each week because recent weeks can be revised.
 
 ### Indicators (season 2026/27)
 
-| Group | Indicator | NO | SE | DK |
-|---|---|:-:|:-:|:-:|
-| Influenza | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
-| Influenza | Influenza-like illness (ILI) GP consultations per 100,000 | ✓ | – | ✓ |
-| Influenza | Virus types (A(H1N1), A(H3N2), B) | ✓ | ✓ | ✓ |
-| COVID-19 | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
-| RSV | Lab-confirmed cases, test positivity, sentinel GP positivity | ✓ | ✓ | ✓ |
-| Hospital & severity | Deaths with influenza / COVID-19 | – | ✓ | – |
+| Group | Indicator | NO | SE | DK | FI |
+|---|---|:-:|:-:|:-:|:-:|
+| Influenza | Lab-confirmed cases | ✓ | ✓ | ✓ | ✓ |
+| Influenza | Test positivity, sentinel GP positivity | ✓ | ✓ | ✓ | – |
+| Influenza | Influenza-like illness (ILI) GP consultations per 100,000 | ✓ | – | ✓ | ✓ |
+| Influenza | Virus types (A(H1N1), A(H3N2), B) | ✓ | ✓ | ✓ | A/B only |
+| COVID-19 | Lab-confirmed cases | ✓ | ✓ | ✓ | ✓ |
+| COVID-19 | Test positivity, sentinel GP positivity | ✓ | ✓ | ✓ | – |
+| RSV | Lab-confirmed cases | ✓ | ✓ | ✓ | ✓ |
+| RSV | Test positivity, sentinel GP positivity | ✓ | ✓ | ✓ | – |
+| Hospital & severity | Deaths with influenza / COVID-19 | – | ✓ | – | – |
 | Hospital & severity | Hospital admissions, ICU admissions, SARI hospitalisations | supported, shown when reported to ECDC |
 
-Norway and Denmark do not currently report hospital admissions to ECDC, and Sweden's ICU reporting has been paused since
-April 2026. The tracker shows any of these automatically as soon as they appear in ERVISS, and links to the national
+Norway, Denmark and Finland do not currently report hospital admissions to ECDC, and Sweden's ICU reporting has been paused since
+April 2026. Finland reports lab-confirmed cases and ILI consultations every week, but stopped reporting test counts,
+sentinel samples and deaths to ECDC in 2023–24, and does not subtype influenza A or B, so those are left out for Finland. The tracker shows any of these automatically as soon as they appear in ERVISS, and links to the national
 reports in the meantime. History starts with the 2022/23 season. Norway's laboratory RSV figures start in 2024/25 (Sweden's RSV sentinel figures too), so those
 are compared with fewer seasons.
 
@@ -50,7 +55,7 @@ are compared with fewer seasons.
   year, for influenza, COVID-19 and RSV, per country and for the Nordics.
 * **Last 12 months** (dashboard and Excel): the three viruses in one chart for the last 52 weeks.
 
-The Nordic total is only given for weeks in which all three countries reported. Weeks a country did not report (for
+The Nordic total is only given for weeks in which all four countries reported. Weeks a country did not report (for
 example Sweden's RSV in summer) are left as gaps.
 
 ## Leading markets (ahead of the Nordics)

@@ -16,7 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, parse_yw
-from .config import COUNTRIES, DASHBOARD_URL, EXCEL_NAME
+from .config import AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL, EXCEL_NAME
 
 NAVY = "#110B36"
 PEACH = "#FAD7C2"
@@ -49,7 +49,7 @@ def week_range(result):
 
 
 def subject(result):
-    return f"Respiratory virus update week {parse_yw(result['latest_week'])[1]} – Norway, Sweden and Denmark"
+    return f"Respiratory virus update week {parse_yw(result['latest_week'])[1]} – {COUNTRY_LIST}"
 
 
 # ------------------------------------------------------------ components ----
@@ -156,7 +156,7 @@ def status_cards(result):
 </td></tr></table></td>""")
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
             f'<tr>{"".join(cells)}</tr></table>'
-            f'<p style="margin:10px 0 0 0; font-size:12px; color:{MUTED};">Lab-confirmed cases in Norway, Sweden and Denmark '
+            f'<p style="margin:10px 0 0 0; font-size:12px; color:{MUTED};">Lab-confirmed cases in {COUNTRY_LIST} '
             f'combined, change on last week, and intensity (share of an average season peak).</p>')
 
 
@@ -184,7 +184,7 @@ def country_table(result):
 def chart_block(src):
     return (f'<img src="{esc(src)}" width="550" alt="Lab-confirmed cases per week, each year as a line" '
             f'style="display:block; width:100%; max-width:550px; height:auto; border:0;" />'
-            f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">Norway, Sweden and Denmark combined. One line per '
+            f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">{COUNTRY_LIST} combined. One line per '
             f'year; the thick dark line is this year. Gaps are weeks when not every country reported, such as Swedish RSV in summer.</p>')
 
 
@@ -262,7 +262,7 @@ def render(result, dashboard_url=None, chart_src=None):
         f"""<tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:35px 45px 30px 45px;">
 <p style="margin:0 0 10px 0; font-family:{FONT}; font-size:11px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase;">Karo Healthcare Norway &middot; Flu tracker</p>
 <p style="margin:0; font-family:{FONT}; font-size:28px; font-weight:normal; color:#ffffff; mso-line-height-rule:exactly; line-height:36px;">Respiratory virus update, week {week}</p>
-<p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; Norway, Sweden, Denmark</p>
+<p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>
 </td></tr>""",
         spacer(28),
         *([row(f'<p style="margin:0; font-family:{FONT}; font-size:17px; line-height:1.55; color:{NAVY};">'
@@ -279,7 +279,7 @@ def render(result, dashboard_url=None, chart_src=None):
         cta(url),
         spacer(25),
         footnote(
-            f"Source: {link(src['url'], src['name'])}, reported by FHI, Folkh&auml;lsomyndigheten and SSI. "
+            f"Source: {link(src['url'], src['name'])}, reported by {entities(AUTHORITY_SHORT)}. "
             f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook."
         ),
