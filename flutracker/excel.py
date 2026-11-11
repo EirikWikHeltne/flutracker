@@ -16,7 +16,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from . import sales
 from .analysis import parse_yw, week_monday
-from .config import COUNTRIES, FLUNET_SOURCE, INDICATORS, INTENSITY_LEVELS, RECENT_KEYS, SOURCE
+from .config import COUNTRIES, COUNTRY_COMMAS, FLUNET_SOURCE, INDICATORS, INTENSITY_LEVELS, RECENT_KEYS, SOURCE
 
 NAVY = "110B36"
 PEACH = "FAD7C2"
@@ -95,7 +95,7 @@ def _overview(wb, result):
                "Hist. average", "Hist. min", "Hist. max", "Level vs history",
                "Avg. season peak", "Intensity", "Season to date", "Hist. season to date"]
     width = len(headers) + 1
-    _banner(ws, "Flu, COVID-19 & RSV tracker – Norway, Sweden, Denmark", _week_label(result), width)
+    _banner(ws, f"Flu, COVID-19 & RSV tracker – {COUNTRY_COMMAS}", _week_label(result), width)
 
     r = 5
     _label(ws, r, 2, "Key findings this week")
@@ -263,7 +263,7 @@ def _recent(wb, result):
     width = 3 + len(areas) * len(RECENT_KEYS)
     _banner(ws, "Lab-confirmed cases by virus – last 12 months", _week_label(result), width)
     ws.cell(4, 2, "Weekly lab-confirmed cases per virus. Blank = not reported to ECDC that week. The Nordic total is "
-                  "only given for weeks in which all three countries reported.").font = F_MUTED
+                  "only given for weeks in which every country reported.").font = F_MUTED
 
     hr = 40  # charts above, table below
     _header(ws, hr, 2, ["Week", "Week starting"] + [f"{name} – {RECENT_STYLE[k][0]}" for name, _ in areas for k in RECENT_KEYS])
@@ -359,7 +359,7 @@ def _subtypes(wb, result):
     for b, (period, title) in enumerate([("week", "This week"), ("season", "Season to date")]):
         top = 6 + b * (len(names) + 6)
         _label(ws, top - 1, 2, f"{title} – lab-confirmed influenza by type")
-        _header(ws, top, 2, ["Virus"] + [COUNTRIES[c]["name"] for c in codes] + ["All three"]
+        _header(ws, top, 2, ["Virus"] + [COUNTRIES[c]["name"] for c in codes] + ["All countries"]
                 + [f"Share {COUNTRIES[c]['name']}" for c in codes])
         for i, name in enumerate(names):
             r = top + 1 + i

@@ -248,7 +248,7 @@ def build(wb, result, freq):
         inp.cell(6 + i, 2, s).font = x.F_BASE if i < 4 else x.F_MUTED
     x._label(inp, 13, 2, "Example of the expected format")
     ex_key = "2025-W45" if freq == "week" else "2025-11"
-    for j, v in enumerate([ex_key, "", 1250, 830, 640]):
+    for j, v in enumerate([ex_key, "", 1250, 830, 640, 520][:2 + len(codes)]):
         c = inp.cell(14, 2 + j, v)
         c.font = x.F_MUTED
     inp.cell(15, 2, "(the example row above is not used in any calculation)").font = x.F_MUTED
@@ -435,7 +435,7 @@ def build(wb, result, freq):
 
 
 COUNTRY_CODES = {**{c: c for c in COUNTRIES}, **{v["name"].lower(): c for c, v in COUNTRIES.items()},
-                 "norge": "NO", "sverige": "SE", "danmark": "DK"}
+                 "norge": "NO", "sverige": "SE", "danmark": "DK", "suomi": "FI"}
 
 
 def read_sales(path):

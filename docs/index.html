@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nordic Flu Tracker</title>
-<meta name="description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
+<meta name="description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden, Denmark and Finland compared with previous seasons.">
 <meta property="og:title" content="Nordic Flu Tracker">
-<meta property="og:description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden and Denmark compared with previous seasons.">
+<meta property="og:description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden, Denmark and Finland compared with previous seasons.">
 <meta property="og:image" content="https://eirikwikheltne.github.io/flutracker/img/influenza-virus-960.jpg">
 <meta property="og:image:alt" content="Influenza A virus particles under the electron microscope">
 <script>document.documentElement.classList.add("js")</script>
@@ -32,6 +32,7 @@
     --c-NO: #4B3FA8;
     --c-SE: #C8603A;
     --c-DK: #008A7A;
+    --c-FI: #B0307A;
     --grid: #ececec;
     --tile-bg: #110B36;
     --tile-text: #ffffff;
@@ -47,7 +48,7 @@
       --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
       --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
       --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
-      --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
+      --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --c-FI: #E062A6; --grid: #2a2545;
       --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
       --pressed-bg: #FAD7C2; --pressed-text: #110B36; --accent: #FAD7C2;
       --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
@@ -57,7 +58,7 @@
     --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
     --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
     --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
-    --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --grid: #2a2545;
+    --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --c-FI: #E062A6; --grid: #2a2545;
     --tile-bg: #221c4a; --tile-foot: #3a2f5c; --tile-foot-text: #FAD7C2; --alt: #201a3f;
     --pressed-bg: #FAD7C2; --pressed-text: #110B36; --accent: #FAD7C2;
     --v-flu_cases: #FAD7C2; --v-covid_cases: #F0955A; --v-rsv_cases: #2BB3A2;
@@ -399,7 +400,7 @@
     </div>
     <div class="chart-box"><canvas id="yearChart" aria-label="Weekly cases per calendar year"></canvas></div>
     <div class="legend" id="yearLegend"></div>
-    <p class="note">One line per year, by ISO week; the thick line is this year. The Nordic total only covers weeks in which all three countries reported.</p>
+    <p class="note">One line per year, by ISO week; the thick line is this year. The Nordic total only covers weeks in which every country reported.</p>
   </section>
 
   <section>
@@ -532,7 +533,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 (function () {
-  const ORDER = ["NO", "SE", "DK"];
+  const ORDER = ["NO", "SE", "DK", "FI"];
   const CASES = { "Influenza": "flu_cases", "COVID-19": "covid_cases", "RSV": "rsv_cases" };
   // Year-by-year chart: newest year first (it gets --current), then fixed colours. Mirrors flutracker/charts.py.
   const YEAR_COLOURS = ["#E07B39", "#008A7A", "#9B3F96", "#9F9DB1", "#C9C7D6"];
@@ -939,14 +940,14 @@
     const labels = rec.weeks.map((w) => w.replace("-W", "-"));
     if (recentChart) recentChart.destroy();
     recentChart = new Chart(document.getElementById("recentChart"), { type: "line", data: { labels, datasets }, options: opts });
-    const where = state.recent === "ALL" ? "Norway, Sweden and Denmark combined" : data.countries[state.recent].name;
+    const where = state.recent === "ALL" ? ORDER.map((c) => data.countries[c].name).join(", ").replace(/, ([^,]*)$/, " and $1") + " combined" : data.countries[state.recent].name;
     document.getElementById("recentTitle").textContent = "Lab-confirmed cases by virus – " + where;
     document.getElementById("recentLegend").innerHTML = keys.map((k) =>
       '<span><svg width="28" height="6" aria-hidden="true"><line x1="0" y1="3" x2="28" y2="3" stroke="' + css("--v-" + k) +
       '" stroke-width="3" stroke-dasharray="' + RECENT[k][1].join(" ") + '"/></svg>' + esc(RECENT[k][0]) + "</span>").join("");
     document.getElementById("recentNote").textContent = "Weekly lab-confirmed cases, year-week " + labels[0] + " to " + labels[labels.length - 1] +
       ". Gaps are weeks a country did not report to ECDC (Sweden pauses RSV reporting in summer)." +
-      (state.recent === "ALL" ? " The Nordic total is only shown for weeks in which all three countries reported." : "");
+      (state.recent === "ALL" ? " The Nordic total is only shown for weeks in which every country reported." : "");
   }
 
   function renderSeasonChart() {
