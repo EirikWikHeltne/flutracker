@@ -16,7 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, parse_yw
-from .config import AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL, EXCEL_NAME
+from .config import AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL
 
 NAVY = "#110B36"
 PEACH = "#FAD7C2"
@@ -209,7 +209,6 @@ def intensity_block(result):
 
 
 def cta(url):
-    excel = url.rstrip("/") + "/data/" + EXCEL_NAME
     return f"""<tr>
   <td align="center" style="padding:10px 45px 0 45px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
@@ -224,7 +223,6 @@ def cta(url):
     <!--[if !mso]><!-->
     <a href="{esc(url)}" style="display:inline-block; background-color:{NAVY}; color:#ffffff; font-family:Georgia,'Times New Roman',serif; font-size:15px; font-weight:bold; text-decoration:none; padding:12px 40px; border-radius:4px;">Open the tracker</a>
     <!--<![endif]-->
-    <p style="margin:14px 0 0 0; font-family:{FONT}; font-size:13px;"><a href="{esc(excel)}" style="color:{NAVY}; font-weight:bold; text-decoration:underline;">Download the Excel workbook &rarr;</a></p>
     </td></tr></table>
   </td>
 </tr>"""
