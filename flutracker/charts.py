@@ -4,10 +4,19 @@ Each calendar year is one line over ISO weeks 1–53 (January to December), for 
 Nordic total of influenza, COVID-19 and RSV.
 """
 
+import pathlib
+
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib import font_manager  # noqa: E402
+
+# The e-mail is set in Georgia, which may not be redistributed. Gelasio is an open font
+# drawn to the same proportions, bundled here so the chart looks the same wherever it is built.
+FONT = "Gelasio"
+for _ttf in sorted((pathlib.Path(__file__).parent / "fonts").glob("*.ttf")):
+    font_manager.fontManager.addfont(str(_ttf))
 
 NAVY = "#110B36"
 MUTED = "#6B7280"
@@ -83,7 +92,7 @@ def year_chart(result, path, area="ALL"):
     if "flu_cases" not in data:
         return None
     colours = year_colours(result["yearly"]["years"])
-    plt.rcParams["font.family"] = "DejaVu Sans"
+    plt.rcParams["font.family"] = [FONT, "DejaVu Serif"]
     fig = plt.figure(figsize=(EMAIL_SIZE[0] / 100, EMAIL_SIZE[1] / 100), dpi=200)
     grid = fig.add_gridspec(3, 1, height_ratios=[1.3, 1, 1], hspace=0.42)
     axes = [fig.add_subplot(grid[i, 0]) for i in range(3)]
