@@ -8,6 +8,8 @@ compared with previous seasons:
   `reports/YYYY-Www.html`). It is a one-screen executive summary: a short headline, the year-by-year chart (PNG in
   `docs/data/charts/`, embedded in the sent e-mail), a virus × country snapshot with the Nordic total and intensity, a
   short explanation of intensity, and the key points. The detail lives on the dashboard and in Excel
+  Section icons are colour emoji (text, not images), so they survive copy-paste into classic and new Outlook
+  and are never blocked as remote pictures
 * an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`),
   including a **sales tool** for correlation and forecasting
 

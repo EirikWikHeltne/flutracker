@@ -64,9 +64,26 @@ def heading(text):
             f'mso-line-height-rule:exactly; line-height:25px;">{esc(text)}</p>')
 
 
-def label(text):
+# Icons are colour emoji, not images: they are plain text, so they survive copy-paste into Outlook,
+# never hit "download pictures" blocking, and render in colour in classic Outlook (Segoe UI Emoji),
+# new Outlook, Outlook on the web and Apple Mail. Only emoji from Unicode 11 or earlier that need no
+# variation selector are used, so older Windows builds do not show boxes.
+EMOJI_FONT = "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif"
+ICONS = {"pin": "\U0001F4CD", "bulb": "\U0001F4A1", "chart": "\U0001F4C8", "globe": "\U0001F30D",
+         "bars": "\U0001F4CA", "calendar": "\U0001F4C5", "books": "\U0001F4DA",
+         "flu_cases": "\U0001F927", "covid_cases": "\U0001F637", "rsv_cases": "\U0001F476"}
+
+
+def icon(name, size=14):
+    """A colour emoji in its own span, so Outlook picks the emoji font instead of Georgia."""
+    return (f'<span style="font-family:{EMOJI_FONT}; font-size:{size}px; letter-spacing:0; '
+            f'text-transform:none; mso-line-height-rule:exactly;">{ICONS[name]}</span>')
+
+
+def label(text, ico=None):
+    lead = f"{icon(ico, 14)}&nbsp;&nbsp;" if ico else ""
     return (f'<p style="margin:0 0 8px 0; font-family:{FONT}; font-size:11px; color:{MUTED}; '
-            f'text-transform:uppercase; letter-spacing:2px;">{esc(text)}</p>')
+            f'text-transform:uppercase; letter-spacing:2px;">{lead}{esc(text)}</p>')
 
 
 def row(inner, pad="0 45px"):
@@ -149,7 +166,7 @@ def status_cards(result):
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td bgcolor="{accent}" style="background-color:{accent}; height:5px; line-height:5px; font-size:1px;">&nbsp;</td></tr>
 <tr><td bgcolor="#F7F6FA" style="background-color:#F7F6FA; padding:14px 14px 16px 14px; font-family:{FONT};">
-<p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{MUTED};">{esc(SNAPSHOT_LABELS[key])}</p>
+<p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{MUTED};">{icon(key, 15)}&nbsp;&nbsp;{esc(SNAPSHOT_LABELS[key])}</p>
 <p style="margin:6px 0 0 0; font-size:30px; line-height:34px; color:{NAVY}; mso-line-height-rule:exactly;">{value}</p>
 <p style="margin:2px 0 10px 0; font-size:12px; color:{MUTED};">cases &middot; {_trend(s["wow_pct"] if s else None, 12)}</p>
 {pill(s)}
@@ -163,7 +180,7 @@ def status_cards(result):
 def country_table(result):
     """Countries as rows, viruses as columns: cases, change on last week and intensity."""
     head = (f'<tr><td style="{TH}">Week {parse_yw(result["latest_week"])[1]}</td>'
-            + "".join(f'<td style="{TH} text-align:right;">{esc(SNAPSHOT_LABELS[k])}</td>' for k in SNAPSHOT_KEYS) + "</tr>")
+            + "".join(f'<td style="{TH} text-align:right;">{icon(k, 13)}&nbsp;{esc(SNAPSHOT_LABELS[k])}</td>' for k in SNAPSHOT_KEYS) + "</tr>")
     body = []
     line = f" border-bottom:1px solid {DIVIDER};"
     for code, c in COUNTRIES.items():
@@ -260,24 +277,24 @@ def render(result, dashboard_url=None, chart_src=None):
         f"""<tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:35px 45px 30px 45px;">
 <p style="margin:0 0 10px 0; font-family:{FONT}; font-size:11px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase;">Karo Healthcare Norway &middot; Flu tracker</p>
 <p style="margin:0; font-family:{FONT}; font-size:28px; font-weight:normal; color:#ffffff; mso-line-height-rule:exactly; line-height:36px;">Respiratory virus update, week {week}</p>
-<p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>
+<p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{icon("calendar", 13)}&nbsp;&nbsp;{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>
 </td></tr>""",
         spacer(28),
         *([row(f'<p style="margin:0; font-family:{FONT}; font-size:17px; line-height:1.55; color:{NAVY};">'
                f'{esc(" ".join(result["headline"]))}</p>'), spacer(24)] if result["headline"] else []),
-        row(label("This week in the Nordics") + status_cards(result)),
+        row(label("This week in the Nordics", "pin") + status_cards(result)),
         spacer(26),
-        *([row(label("Worth knowing") + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),
-        row(label("Year by year") + heading("Lab-confirmed cases, January to December") + chart_block(chart_src or chart_url(result, url))),
+        *([row(label("Worth knowing", "bulb") + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),
+        row(label("Year by year", "chart") + heading("Lab-confirmed cases, January to December") + chart_block(chart_src or chart_url(result, url))),
         spacer(28),
-        row(label("By country") + country_table(result)),
+        row(label("By country", "globe") + country_table(result)),
         spacer(28),
-        row(label("How to read intensity") + intensity_block(result)),
+        row(label("How to read intensity", "bars") + intensity_block(result)),
         spacer(28),
         cta(url),
         spacer(25),
         footnote(
-            f"Source: {link(src['url'], src['name'])}, reported by {entities(AUTHORITY_SHORT)}. "
+            f"{icon('books', 13)}&nbsp; Source: {link(src['url'], src['name'])}, reported by {entities(AUTHORITY_SHORT)}. "
             f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook."
         ),
