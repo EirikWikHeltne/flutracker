@@ -16,6 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, parse_yw
+from .charts import EMAIL_SIZE
 from .config import AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL
 
 NAVY = "#110B36"
@@ -206,9 +207,13 @@ def country_table(result):
     return _table(head, body)
 
 
+CHART_W, CHART_H = EMAIL_SIZE  # both set on the <img>: Outlook on Windows needs fixed dimensions
+
+
 def chart_block(src):
-    return (f'<img src="{esc(src)}" width="550" alt="Lab-confirmed cases per week, each year as a line" '
-            f'style="display:block; width:100%; max-width:550px; height:auto; border:0;" />'
+    return (f'<img src="{esc(src)}" width="{CHART_W}" height="{CHART_H}" alt="Lab-confirmed cases per week, each year as a line" '
+            f'style="display:block; width:100%; max-width:{CHART_W}px; height:auto; border:0; outline:none; '
+            f'text-decoration:none; -ms-interpolation-mode:bicubic;" />'
             f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">{COUNTRY_LIST} combined. One line per '
             f'year; the thick dark line is this year. Gaps are weeks when not every country reported, such as Swedish RSV in summer.</p>')
 
