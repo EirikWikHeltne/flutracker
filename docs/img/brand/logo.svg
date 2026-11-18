@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Nordic Flu Tracker">
+  <rect width="64" height="64" rx="14" fill="#110B36"/>
+  <g fill="none" stroke="#FAD7C2" stroke-width="4" stroke-linecap="round">
+    <circle cx="32" cy="32" r="11"/>
+    <path d="M32 8.5v8M32 47.5v8M8.5 32h8M47.5 32h8M15.4 15.4l5.6 5.6M43 43l5.6 5.6M15.4 48.6l5.6-5.6M43 21l5.6-5.6"/>
+  </g>
+  <g fill="#FAD7C2">
+    <circle cx="32" cy="8.5" r="3.6"/><circle cx="32" cy="55.5" r="3.6"/><circle cx="8.5" cy="32" r="3.6"/><circle cx="55.5" cy="32" r="3.6"/>
+    <circle cx="15.4" cy="15.4" r="3.6"/><circle cx="48.6" cy="48.6" r="3.6"/><circle cx="15.4" cy="48.6" r="3.6"/><circle cx="48.6" cy="15.4" r="3.6"/>
+  </g>
+  <path d="M25 33.5h3.2l2-4.5 3.4 8 2-3.5H39" fill="none" stroke="#9DE3C2" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

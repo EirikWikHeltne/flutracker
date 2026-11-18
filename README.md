@@ -160,6 +160,7 @@ python -m flutracker excel --sales my_sales.csv --out flutracker_with_sales.xlsx
 flutracker/        Python package: fetch → analysis (+ leading) → emailer / excel (+ sales sheets)
 docs/index.html    Dashboard (GitHub Pages), reads docs/data/flu.json
 docs/data/         flu.json, flutracker_latest.xlsx and email_latest.html (the downloads)
+docs/img/brand/    Logo (logo.svg), favicons and the link-preview thumbnail (og-image.png); rebuild with node tools/render_brand.js
 data/              Nordic rows from ERVISS, leading markets from FluNet + state.json (last week e-mailed)
 reports/           Each week's e-mail (HTML) and workbook (XLSX)
 ```

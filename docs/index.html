@@ -7,8 +7,18 @@
 <meta name="description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden, Denmark and Finland compared with previous seasons.">
 <meta property="og:title" content="Nordic Flu Tracker">
 <meta property="og:description" content="Weekly influenza (A and B), COVID-19 and RSV status for Norway, Sweden, Denmark and Finland compared with previous seasons.">
-<meta property="og:image" content="https://eirikwikheltne.github.io/flutracker/img/influenza-virus-960.jpg">
-<meta property="og:image:alt" content="Influenza A virus particles under the electron microscope">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://eirikwikheltne.github.io/flutracker/">
+<meta property="og:image" content="https://eirikwikheltne.github.io/flutracker/img/brand/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nordic Flu Tracker: weekly influenza, COVID-19 and RSV for Norway, Sweden, Denmark and Finland">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://eirikwikheltne.github.io/flutracker/img/brand/og-image.png">
+<link rel="icon" href="img/brand/logo.svg" type="image/svg+xml">
+<link rel="icon" href="img/brand/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#110B36">
 <script>document.documentElement.classList.add("js")</script>
 <style>
   :root {
@@ -80,6 +90,7 @@
   @media (max-width: 520px) { .virus { display: none; } }
   .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--peach); margin: 0 0 12px; }
   .eyebrow .ic { width: 18px; height: 18px; }
+  .eyebrow .logo { width: 28px; height: 28px; border-radius: 7px; box-shadow: 0 0 0 1px rgba(250, 215, 194, .35); }
   h1 { font-weight: normal; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0; }
   .sub { margin: 10px 0 0; font-size: 15px; color: var(--peach); font-style: italic; }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -355,7 +366,7 @@
 <header class="banner">
   <div class="wrap banner-row">
     <div>
-      <p class="eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-virus"/></svg>Karo Healthcare Norway flu tracker</p>
+      <p class="eyebrow"><img class="logo" src="img/brand/logo.svg" width="28" height="28" alt="">Karo Healthcare Norway flu tracker</p>
       <h1 id="title">Flu, COVID-19 &amp; RSV in the Nordics</h1>
       <p class="sub" id="subtitle">&nbsp;</p>
       <div class="actions">
