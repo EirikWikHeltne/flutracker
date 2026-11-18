@@ -8,6 +8,9 @@ compared with previous seasons:
   `reports/YYYY-Www.html`). It is a one-screen executive summary: a short headline, the year-by-year chart (PNG in
   `docs/data/charts/`, embedded in the sent e-mail), a virus × country snapshot with the Nordic total and intensity, a
   short explanation of intensity, and the key points. The detail lives on the dashboard and in Excel
+  The section icons are the dashboard's Karo line icons, rendered to PNG in `docs/data/icons/` by
+  `node tools/render_email_icons.js` (Outlook cannot show SVG). They are linked with a full https address and a fixed
+  16 px size, so they survive copy-paste into classic and new Outlook; the e-mail sent over SMTP embeds them
 * an **Excel workbook** to download (`docs/data/flutracker_latest.xlsx`, archived in `reports/YYYY-Www.xlsx`),
   including a **sales tool** for correlation and forecasting
 

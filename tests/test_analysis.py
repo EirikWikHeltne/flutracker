@@ -259,3 +259,13 @@ def test_leading_onset_and_incomplete_weeks():
                        "tested_positives": [400] * 7 + [200], "positives": [400] * 7 + [200]})
     pos = leading.positivity(df)
     assert pos.index.max() == "2026-W36"  # the half-reported newest week is left out
+
+
+def test_email_icons_are_hosted_pngs():
+    """Karo icons are PNGs with a full https address and fixed size, so they survive copy-paste into Outlook."""
+    html = emailer.render(analysis.analyse(make_raw()))
+    base = emailer.icon_base()
+    for name in ["virus-peach", "calendar-peach", "pulse-navy", "layers-navy", "globe-navy", "gauge-navy", "book-navy"]:
+        assert (emailer.ICONS_DIR / f"{name}.png").exists()
+        assert f'src="{base}{name}.png" width="16" height="16"' in html
+    assert base.startswith("https://")

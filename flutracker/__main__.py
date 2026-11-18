@@ -83,7 +83,7 @@ def cmd_email(args, result=None):
         return
     attachment = EXCEL if EXCEL.exists() else None
     if emailer.send(html, emailer.subject(result), result, attachment, chart,
-                    emailer.chart_url(result, args.dashboard_url)):
+                    emailer.chart_url(result, args.dashboard_url), args.dashboard_url):
         state["last_email_week"] = result["latest_week"]
         save_state(state)
 
