@@ -64,9 +64,34 @@ def heading(text):
             f'mso-line-height-rule:exactly; line-height:25px;">{esc(text)}</p>')
 
 
-def label(text):
-    return (f'<p style="margin:0 0 8px 0; font-family:{FONT}; font-size:11px; color:{MUTED}; '
-            f'text-transform:uppercase; letter-spacing:2px;">{esc(text)}</p>')
+# Karo line icons from the dashboard, rendered to PNG by tools/render_email_icons.js (Outlook cannot show
+# SVG). They are published with the dashboard and linked with a full https address and fixed width/height,
+# so they survive copy-paste into classic and new Outlook; the e-mail sent over SMTP embeds them instead.
+ICON_PX = 16
+ICONS_DIR = pathlib.Path(__file__).resolve().parent.parent / "docs" / "data" / "icons"
+
+
+def icon_base(dashboard_url=None):
+    return (dashboard_url or DASHBOARD_URL).rstrip("/") + "/data/icons/"
+
+
+def icon(name, base, color="navy", size=ICON_PX):
+    return (f'<img src="{esc(base)}{name}-{color}.png" width="{size}" height="{size}" alt="" '
+            f'style="display:block; width:{size}px; height:{size}px; border:0; outline:none; text-decoration:none;" />')
+
+
+def with_icon(img, inner, gap=9, pad_bottom=0):
+    """Icon and text side by side in a table: classic Outlook ignores vertical-align on inline images."""
+    pb = f" padding-bottom:{pad_bottom}px;" if pad_bottom else ""
+    return (f'<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>'
+            f'<td width="{ICON_PX}" valign="middle" style="padding-right:{gap}px;{pb}">{img}</td>'
+            f'<td valign="middle" style="{pb.strip()}">{inner}</td></tr></table>')
+
+
+def label(text, ico=None, base=None):
+    p = (f'<p style="margin:0{" 0 8px 0" if not ico else ""}; font-family:{FONT}; font-size:11px; color:{MUTED}; '
+         f'text-transform:uppercase; letter-spacing:2px; mso-line-height-rule:exactly; line-height:16px;">{esc(text)}</p>')
+    return with_icon(icon(ico, base), p, pad_bottom=10) if ico else p
 
 
 def row(inner, pad="0 45px"):
@@ -228,10 +253,11 @@ def cta(url):
 </tr>"""
 
 
-def footnote(text):
+def footnote(text, img=None):
+    lead = (f'<td width="{ICON_PX}" valign="top" style="padding:14px 0 0 15px;">{img}</td>' if img else "")
     return (f'<tr><td style="padding:0 45px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
-            f'<tr><td width="3" bgcolor="{PEACH}" style="background-color:{PEACH};"></td>'
-            f'<td style="padding:12px 0 12px 15px; font-family:{FONT}; font-size:12px; color:{MUTED}; line-height:1.6;">{text}</td>'
+            f'<tr><td width="3" bgcolor="{PEACH}" style="background-color:{PEACH};"></td>{lead}'
+            f'<td style="padding:12px 0 12px {10 if img else 15}px; font-family:{FONT}; font-size:12px; color:{MUTED}; line-height:1.6;">{text}</td>'
             f'</tr></table></td></tr>')
 
 
@@ -252,34 +278,37 @@ def render(result, dashboard_url=None, chart_src=None):
     seasons = sorted({s for c in result["summary"].values() for i in c.values() for s in i.get("hist_by_season", {})})
     hist_span = f"{seasons[0]}–{seasons[-1]}" if seasons else "previous seasons"
     src = result["source"]
+    ib = icon_base(dashboard_url)
 
     preheader = " ".join(result["headline"])
     parts = [
         f'<tr><td style="display:none; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; '
         f'mso-hide:all; color:#ffffff;">{esc(preheader)}</td></tr>',
         f"""<tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:35px 45px 30px 45px;">
-<p style="margin:0 0 10px 0; font-family:{FONT}; font-size:11px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase;">Karo Healthcare Norway &middot; Flu tracker</p>
+{with_icon(icon("virus", ib, "peach"), f'<p style="margin:0; font-family:{FONT}; font-size:11px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase; mso-line-height-rule:exactly; line-height:16px;">Karo Healthcare Norway &middot; Flu tracker</p>', pad_bottom=12)}
 <p style="margin:0; font-family:{FONT}; font-size:28px; font-weight:normal; color:#ffffff; mso-line-height-rule:exactly; line-height:36px;">Respiratory virus update, week {week}</p>
-<p style="margin:10px 0 0 0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase;">{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="height:12px; line-height:12px; font-size:1px; mso-line-height-rule:exactly;">&nbsp;</td></tr></table>
+{with_icon(icon("calendar", ib, "peach"), f'<p style="margin:0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase; mso-line-height-rule:exactly; line-height:18px;">{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>')}
 </td></tr>""",
         spacer(28),
         *([row(f'<p style="margin:0; font-family:{FONT}; font-size:17px; line-height:1.55; color:{NAVY};">'
                f'{esc(" ".join(result["headline"]))}</p>'), spacer(24)] if result["headline"] else []),
-        row(label("This week in the Nordics") + status_cards(result)),
+        row(label("This week in the Nordics", "pulse", ib) + status_cards(result)),
         spacer(26),
-        *([row(label("Worth knowing") + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),
-        row(label("Year by year") + heading("Lab-confirmed cases, January to December") + chart_block(chart_src or chart_url(result, url))),
+        *([row(label("Worth knowing", "bulb", ib) + bullets(result["key_points"])), spacer(26)] if result["key_points"] else []),
+        row(label("Year by year", "layers", ib) + heading("Lab-confirmed cases, January to December") + chart_block(chart_src or chart_url(result, url))),
         spacer(28),
-        row(label("By country") + country_table(result)),
+        row(label("By country", "globe", ib) + country_table(result)),
         spacer(28),
-        row(label("How to read intensity") + intensity_block(result)),
+        row(label("How to read intensity", "gauge", ib) + intensity_block(result)),
         spacer(28),
         cta(url),
         spacer(25),
         footnote(
             f"Source: {link(src['url'], src['name'])}, reported by {entities(AUTHORITY_SHORT)}. "
             f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
-            "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook."
+            "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook.",
+            icon("book", ib),
         ),
         spacer(10),
         f'<tr><td style="padding:25px 45px 30px 45px; border-top:1px solid {DIVIDER};">'
@@ -324,7 +353,7 @@ def plain_text(result):
     return "\n".join(lines)
 
 
-def send(html_body, subj, result=None, attachment=None, chart=None, chart_src=None):
+def send(html_body, subj, result=None, attachment=None, chart=None, chart_src=None, dashboard_url=None):
     """Send over SMTP using SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, MAIL_FROM, MAIL_TO."""
     host = os.environ.get("SMTP_HOST")
     to = [a.strip() for a in os.environ.get("MAIL_TO", "").split(",") if a.strip()]
@@ -339,15 +368,24 @@ def send(html_body, subj, result=None, attachment=None, chart=None, chart_src=No
     msg["To"] = ", ".join(to)
     body = MIMEMultipart("alternative")
     body.attach(MIMEText(plain_text(result) if result else subj, "plain", "utf-8"))
+    # Embed the chart and icons in the message so they show even when remote images are blocked.
+    inline = []
     if chart and chart_src:
-        # Embed the chart in the message so it shows even when remote images are blocked.
         html_body = html_body.replace(esc(chart_src), "cid:yearchart")
+        inline.append(("yearchart", pathlib.Path(chart), "year_by_year.png"))
+    base = esc(icon_base(dashboard_url))
+    for path in sorted(ICONS_DIR.glob("*.png")):
+        if base + path.name in html_body:
+            html_body = html_body.replace(base + path.name, f"cid:icon-{path.stem}")
+            inline.append((f"icon-{path.stem}", path, path.name))
+    if inline:
         related = MIMEMultipart("related")
         related.attach(MIMEText(html_body, "html", "utf-8"))
-        img = MIMEImage(pathlib.Path(chart).read_bytes(), "png")
-        img.add_header("Content-ID", "<yearchart>")
-        img.add_header("Content-Disposition", "inline", filename="year_by_year.png")
-        related.attach(img)
+        for cid, path, name in inline:
+            img = MIMEImage(path.read_bytes(), "png")
+            img.add_header("Content-ID", f"<{cid}>")
+            img.add_header("Content-Disposition", "inline", filename=name)
+            related.attach(img)
         body.attach(related)
     else:
         body.attach(MIMEText(html_body, "html", "utf-8"))
