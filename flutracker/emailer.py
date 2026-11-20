@@ -318,7 +318,7 @@ def render(result, dashboard_url=None, chart_src=None):
         spacer(10),
         f'<tr><td style="padding:25px 45px 30px 45px; border-top:1px solid {DIVIDER};">'
         f'<p style="margin:0; font-family:{FONT}; font-size:12px; color:{MUTED}; line-height:1.6;">'
-        f'Karo Healthcare Norway &middot; Internal communication &middot; Generated automatically {esc(result["generated_at"][:10])}</p></td></tr>',
+        f'Karo Healthcare Norway &middot; Internal communication &middot; Sent every second week &middot; Generated automatically {esc(result["generated_at"][:10])}</p></td></tr>',
     ]
 
     doc = f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -354,7 +354,7 @@ def render(result, dashboard_url=None, chart_src=None):
 
 def plain_text(result):
     lines = [subject(result), "", *result["headline"], "", *[f"- {f}" for f in result["key_points"]], "",
-             f"Dashboard: {DASHBOARD_URL}"]
+             f"Dashboard: {DASHBOARD_URL}", "", "This update is sent every second week."]
     return "\n".join(lines)
 
 
