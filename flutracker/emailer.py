@@ -311,6 +311,8 @@ def render(result, dashboard_url=None, chart_src=None):
         spacer(25),
         footnote(
             f"Source: {link(src['url'], src['name'])}, reported by {entities(AUTHORITY_SHORT)}. "
+            f"Figures for week {week} are preliminary: the latest week is often incomplete and is usually revised upwards, "
+            "so the week-on-week change can understate growth. "
             f"Intensity compares with the {esc(hist_span)} seasons ({link(url.rstrip('/') + '/#intensity', 'worked example')}). "
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook.",
             icon("book", ib),
@@ -354,7 +356,9 @@ def render(result, dashboard_url=None, chart_src=None):
 
 def plain_text(result):
     lines = [subject(result), "", *result["headline"], "", *[f"- {f}" for f in result["key_points"]], "",
-             f"Dashboard: {DASHBOARD_URL}", "", "This update is sent every second week."]
+             f"Dashboard: {DASHBOARD_URL}", "",
+             "Figures for the latest week are preliminary and are usually revised upwards.", "",
+             "This update is sent every second week."]
     return "\n".join(lines)
 
 
