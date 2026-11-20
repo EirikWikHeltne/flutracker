@@ -323,21 +323,10 @@
     .loader .peak { animation: none; transform: none; }
     .loader .halo { animation: none; }
   }
-  /* Motion layer (GSAP + three.js). Only switched on when the libraries load and motion is allowed;
+  /* Motion layer (GSAP): short, quiet entrances. Only on when GSAP loads and motion is allowed;
      otherwise the page falls back to the CSS reveal above. */
-  .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 40; pointer-events: none;
-              background: linear-gradient(90deg, var(--peach), var(--mint)); transform: scaleX(0); transform-origin: 0 50%; }
-  html:not(.gsap) .progress { display: none; }
-  header.banner { position: relative; isolation: isolate; }
-  .banner-row { position: relative; z-index: 1; }
-  .hero-gl { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: 0; transition: opacity 1.6s var(--ease); }
-  .hero-gl.on { opacity: 1; }
   .gsap body.arrive .banner-row, .gsap body.arrive main, .gsap body.arrive footer { animation: none; }
-  h1 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
-  h1 .w > span { display: inline-block; }
-  .gsap .tile { will-change: transform; }
   @media print { .reveal { opacity: 1; transform: none; } .loader { display: none !important; }
-                 .progress, .hero-gl { display: none !important; }
                  main *, header *, main section { opacity: 1 !important; transform: none !important; clip-path: none !important; } }
   @media (max-width: 600px) { .actions .tools { margin-left: auto; } }
 </style>
@@ -378,9 +367,7 @@
   <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13.5 6.5L19 12l-5.5 5.5"/></symbol>
 </svg>
-<div class="progress" aria-hidden="true"></div>
 <header class="banner">
-  <canvas class="hero-gl" id="heroGL" aria-hidden="true"></canvas>
   <div class="wrap banner-row">
     <div>
       <p class="eyebrow"><img class="logo" src="img/brand/logo.svg" width="28" height="28" alt="">Karo Healthcare Norway flu tracker</p>
@@ -761,74 +748,38 @@
     });
   }
 
-  // GSAP choreography: the banner builds itself, each section rises in with its parts in sequence,
-  // chart lines sweep in left to right and redraw from the baseline, and table rows cascade.
-  // Everything plays once; nothing here carries information the static page lacks.
+  // GSAP: restrained entrances in the manner of a consulting report. Short fades over small distances,
+  // one easing throughout, and charts and bars drawn in left to right. Everything plays once.
   const motionOK = () => !calm && window.gsap && window.ScrollTrigger;
   function motion() {
     const g = window.gsap;
     g.registerPlugin(ScrollTrigger);
+    g.defaults({ ease: "power2.out" });
     document.documentElement.classList.add("gsap");
 
-    // Banner: words of the title rise out of a mask, then subtitle, buttons and the micrograph.
-    const h1 = document.getElementById("title");
-    h1.setAttribute("aria-label", h1.textContent);
-    h1.innerHTML = h1.textContent.split(" ").map((w) => '<span class="w" aria-hidden="true"><span>' + esc(w) + "</span></span>").join(" ");
-    g.timeline({ defaults: { ease: "power3.out" } })
-      .from(".eyebrow", { y: 14, opacity: 0, duration: 0.6 })
-      .from("h1 .w > span", { yPercent: 115, duration: 0.95, stagger: 0.045, ease: "expo.out" }, 0.1)
-      .from("#subtitle", { y: 10, opacity: 0, duration: 0.6 }, 0.45)
-      .from(".banner-row .actions > *", { y: 14, opacity: 0, duration: 0.55, stagger: 0.07 }, 0.55)
-      .from(".virus img", { scale: 0.8, rotate: -14, opacity: 0, duration: 1.3, ease: "expo.out" }, 0.15)
-      .from(".virus figcaption", { opacity: 0, y: 6, duration: 0.6 }, 0.8);
-
-    // Micrograph drifts and turns a little as the banner scrolls away.
-    g.to(".virus", { yPercent: 22, rotate: 10, ease: "none",
-      scrollTrigger: { trigger: "header.banner", start: "top top", end: "bottom top", scrub: 0.6 } });
-    // Reading progress along the top edge.
-    g.to(".progress", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
+    g.from(".banner-row .eyebrow, #title, #subtitle, .banner-row .actions, .virus",
+      { y: 8, opacity: 0, duration: 0.6, stagger: 0.08 });
 
     const timelines = [];
     document.querySelectorAll("main section:not([hidden])").forEach((sec) => {
-      const tl = g.timeline({ paused: true, defaults: { ease: "power3.out" } });
-      tl.from(sec, { y: 36, opacity: 0, duration: 0.8 })
-        .from(sec.querySelectorAll(":scope > *:not(.chart-box)"), { y: 16, opacity: 0, duration: 0.6, stagger: 0.06 }, 0.12);
+      const tl = g.timeline({ paused: true });
+      tl.from(sec, { y: 16, opacity: 0, duration: 0.6 })
+        .from(sec.querySelectorAll(":scope > *:not(.chart-box):not(.tiles)"), { opacity: 0, duration: 0.5, stagger: 0.05 }, 0.1);
       const tiles = sec.querySelectorAll(".tile");
-      if (tiles.length) tl.from(tiles, { y: 28, scale: 0.96, opacity: 0, duration: 0.7, stagger: 0.08, ease: "back.out(1.4)" }, 0.2);
-      const items = sec.querySelectorAll("ul.findings > li");
-      if (items.length) tl.from(items, { x: -16, opacity: 0, duration: 0.5, stagger: 0.07 }, 0.3);
+      if (tiles.length) tl.from(tiles, { y: 10, opacity: 0, duration: 0.5, stagger: 0.06 }, 0.15);
       sec.querySelectorAll(".chart-box").forEach((box) => {
-        tl.fromTo(box, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.4, ease: "power2.inOut", clearProps: "clipPath" }, 0.25);
-        tl.call(() => { const c = window.Chart && Chart.getChart(box.querySelector("canvas")); if (c) { c.reset(); c.update(); } }, null, 0.25);
+        tl.fromTo(box, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "power2.inOut", clearProps: "clipPath" }, 0.2);
       });
       sec.querySelectorAll(".stack").forEach((bar, i) => {
-        tl.fromTo(bar, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "power2.out", clearProps: "clipPath" }, 0.3 + i * 0.1);
-      });
-      sec.querySelectorAll("tbody").forEach((tb) => {
-        const rows = tb.querySelectorAll("tr");
-        if (rows.length) tl.from(rows, { y: 8, opacity: 0, duration: 0.4, stagger: { amount: Math.min(0.7, rows.length * 0.04) } }, 0.3);
+        tl.fromTo(bar, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "power2.inOut", clearProps: "clipPath" }, 0.2 + i * 0.06);
       });
       timelines.push({ sec, tl });
-      ScrollTrigger.create({ trigger: sec, start: "top 88%", once: true, onEnter: () => tl.play() });
+      ScrollTrigger.create({ trigger: sec, start: "top 90%", once: true, onEnter: () => tl.play() });
     });
     // A jump (anchor link, fast scroll) also plays every section above the viewport, so none stays hidden.
     ScrollTrigger.create({ start: 0, end: "max", onUpdate: () => timelines.forEach(({ sec, tl }) => {
-      if (!tl.progress() && !tl.isActive() && sec.getBoundingClientRect().top < innerHeight * 0.88) tl.play();
+      if (!tl.progress() && !tl.isActive() && sec.getBoundingClientRect().top < innerHeight * 0.9) tl.play();
     }) });
-
-    // Tiles lean towards the pointer (fine pointers only).
-    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      document.querySelectorAll(".tile").forEach((tile) => {
-        g.set(tile, { transformPerspective: 900 });
-        const rx = g.quickTo(tile, "rotationX", { duration: 0.5, ease: "power3" }), ry = g.quickTo(tile, "rotationY", { duration: 0.5, ease: "power3" });
-        const ty = g.quickTo(tile, "y", { duration: 0.5, ease: "power3" });
-        tile.addEventListener("pointermove", (e) => {
-          const r = tile.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-          ry(px * 7); rx(-py * 7); ty(-4);
-        });
-        tile.addEventListener("pointerleave", () => { rx(0); ry(0); ty(0); });
-      });
-    }
     addEventListener("load", () => ScrollTrigger.refresh());
   }
 
@@ -1233,119 +1184,6 @@
     document.getElementById("sourceList").innerHTML = html;
   }
 })();
-</script>
-<script type="module">
-// Banner backdrop: a slow field of influenza virions (lipid envelope with haemagglutinin and neuraminidase spikes),
-// drawn with three.js. Loaded after the page settles, skipped when motion is reduced, data is saved or WebGL is missing,
-// and paused whenever the banner is off screen or the tab is hidden. Purely decorative.
-const canvas = document.getElementById("heroGL");
-const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const saveData = navigator.connection && navigator.connection.saveData;
-const gl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; } })();
-if (canvas && !calm && !saveData && gl) {
-  const start = () => import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js").then(field).catch(() => {});
-  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 200));
-  if (document.readyState === "complete") idle(start); else addEventListener("load", () => idle(start));
-}
-
-function field(THREE) {
-  const header = canvas.parentElement;
-  const small = innerWidth < 720;
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 2));
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0x110B36, 18, 52);
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera.position.set(0, 0, 30);
-
-  scene.add(new THREE.AmbientLight(0x9F9DB1, 0.9));
-  const key = new THREE.DirectionalLight(0xFAD7C2, 2.2); key.position.set(8, 10, 12); scene.add(key);
-  const rim = new THREE.DirectionalLight(0x9DE3C2, 1.4); rim.position.set(-12, -4, -8); scene.add(rim);
-
-  // Shared geometry and materials; each virion is one envelope plus two instanced spike sets.
-  const envGeo = new THREE.IcosahedronGeometry(1, 3);
-  const envMat = new THREE.MeshStandardMaterial({ color: 0x2b2363, roughness: 0.55, metalness: 0.1, flatShading: true });
-  const stalkGeo = new THREE.CylinderGeometry(0.035, 0.05, 0.42, 6); stalkGeo.translate(0, 1.18, 0);
-  const haGeo = new THREE.CylinderGeometry(0.11, 0.07, 0.16, 7); haGeo.translate(0, 1.42, 0);
-  const naGeo = new THREE.SphereGeometry(0.1, 8, 6); naGeo.translate(0, 1.42, 0);
-  const stalkMat = new THREE.MeshStandardMaterial({ color: 0xC9C7D6, roughness: 0.7 });
-  const haMat = new THREE.MeshStandardMaterial({ color: 0xFAD7C2, roughness: 0.45, emissive: 0x3a1a10, emissiveIntensity: 0.4 });
-  const naMat = new THREE.MeshStandardMaterial({ color: 0x9DE3C2, roughness: 0.45, emissive: 0x0b2a20, emissiveIntensity: 0.4 });
-
-  const SPIKES = 90, up = new THREE.Vector3(0, 1, 0), m = new THREE.Matrix4(), q = new THREE.Quaternion(), dir = new THREE.Vector3();
-  function virion() {
-    const g = new THREE.Group();
-    g.add(new THREE.Mesh(envGeo, envMat));
-    const stalks = new THREE.InstancedMesh(stalkGeo, stalkMat, SPIKES);
-    const nNA = Math.round(SPIKES * 0.18), ha = new THREE.InstancedMesh(haGeo, haMat, SPIKES - nNA), na = new THREE.InstancedMesh(naGeo, naMat, nNA);
-    let h = 0, n = 0;
-    for (let i = 0; i < SPIKES; i++) {
-      // Fibonacci sphere, with a little jitter so spikes do not look machined.
-      const y = 1 - (i + 0.5) / SPIKES * 2, r = Math.sqrt(1 - y * y), th = i * 2.39996 + Math.random() * 0.25;
-      dir.set(Math.cos(th) * r, y, Math.sin(th) * r).normalize();
-      q.setFromUnitVectors(up, dir);
-      m.compose(new THREE.Vector3(), q, new THREE.Vector3(1, 0.9 + Math.random() * 0.2, 1));
-      stalks.setMatrixAt(i, m);
-      if (i % Math.round(SPIKES / nNA) === 0 && n < nNA) na.setMatrixAt(n++, m); else if (h < ha.count) ha.setMatrixAt(h++, m);
-    }
-    ha.count = h; na.count = n;
-    g.add(stalks, ha, na);
-    return g;
-  }
-
-  // Keep the nearest virions out of the text column (left); the far ones can sit anywhere and fade into the navy.
-  const count = small ? 7 : 13, items = [];
-  for (let i = 0; i < count; i++) {
-    const v = virion(), near = !small && i < Math.ceil(count * 0.4);
-    const z = near ? -2 - Math.random() * 8 : -12 - Math.random() * 22;
-    const spread = 13 + Math.abs(z) * 0.55;
-    const x = near ? (small ? (Math.random() * 2 - 1) * 9 : 3 + Math.random() * (spread - 3)) : (Math.random() * 2 - 1) * spread;
-    v.position.set(x, (Math.random() * 2 - 1) * (near ? 4.5 : 6 + Math.abs(z) * 0.25), z);
-    v.scale.setScalar(near ? 1 + Math.random() * 0.7 : 0.7 + Math.random() * 0.8);
-    v.rotation.set(Math.random() * 6, Math.random() * 6, 0);
-    v.userData = { base: v.position.clone(), spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(0.22),
-                   phase: Math.random() * 6.28, bob: 0.25 + Math.random() * 0.35 };
-    scene.add(v); items.push(v);
-  }
-
-  const size = () => {
-    const w = header.clientWidth, hgt = header.clientHeight;
-    renderer.setSize(w, hgt, false);
-    camera.aspect = w / hgt;
-    // Fit roughly the same horizontal span whatever the banner's shape.
-    camera.fov = THREE.MathUtils.clamp(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(17)) * (1.9 / camera.aspect)) * 180 / Math.PI, 18, 50);
-    camera.updateProjectionMatrix();
-  };
-  size();
-  new ResizeObserver(size).observe(header);
-
-  // Pointer and scroll gently steer the camera.
-  const aim = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
-  addEventListener("pointermove", (e) => { aim.x = (e.clientX / innerWidth - 0.5) * 2.4; aim.y = (e.clientY / innerHeight - 0.5) * -1.6; }, { passive: true });
-
-  let visible = true, running = false, last = performance.now(), t = 0;
-  new IntersectionObserver(([en]) => { visible = en.isIntersecting; kick(); }).observe(header);
-  document.addEventListener("visibilitychange", kick);
-  function kick() { if (visible && !document.hidden && !running) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
-  function frame(now) {
-    if (!visible || document.hidden) { running = false; return; }
-    const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
-    for (const v of items) {
-      const u = v.userData;
-      v.rotation.x += u.spin.x * dt; v.rotation.y += u.spin.y * dt; v.rotation.z += u.spin.z * dt;
-      v.position.y = u.base.y + Math.sin(t * 0.35 + u.phase) * u.bob;
-      v.position.x = u.base.x + Math.cos(t * 0.22 + u.phase) * u.bob * 0.6;
-    }
-    cur.x += (aim.x - cur.x) * 0.04; cur.y += (aim.y - cur.y) * 0.04;
-    const sc = Math.min(1, scrollY / Math.max(1, header.offsetHeight));
-    camera.position.set(cur.x, cur.y - sc * 3, 30 - sc * 4);
-    camera.lookAt(0, -sc * 2, 0);
-    renderer.render(scene, camera);
-    requestAnimationFrame(frame);
-  }
-  kick();
-  requestAnimationFrame(() => canvas.classList.add("on"));
-}
 </script>
 </body>
 </html>
