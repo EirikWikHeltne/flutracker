@@ -61,8 +61,8 @@ def spacer(h):
 
 
 def heading(text):
-    return (f'<p style="margin:0 0 12px 0; font-family:{FONT}; font-size:19px; color:{NAVY}; '
-            f'mso-line-height-rule:exactly; line-height:25px;">{esc(text)}</p>')
+    return (f'<p style="margin:0 0 12px 0; font-family:{FONT}; font-size:20px; color:{NAVY}; '
+            f'mso-line-height-rule:exactly; line-height:27px;">{esc(text)}</p>')
 
 
 # Karo line icons from the dashboard, rendered to PNG by tools/render_email_icons.js (Outlook cannot show
@@ -90,13 +90,13 @@ def with_icon(img, inner, gap=9, pad_bottom=0):
 
 
 def label(text, ico=None, base=None):
-    p = (f'<p style="margin:0{" 0 8px 0" if not ico else ""}; font-family:{FONT}; font-size:11px; color:{MUTED}; '
-         f'text-transform:uppercase; letter-spacing:2px; mso-line-height-rule:exactly; line-height:16px;">{esc(text)}</p>')
+    p = (f'<p style="margin:0{" 0 8px 0" if not ico else ""}; font-family:{FONT}; font-size:12px; color:{MUTED}; '
+         f'text-transform:uppercase; letter-spacing:2px; mso-line-height-rule:exactly; line-height:17px;">{esc(text)}</p>')
     return with_icon(icon(ico, base), p, pad_bottom=10) if ico else p
 
 
 def row(inner, pad="0 45px"):
-    return f'<tr><td style="padding:{pad}; font-family:{FONT}; font-size:15px; line-height:1.7; color:{TEXT};">{inner}</td></tr>'
+    return f'<tr><td style="padding:{pad}; font-family:{FONT}; font-size:16px; line-height:1.65; color:{TEXT};">{inner}</td></tr>'
 
 
 def delta_color(v):
@@ -108,9 +108,9 @@ def delta_color(v):
 
 def bullets(items):
     rows = "".join(
-        f'<tr><td width="20" valign="top" style="font-family:{FONT}; font-size:15px; color:{NAVY}; '
-        f'line-height:1.7; padding:2px 0;">&#8226;</td><td style="font-family:{FONT}; font-size:15px; '
-        f'color:{TEXT}; line-height:1.7; padding:2px 0;">{esc(t)}</td></tr>'
+        f'<tr><td width="20" valign="top" style="font-family:{FONT}; font-size:16px; color:{NAVY}; '
+        f'line-height:1.65; padding:2px 0;">&#8226;</td><td style="font-family:{FONT}; font-size:16px; '
+        f'color:{TEXT}; line-height:1.65; padding:2px 0;">{esc(t)}</td></tr>'
         for t in items
     )
     return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{rows}</table>'
@@ -123,12 +123,12 @@ def _shade(n):
     return "", ""
 
 
-TH = f"padding:9px 8px; font-weight:bold; border-bottom:2px solid {NAVY}; color:{NAVY}; font-size:12px;"
+TH = f"padding:9px 8px; font-weight:bold; border-bottom:2px solid {NAVY}; color:{NAVY}; font-size:13px;"
 
 
 def _table(head, body):
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" '
-            f'style="font-family:{FONT}; font-size:13px; color:{TEXT};">{head}{"".join(body)}</table>')
+            f'style="font-family:{FONT}; font-size:14px; color:{TEXT};">{head}{"".join(body)}</table>')
 
 
 # -------------------------------------------------------------- sections ----
@@ -175,14 +175,14 @@ def status_cards(result):
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td bgcolor="{accent}" style="background-color:{accent}; height:5px; line-height:5px; font-size:1px;">&nbsp;</td></tr>
 <tr><td bgcolor="#F7F6FA" style="background-color:#F7F6FA; padding:14px 14px 16px 14px; font-family:{FONT};">
-<p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:{MUTED};">{esc(SNAPSHOT_LABELS[key])}</p>
+<p style="margin:0; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:{MUTED};">{esc(SNAPSHOT_LABELS[key])}</p>
 <p style="margin:6px 0 0 0; font-size:30px; line-height:34px; color:{NAVY}; mso-line-height-rule:exactly;">{value}</p>
-<p style="margin:2px 0 10px 0; font-size:12px; color:{MUTED};">cases &middot; {_trend(s["wow_pct"] if s else None, 12)}</p>
+<p style="margin:2px 0 10px 0; font-size:13px; color:{MUTED};">cases &middot; {_trend(s["wow_pct"] if s else None, 13)}</p>
 {pill(s)}
 </td></tr></table></td>""")
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
             f'<tr>{"".join(cells)}</tr></table>'
-            f'<p style="margin:10px 0 0 0; font-size:12px; color:{MUTED};">Lab-confirmed cases in {COUNTRY_LIST} '
+            f'<p style="margin:10px 0 0 0; font-size:13px; color:{MUTED};">Lab-confirmed cases in {COUNTRY_LIST} '
             f'combined, change on last week, and intensity (share of an average season peak).</p>')
 
 
@@ -201,8 +201,8 @@ def country_table(result):
                 cells.append(f'<td{bg} align="right" style="padding:10px 8px; color:{MUTED};{bgs}">&ndash;</td>')
                 continue
             cells.append(f'<td{bg} align="right" style="padding:10px 8px; text-align:right;{bgs}">'
-                         f'<span style="font-size:15px; font-weight:bold; color:{NAVY};">{fmt_num(s["value"])}</span> '
-                         f'{_trend(s["wow_pct"], 11)}<br /><span style="line-height:22px;">{pill(s, 11)}</span></td>')
+                         f'<span style="font-size:16px; font-weight:bold; color:{NAVY};">{fmt_num(s["value"])}</span> '
+                         f'{_trend(s["wow_pct"], 12)}<br /><span style="line-height:24px;">{pill(s, 12)}</span></td>')
         body.append(f'<tr><td{bg} style="padding:10px 8px; font-weight:bold;{bgs}">{esc(c["name"])}</td>{"".join(cells)}</tr>')
     return _table(head, body)
 
@@ -214,7 +214,7 @@ def chart_block(src):
     return (f'<img src="{esc(src)}" width="{CHART_W}" height="{CHART_H}" alt="Lab-confirmed cases per week, each year as a line" '
             f'style="display:block; width:100%; max-width:{CHART_W}px; height:auto; border:0; outline:none; '
             f'text-decoration:none; -ms-interpolation-mode:bicubic;" />'
-            f'<p style="margin:8px 0 0 0; font-size:12px; color:{MUTED};">{COUNTRY_LIST} combined. One line per '
+            f'<p style="margin:8px 0 0 0; font-size:13px; color:{MUTED};">{COUNTRY_LIST} combined. One line per '
             f'year; the thick dark line is this year. Gaps are weeks when not every country reported, such as Swedish RSV in summer.</p>')
 
 
@@ -227,11 +227,11 @@ def intensity_block(result):
         fg = "#ffffff" if name == "Very high" else NAVY
         edge = f" border-bottom:3px solid {NAVY};" if name == now else ""
         cells.append(f'<td width="20%" bgcolor="{shade}" style="background-color:{shade}; padding:8px 4px; font-family:{FONT}; '
-                     f'font-size:12px; text-align:center; color:{fg};{edge}"><b>{name}</b><br />{rng}</td>')
+                     f'font-size:13px; text-align:center; color:{fg};{edge}"><b>{name}</b><br />{rng}</td>')
         mark = (f"&#9650; Influenza now<br />{fmt_num(flu['intensity_pct'])}% of peak" if name == now else "&nbsp;")
-        marks.append(f'<td width="20%" style="padding:6px 4px 0 4px; font-family:{FONT}; font-size:11px; text-align:center; '
+        marks.append(f'<td width="20%" style="padding:6px 4px 0 4px; font-family:{FONT}; font-size:12px; text-align:center; '
                      f'color:{NAVY}; font-weight:bold;">{mark}</td>')
-    return (f'<p style="margin:0 0 12px 0; font-size:14px; line-height:1.6; color:{TEXT};">Take the busiest week of each '
+    return (f'<p style="margin:0 0 12px 0; font-size:15px; line-height:1.6; color:{TEXT};">Take the busiest week of each '
             f'earlier season and average them. <b>This week&rsquo;s cases &divide; that average peak</b> is the intensity. '
             f'It shows how close we are to the top of a normal season.</p>'
             f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
@@ -243,7 +243,7 @@ def cta(url):
   <td align="center" style="padding:10px 45px 0 45px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
     <td bgcolor="{PEACH}" align="center" style="background-color:{PEACH}; padding:22px 25px;">
-    <p style="margin:0 0 14px 0; font-family:{FONT}; font-size:13px; color:{TEXT};">Charts per country and indicator, with every previous season</p>
+    <p style="margin:0 0 14px 0; font-family:{FONT}; font-size:14px; color:{TEXT};">Charts per country and indicator, with every previous season</p>
     <!--[if mso]>
     <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{esc(url)}" style="height:44px;v-text-anchor:middle;width:280px;" arcsize="10%" strokecolor="{NAVY}" fillcolor="{NAVY}">
     <w:anchorlock/>
@@ -262,7 +262,7 @@ def footnote(text, img=None):
     lead = (f'<td width="{ICON_PX}" valign="top" style="padding:14px 0 0 15px;">{img}</td>' if img else "")
     return (f'<tr><td style="padding:0 45px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'
             f'<tr><td width="3" bgcolor="{PEACH}" style="background-color:{PEACH};"></td>{lead}'
-            f'<td style="padding:12px 0 12px {10 if img else 15}px; font-family:{FONT}; font-size:12px; color:{MUTED}; line-height:1.6;">{text}</td>'
+            f'<td style="padding:12px 0 12px {10 if img else 15}px; font-family:{FONT}; font-size:13px; color:{MUTED}; line-height:1.6;">{text}</td>'
             f'</tr></table></td></tr>')
 
 
@@ -290,13 +290,13 @@ def render(result, dashboard_url=None, chart_src=None):
         f'<tr><td style="display:none; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; '
         f'mso-hide:all; color:#ffffff;">{esc(preheader)}</td></tr>',
         f"""<tr><td bgcolor="{NAVY}" style="background-color:{NAVY}; padding:35px 45px 30px 45px;">
-{with_icon(icon("virus", ib, "peach"), f'<p style="margin:0; font-family:{FONT}; font-size:11px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase; mso-line-height-rule:exactly; line-height:16px;">Karo Healthcare Norway &middot; Flu tracker</p>', pad_bottom=12)}
+{with_icon(icon("virus", ib, "peach"), f'<p style="margin:0; font-family:{FONT}; font-size:12px; color:{PEACH}; letter-spacing:2px; text-transform:uppercase; mso-line-height-rule:exactly; line-height:17px;">Karo Healthcare Norway &middot; Flu tracker</p>', pad_bottom=12)}
 <p style="margin:0; font-family:{FONT}; font-size:28px; font-weight:normal; color:#ffffff; mso-line-height-rule:exactly; line-height:36px;">Respiratory virus update, week {week}</p>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="height:12px; line-height:12px; font-size:1px; mso-line-height-rule:exactly;">&nbsp;</td></tr></table>
 {with_icon(icon("calendar", ib, "peach"), f'<p style="margin:0; font-family:{FONT}; font-size:13px; color:{PEACH}; letter-spacing:1px; text-transform:uppercase; mso-line-height-rule:exactly; line-height:18px;">{esc(week_range(result))} &middot; {esc(COUNTRY_COMMAS)}</p>')}
 </td></tr>""",
         spacer(28),
-        *([row(f'<p style="margin:0; font-family:{FONT}; font-size:17px; line-height:1.55; color:{NAVY};">'
+        *([row(f'<p style="margin:0; font-family:{FONT}; font-size:18px; line-height:1.55; color:{NAVY};">'
                f'{esc(" ".join(result["headline"]))}</p>'), spacer(24)] if result["headline"] else []),
         row(label("This week in the Nordics", "pulse", ib) + status_cards(result)),
         spacer(26),
@@ -317,7 +317,7 @@ def render(result, dashboard_url=None, chart_src=None):
         ),
         spacer(10),
         f'<tr><td style="padding:25px 45px 30px 45px; border-top:1px solid {DIVIDER};">'
-        f'<p style="margin:0; font-family:{FONT}; font-size:12px; color:{MUTED}; line-height:1.6;">'
+        f'<p style="margin:0; font-family:{FONT}; font-size:13px; color:{MUTED}; line-height:1.6;">'
         f'Karo Healthcare Norway &middot; Internal communication &middot; Sent every second week &middot; Generated automatically {esc(result["generated_at"][:10])}</p></td></tr>',
     ]
 
