@@ -32,6 +32,7 @@
     --surface: #ffffff;
     --text: #1a1a2e;
     --muted: #6B7280;
+    --note: #53565A;
     --divider: #e8e8e8;
     --up: #dc2626;
     --down: #16a34a;
@@ -55,7 +56,7 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
+      --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --note: #a3a0b5; --divider: #2c2748;
       --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
       --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
       --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --c-FI: #E062A6; --grid: #2a2545;
@@ -65,7 +66,7 @@
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --divider: #2c2748;
+    --bg: #0e0b20; --surface: #17132f; --text: #ece9f5; --muted: #a3a0b5; --note: #a3a0b5; --divider: #2c2748;
     --up: #f87171; --down: #4ade80; --current: #FAD7C2; --prior: #4a4566;
     --band: rgba(250, 215, 194, 0.16); --mean: #a3a0b5;
     --c-NO: #7E73E0; --c-SE: #D96A42; --c-DK: #1F9E8F; --c-FI: #E062A6; --grid: #2a2545;
@@ -167,6 +168,9 @@
   .sources dd { margin: 0; }
   @media (max-width: 600px) { .sources dl { grid-template-columns: 1fr; } .sources dd { margin-bottom: 8px; } }
   footer { color: var(--muted); font-size: 12px; padding: 10px 16px 30px; }
+  .ai-note { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 10px; color: var(--note); font-size: 11px; }
+  footer #footer { margin: 0; }
+  .ai-chip { background: var(--mint); color: var(--navy); border-radius: 4px; padding: 3px 8px; font-weight: 600; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
   .error { color: var(--up); }
   .muted { color: var(--muted); font-size: 13px; }
   .method { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px; }
@@ -543,7 +547,10 @@
   </section>
 </main>
 
-<footer class="wrap" id="footer"></footer>
+<footer class="wrap">
+  <p class="ai-note"><span class="ai-chip">AI-assisted · Reviewed</span><span>Prepared with AI assistance. Reviewed and approved by Nordic Category Management, Karo Healthcare.</span></p>
+  <p id="footer"></p>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>

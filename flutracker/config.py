@@ -64,6 +64,11 @@ COUNTRY_LIST = ", ".join(COUNTRY_NAMES[:-1]) + " and " + COUNTRY_NAMES[-1]
 COUNTRY_COMMAS = ", ".join(COUNTRY_NAMES)
 AUTHORITY_SHORT = "FHI, Folkhälsomyndigheten, SSI and THL"
 
+# AI disclosure (Karo standard, tier 1). Signed by the department, never a person.
+AI_DEPT = "Nordic Category Management, Karo Healthcare"
+AI_CHIP = "AI-assisted · Reviewed"
+AI_STATEMENT = f"Prepared with AI assistance. Reviewed and approved by {AI_DEPT}."
+
 GROUPS = ["Influenza", "COVID-19", "RSV", "Hospital & severity"]
 
 # spec says where the series comes from:
