@@ -17,13 +17,15 @@ from email.mime.text import MIMEText
 
 from .analysis import SNAPSHOT_KEYS, fmt_num, fmt_pct, parse_yw
 from .charts import EMAIL_SIZE
-from .config import AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL
+from .config import AI_CHIP, AI_STATEMENT, AUTHORITY_SHORT, COUNTRIES, COUNTRY_COMMAS, COUNTRY_LIST, DASHBOARD_URL
 
 NAVY = "#110B36"
 PEACH = "#FAD7C2"
 TEXT = "#1a1a2e"
 MUTED = "#6B7280"
 DIVIDER = "#e8e8e8"
+MINT = "#9DE3C2"
+GREY = "#53565A"
 GREEN = "#16a34a"
 RED = "#dc2626"
 FONT = "Georgia, 'Times New Roman', serif"
@@ -266,6 +268,17 @@ def footnote(text, img=None):
             f'</tr></table></td></tr>')
 
 
+def ai_disclosure():
+    """Karo AI disclosure: mint chip plus a quiet grey statement, one row above the signature."""
+    chip = (f'<td bgcolor="{MINT}" style="background-color:{MINT}; padding:4px 8px; font-family:Arial, Helvetica, sans-serif; '
+            f'font-size:10px; font-weight:bold; color:{NAVY}; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; '
+            f'mso-line-height-rule:exactly; line-height:14px;">{entities(AI_CHIP.upper())}</td>')
+    text = (f'<td style="padding:0 0 0 10px; font-family:{FONT}; font-size:11px; color:{GREY}; '
+            f'mso-line-height-rule:exactly; line-height:16px;">{esc(AI_STATEMENT)}</td>')
+    return (f'<tr><td style="padding:0 45px 18px 45px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">'
+            f'<tr>{chip}{text}</tr></table></td></tr>')
+
+
 def link(url, text):
     return f'<a href="{esc(url)}" style="color:{MUTED}; text-decoration:underline;">{esc(text)}</a>'
 
@@ -317,7 +330,8 @@ def render(result, dashboard_url=None, chart_src=None):
             "Season curves, all indicators, virus types and hospital figures are on the dashboard and in the Excel workbook.",
             icon("book", ib),
         ),
-        spacer(10),
+        spacer(22),
+        ai_disclosure(),
         f'<tr><td style="padding:25px 45px 30px 45px; border-top:1px solid {DIVIDER};">'
         f'<p style="margin:0; font-family:{FONT}; font-size:13px; color:{MUTED}; line-height:1.6;">'
         f'Karo Healthcare Norway &middot; Internal communication &middot; Sent every second week &middot; Generated automatically {esc(result["generated_at"][:10])}</p></td></tr>',
