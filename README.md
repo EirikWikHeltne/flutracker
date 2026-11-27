@@ -58,6 +58,8 @@ are compared with fewer seasons.
   year, for influenza, COVID-19 and RSV, per country and for the Nordics.
 * **Last 12 months** (dashboard and Excel): the three viruses in one chart for the last 52 weeks.
 
+A new week is only reported once every country has reported it: while a country is still on the week before, the
+dashboard, e-mail and workbook stay on that week (a country more than one week behind is not waited for).
 The Nordic total is only given for weeks in which all four countries reported. Weeks a country did not report (for
 example Sweden's RSV in summer) are left as gaps.
 
