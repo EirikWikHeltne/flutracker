@@ -121,7 +121,16 @@ def extract_series(raw):
 
 
 def latest_week(series):
-    return max(s.index.max() for key in ("flu_cases", "covid_cases") for s in series[key].values())
+    """The newest week that every country has reported.
+
+    Countries report to ECDC at different times, so the newest week is often there for some
+    countries only. It is held back while any country is still on the week before; a country
+    that is further behind is not waited for.
+    """
+    last = [s.index.max() for key in ("flu_cases", "covid_cases") for s in series[key].values()]
+    newest = max(last)
+    previous = yw_str(*_prev_week(*parse_yw(newest)))
+    return previous if previous in last else newest
 
 
 # ---------------------------------------------------------- comparisons ----
@@ -494,6 +503,9 @@ def key_points(result):
 def analyse(raw, now=None):
     series, sentinel_tests = extract_series(raw)
     latest = latest_week(series)
+    if (raw["yearweek"] > latest).any():
+        # Leave out a newer week that only some countries have reported, so every figure is for the same week.
+        series, sentinel_tests = extract_series(raw[raw["yearweek"] <= latest])
     cur_start = season_start(*parse_yw(latest))
     weeks = season_weeks(cur_start)
     latest_year, latest_wk = parse_yw(latest)

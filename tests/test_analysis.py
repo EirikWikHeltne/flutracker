@@ -269,3 +269,30 @@ def test_email_icons_are_hosted_pngs():
         assert (emailer.ICONS_DIR / f"{name}.png").exists()
         assert f'src="{base}{name}.png" width="16" height="16"' in html
     assert base.startswith("https://")
+
+
+def _lab(country, pathogen, values):
+    sub = "total" if pathogen == "Influenza" else pathogen
+    return rows(country, "nonSentinelTestsDetections", values, indicator="detections", pathogen=pathogen,
+                pathogentype=pathogen, pathogensubtype=sub, age="total", survtype="non-sentinel")
+
+
+def test_waits_for_countries_that_have_not_reported_the_newest_week():
+    # Norway has already reported W41; Sweden is still on W40, so W41 is not complete yet.
+    extra = _lab("Sweden", "Influenza", {"2025-W39": 4, "2025-W40": 5}) + _lab("Sweden", "SARS-CoV-2", {"2025-W40": 6})
+    result = analysis.analyse(pd.concat([make_raw(), pd.DataFrame(extra)], ignore_index=True))
+    assert result["latest_week"] == "2025-W40"
+    no = result["summary"]["NO"]["flu_cases"]
+    assert no["week"] == "2025-W40" and no["value"] == 40 and not no["stale"]
+    assert result["summary"]["SE"]["flu_cases"]["week"] == "2025-W40"
+    assert result["recent"]["weeks"][-1] == "2025-W40"
+    assert result["yearly"]["areas"]["NO"]["flu_cases"]["2025"][40] is None  # W41 is held back everywhere
+    assert result["subtypes"]["NO"]["season"]["A(H3N2)"] == 0
+    assert "week 40" in emailer.subject(result)
+
+
+def test_does_not_wait_for_countries_more_than_a_week_behind():
+    extra = _lab("Sweden", "Influenza", {"2025-W38": 4, "2025-W39": 5})
+    result = analysis.analyse(pd.concat([make_raw(), pd.DataFrame(extra)], ignore_index=True))
+    assert result["latest_week"] == "2025-W41"
+    assert result["summary"]["NO"]["flu_cases"]["value"] == 50
